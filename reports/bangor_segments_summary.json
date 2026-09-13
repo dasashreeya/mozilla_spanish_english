@@ -1,0 +1,326 @@
+{
+  "generated_at": "2026-09-13T05:46:31+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "seed": 20260913,
+  "config": {
+    "mixed": {
+      "min_seconds": 1.0,
+      "max_seconds": 30.0,
+      "target_range": [
+        5.0,
+        20.0
+      ],
+      "max_gap_seconds": 2.0,
+      "contamination_tolerance_seconds": 0.3,
+      "pad_seconds": 0.2,
+      "single_speaker": false
+    },
+    "single_speaker": {
+      "min_seconds": 1.0,
+      "max_seconds": 30.0,
+      "target_range": [
+        5.0,
+        20.0
+      ],
+      "max_gap_seconds": 2.0,
+      "contamination_tolerance_seconds": 0.3,
+      "pad_seconds": 0.2,
+      "single_speaker": true
+    }
+  },
+  "converter": {
+    "utterances": 52021,
+    "timed": 48267,
+    "flags": {
+      "no_words": 6223,
+      "unintelligible": 3096,
+      "untranscribed": 4292
+    },
+    "excluded": 7387,
+    "tsv_word_count_agreement": {
+      "utterances_compared": 52021,
+      "equal_word_count": 49051,
+      "gap_tsv_minus_converter": {
+        "count": 52021,
+        "sum": -3834.0,
+        "mean": -0.074,
+        "min": -13.0,
+        "max": 0.0,
+        "p01": -2.0,
+        "p05": -1.0,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      }
+    }
+  },
+  "modes": {
+    "mixed": {
+      "segments": 7200,
+      "hours": 18.74,
+      "speech_hours": 18.39,
+      "duration_seconds": {
+        "count": 7200,
+        "sum": 67449.781,
+        "mean": 9.368,
+        "min": 1.003,
+        "max": 30.0,
+        "p01": 1.068,
+        "p05": 1.317,
+        "p25": 2.6,
+        "p50": 6.938,
+        "p75": 14.705,
+        "p95": 25.156,
+        "p99": 29.536
+      },
+      "duration_buckets_seconds": {
+        "<1": 0,
+        "1-2": 1261,
+        "2-5": 1771,
+        "5-10": 1386,
+        "10-20": 1884,
+        "20-30": 877,
+        "30-60": 21,
+        "60-240": 0,
+        ">=240": 0
+      },
+      "utterances_per_segment": {
+        "count": 7200,
+        "sum": 35782.0,
+        "mean": 4.97,
+        "min": 1.0,
+        "max": 29.0,
+        "p01": 1.0,
+        "p05": 1.0,
+        "p25": 1.0,
+        "p50": 3.0,
+        "p75": 7.0,
+        "p95": 13.05,
+        "p99": 19.0
+      },
+      "words": 209159,
+      "speakers_per_segment": {
+        "1": 3887,
+        "2": 3263,
+        "3": 49,
+        "4": 1
+      },
+      "language": {
+        "eng": 3239,
+        "enspa": 2483,
+        "spa": 1434,
+        "other": 44
+      },
+      "language_hours": {
+        "eng": 6.84,
+        "enspa": 9.33,
+        "spa": 2.55,
+        "other": 0.03
+      },
+      "contamination_seconds": {
+        "count": 7200,
+        "sum": 136.633,
+        "mean": 0.019,
+        "min": 0.0,
+        "max": 0.3,
+        "p01": 0.0,
+        "p05": 0.0,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 0.01,
+        "p95": 0.122,
+        "p99": 0.255
+      },
+      "dropped_windows": {
+        "overlaps_speech_outside_transcript": 1281,
+        "too_short": 1120,
+        "no_words": 179
+      }
+    },
+    "single_speaker": {
+      "segments": 10331,
+      "hours": 12.95,
+      "speech_hours": 12.27,
+      "duration_seconds": {
+        "count": 10331,
+        "sum": 46616.566,
+        "mean": 4.512,
+        "min": 1.003,
+        "max": 30.0,
+        "p01": 1.082,
+        "p05": 1.317,
+        "p25": 1.879,
+        "p50": 2.914,
+        "p75": 5.404,
+        "p95": 13.436,
+        "p99": 21.561
+      },
+      "duration_buckets_seconds": {
+        "<1": 0,
+        "1-2": 2984,
+        "2-5": 4493,
+        "5-10": 1852,
+        "10-20": 856,
+        "20-30": 144,
+        "30-60": 2,
+        "60-240": 0,
+        ">=240": 0
+      },
+      "utterances_per_segment": {
+        "count": 10331,
+        "sum": 20831.0,
+        "mean": 2.016,
+        "min": 1.0,
+        "max": 29.0,
+        "p01": 1.0,
+        "p05": 1.0,
+        "p25": 1.0,
+        "p50": 1.0,
+        "p75": 2.0,
+        "p95": 5.0,
+        "p99": 9.0
+      },
+      "words": 132388,
+      "speakers_per_segment": {
+        "1": 10331
+      },
+      "language": {
+        "eng": 5698,
+        "enspa": 1670,
+        "spa": 2835,
+        "other": 128
+      },
+      "language_hours": {
+        "eng": 6.53,
+        "enspa": 3.34,
+        "spa": 3.01,
+        "other": 0.07
+      },
+      "contamination_seconds": {
+        "count": 10331,
+        "sum": 463.831,
+        "mean": 0.045,
+        "min": 0.0,
+        "max": 0.3,
+        "p01": 0.0,
+        "p05": 0.0,
+        "p25": 0.0,
+        "p50": 0.014,
+        "p75": 0.058,
+        "p95": 0.213,
+        "p99": 0.28
+      },
+      "dropped_windows": {
+        "overlaps_speech_outside_transcript": 9707,
+        "too_short": 5039,
+        "no_words": 829
+      }
+    }
+  },
+  "chosen_mode": "mixed",
+  "chosen_mode_transcript_validation": {
+    "segments": 7200,
+    "starts_with_uppercase_letter_outside_tags": 7199,
+    "starts_with_tag": 146,
+    "empty_after_official_normalization": 0,
+    "chat_symbols_after_normalization": 0,
+    "symbols_after_normalization": {
+      "'": 7965,
+      ".": 4200,
+      "-": 33
+    },
+    "conventions": {
+      "square_bracket_tag": {
+        "occurrences": 1537,
+        "rows": 1095
+      },
+      "ellipsis_...": {
+        "occurrences": 1400,
+        "rows": 946
+      },
+      "hyphenated_word": {
+        "occurrences": 33,
+        "rows": 26
+      },
+      "straight_apostrophe": {
+        "occurrences": 7965,
+        "rows": 3173
+      }
+    },
+    "scored_token_profile": {
+      "tokens": 209159,
+      "types": 13344,
+      "types_lowercased": 12745,
+      "with_uppercase": 8665,
+      "all_caps_2plus_letters": 0,
+      "ending_in_ellipsis": 1400,
+      "with_apostrophe": 7965,
+      "with_hyphen": 32,
+      "with_digit": 0,
+      "with_non_ascii_letter": 10209,
+      "with_other_symbol": 0
+    },
+    "ellipsis_token_rate": 0.00669,
+    "uppercase_token_rate": 0.04143
+  },
+  "dev_reference": {
+    "source": "reports/data_audit.json",
+    "duration_seconds": {
+      "count": 155,
+      "sum": 2153.841,
+      "mean": 13.896,
+      "min": 2.409,
+      "max": 59.753,
+      "p01": 3.095,
+      "p05": 5.104,
+      "p25": 9.567,
+      "p50": 12.82,
+      "p75": 16.212,
+      "p95": 26.454,
+      "p99": 34.229
+    },
+    "duration_buckets_seconds": {
+      "<1": 0,
+      "1-2": 0,
+      "2-5": 8,
+      "5-10": 37,
+      "10-20": 89,
+      "20-30": 16,
+      "30-60": 5,
+      "60-240": 0,
+      ">=240": 0
+    },
+    "ellipsis_token_rate": 0.00501,
+    "uppercase_token_rate": 0.03724,
+    "symbols_after_normalization": {
+      "'": 124,
+      ".": 75,
+      "-": 5,
+      "[": 1,
+      "´": 1
+    }
+  },
+  "export": {
+    "manifest_rows": 7200,
+    "audio_files_written": 7200,
+    "audio_bytes": 1049701681,
+    "audio_hours_written": 18.74,
+    "channel_level_gap_db": {
+      "count": 7200,
+      "sum": 1055.9,
+      "mean": 0.147,
+      "min": -31.61,
+      "max": 37.8,
+      "p01": -20.5,
+      "p05": -13.46,
+      "p25": -3.032,
+      "p50": 0.0,
+      "p75": 1.76,
+      "p95": 14.661,
+      "p99": 35.132
+    }
+  },
+  "runtime_seconds": 71.5
+}

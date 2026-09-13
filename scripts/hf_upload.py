@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -22,7 +23,7 @@ DEFAULT_ENV_FILE = ROOT.parent / ".env"
 # The Hub picks regular vs LFS storage from each file's first 512 bytes, then
 # rejects "regular" files whose full content is binary. CHAT files carry 0x15
 # media bullets only after their headers, so they must be forced to LFS.
-LFS_PATTERNS = ["*.cha"]
+LFS_PATTERNS = ["*.cha", "*.flac"]
 
 
 class UploadError(RuntimeError):
@@ -84,9 +85,39 @@ def ensure_lfs_patterns(api: HfApi, repo_id: str, patterns: list[str]) -> None:
         print(f"added LFS rules: {rules}")
 
 
+def code_version() -> str:
+    """Short HEAD SHA, suffixed -dirty when tracked files have uncommitted changes."""
+
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True,
+                              check=False).stdout.strip()
+
+    sha = git("rev-parse", "--short", "HEAD") or "unknown"
+    return sha + ("-dirty" if git("status", "--porcelain", "--untracked-files=no") else "")
+
+
+def eligible_processed(name: str) -> dict:
+    """A processed dataset is uploadable when every manifest row has its audio file."""
+
+    folder = ROOT / "data" / "processed" / name
+    manifest = folder / "manifest.jsonl"
+    if not manifest.is_file():
+        raise UploadError(f"processed/{name}: no manifest.jsonl")
+    with manifest.open(encoding="utf-8") as handle:
+        rows = [json.loads(line) for line in handle if line.strip()]
+    if not rows:
+        raise UploadError(f"processed/{name}: manifest is empty")
+    missing = sum(1 for r in rows if not r.get("audio") or not (folder / r["audio"]).is_file())
+    if missing:
+        raise UploadError(f"processed/{name}: {missing} manifest rows have no audio file")
+    return {"folder": folder, "rows": len(rows)}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("aliases", nargs="+", help="dataset aliases to upload")
+    parser.add_argument("aliases", nargs="*", help="dataset aliases to upload")
+    parser.add_argument("--processed", action="append", default=[], metavar="NAME",
+                        help="upload data/processed/NAME (needs a clean git tree)")
     parser.add_argument("--repo-id", required=True)
     parser.add_argument("--env-file", type=Path, default=DEFAULT_ENV_FILE)
     parser.add_argument(
@@ -97,10 +128,17 @@ def main(argv: list[str] | None = None) -> int:
         help="upload this alias even though its archive hash differs from the catalog",
     )
     args = parser.parse_args(argv)
+    if not args.aliases and not args.processed:
+        parser.error("give at least one alias or --processed NAME")
     try:
         provenances = {
             alias: eligible(alias, alias in args.allow_accepted_mismatch) for alias in args.aliases
         }
+        processed = {name: eligible_processed(name) for name in args.processed}
+        version = code_version()
+        if processed and version.endswith("-dirty"):
+            raise UploadError(f"git tree has uncommitted changes ({version}); commit first so "
+                              "the upload records the code that produced it")
         api = HfApi(token=read_token(args.env_file))
         ensure_private_repo(api, args.repo_id)
         print(f"{args.repo_id}: private dataset repo confirmed")
@@ -122,6 +160,17 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 files = sum(1 for p in folder.rglob("*") if p.is_file())
                 print(f"uploaded {prefix}/{alias}: {files} files, commit {commit.oid}")
+        for name, info in processed.items():
+            commit = api.upload_folder(
+                repo_id=args.repo_id,
+                repo_type="dataset",
+                folder_path=info["folder"],
+                path_in_repo=f"processed/{name}",
+                commit_message=f"Add processed/{name} ({info['rows']} segments, code {version})",
+                ignore_patterns=["*.part", ".DS_Store"],
+            )
+            files = sum(1 for p in info["folder"].rglob("*") if p.is_file())
+            print(f"uploaded processed/{name}: {files} files, commit {commit.oid}")
         remote = api.list_repo_files(args.repo_id, repo_type="dataset")
         print(f"remote file count: {len(remote)}")
     except UploadError as exc:

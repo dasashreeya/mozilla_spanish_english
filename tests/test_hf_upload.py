@@ -83,6 +83,46 @@ def test_missing_lfs_rules_adds_only_undeclared_patterns() -> None:
     ]
 
 
+def _processed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, rows: list[dict]) -> Path:
+    monkeypatch.setattr(hf_upload, "ROOT", tmp_path)
+    folder = tmp_path / "data" / "processed" / "segs"
+    (folder / "audio").mkdir(parents=True)
+    (folder / "manifest.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+    return folder
+
+
+def test_processed_requires_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(hf_upload, "ROOT", tmp_path)
+    with pytest.raises(hf_upload.UploadError, match="no manifest"):
+        hf_upload.eligible_processed("segs")
+
+
+def test_processed_requires_every_audio_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    folder = _processed(monkeypatch, tmp_path, [{"audio": "audio/a.flac"}, {"audio": None}])
+    (folder / "audio" / "a.flac").write_bytes(b"fLaC")
+    with pytest.raises(hf_upload.UploadError, match="1 manifest rows have no audio"):
+        hf_upload.eligible_processed("segs")
+
+
+def test_processed_eligible(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    folder = _processed(monkeypatch, tmp_path, [{"audio": "audio/a.flac"}])
+    (folder / "audio" / "a.flac").write_bytes(b"fLaC")
+    assert hf_upload.eligible_processed("segs")["rows"] == 1
+
+
+def test_processed_upload_refuses_dirty_tree(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(hf_upload, "eligible_processed", lambda name: {"rows": 1})
+    monkeypatch.setattr(hf_upload, "code_version", lambda: "abc123-dirty")
+    assert hf_upload.main(["--processed", "segs", "--repo-id", "org/data"]) == 2
+
+
+def test_requires_alias_or_processed() -> None:
+    with pytest.raises(SystemExit):
+        hf_upload.main(["--repo-id", "org/data"])
+
+
 def test_token_from_env_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.delenv("HF_TOKEN", raising=False)
     env = tmp_path / ".env"

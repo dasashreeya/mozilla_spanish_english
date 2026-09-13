@@ -22,20 +22,24 @@ A private mirror of the downloaded archives lives in the Hugging Face dataset re
 |---|---|
 | `configs/datasets.json` | Pinned MDC dataset IDs, sizes, catalog SHA-256, scorer commit |
 | `scripts/mdc_fetch.py` | `download` (API key) or `ingest` (browser download): verify, extract, record provenance |
-| `scripts/hf_upload.py` | Mirror ingested datasets to the private HF repo |
+| `scripts/hf_upload.py` | Mirror ingested or processed datasets to the private HF repo |
 | `scripts/audit_data.py` | CPU data audit → `reports/data_audit.json` |
-| `src/lit_sp_en/` | Audio probing, CHAT parsing, transcript conventions, statistics |
+| `scripts/prepare_bangor.py` | CHAT → competition transcripts, 5–30 s segments, 16 kHz FLAC → `reports/bangor_segments_summary.json` |
+| `src/lit_sp_en/` | Audio probing, CHAT parsing and conversion, segmentation, transcript conventions, statistics |
 | `docs/DATA_AUDIT.md` | Audit findings |
+| `docs/BANGOR_PREP.md` | Conversion rules, segmentation choice, validation against dev |
 | `vendor/runtime_score.py` | Official scorer (git blob `6492e2ec`, runtime commit `c23d3d9942fe`) |
 
 ## Setup
 
 ```bash
-uv sync --extra audit --extra dev --extra hf
+uv sync --extra audit --extra dev --extra hf --extra prep
 uv run python -m scripts.mdc_fetch ingest dev ~/Downloads/<dev archive>.tar.gz
 uv run python -m scripts.mdc_fetch ingest bangor_miami ~/Downloads/<bangor archive>.tar.gz \
   --accept-sha256 b2d3a0e4b6eadd9347bf79c97bdcca19fdb13e69c5a390009e849330545278a1
 uv run python scripts/audit_data.py
+uv run python scripts/prepare_bangor.py --export-audio
+uv run python -m scripts.hf_upload --processed bangor_segments --repo-id GOVINDFROM/lit-sp-en-data
 uv run pytest -q
 ```
 
