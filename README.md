@@ -25,12 +25,12 @@ A private mirror of the downloaded archives lives in the Hugging Face dataset re
 | `scripts/hf_upload.py` | Mirror ingested or processed datasets to the private HF repo |
 | `scripts/audit_data.py` | CPU data audit → `reports/data_audit.json` |
 | `scripts/prepare_bangor.py` | CHAT → competition transcripts, 5–30 s segments, 16 kHz FLAC → `reports/bangor_segments_summary.json` |
-| `scripts/whisper_baseline.py` | Zero-shot faster-whisper on dev, official-scorer parity check → `reports/baselines/` |
+| `scripts/whisper_baseline.py` | Zero-shot faster-whisper or Qwen3-ASR on dev, official-scorer parity check → `reports/baselines/` |
 | `scripts/compare_runs.py` | Paired-bootstrap comparison of runs on the same clips |
 | `src/lit_sp_en/` | Audio probing, CHAT parsing and conversion, segmentation, transcript conventions, evaluation, statistics |
 | `docs/DATA_AUDIT.md` | Audit findings |
 | `docs/BANGOR_PREP.md` | Conversion rules, segmentation choice, validation against dev |
-| `docs/BASELINE_WHISPER.md` | Zero-shot Whisper results on dev (current number to beat) |
+| `docs/ZERO_SHOT_BASELINES.md` | Zero-shot Whisper and Qwen3-ASR results on dev (current number to beat) |
 | `vendor/runtime_score.py` | Official scorer (git blob `6492e2ec`, runtime commit `c23d3d9942fe`) |
 
 ## Setup
@@ -43,6 +43,11 @@ uv run python -m scripts.mdc_fetch ingest bangor_miami ~/Downloads/<bangor archi
 uv run python scripts/audit_data.py
 uv run python scripts/prepare_bangor.py --export-audio
 uv run python -m scripts.hf_upload --processed bangor_segments --repo-id GOVINDFROM/lit-sp-en-data
+uv run python scripts/whisper_baseline.py --model large-v3-turbo --language auto
+# Qwen3-ASR needs huggingface-hub<1, so it gets its own environment:
+UV_PROJECT_ENVIRONMENT=.venv-qwen uv sync --extra qwen --extra audit
+UV_PROJECT_ENVIRONMENT=.venv-qwen uv run --no-sync python scripts/whisper_baseline.py \
+  --backend qwen --model Qwen/Qwen3-ASR-1.7B
 uv run pytest -q
 ```
 

@@ -1,0 +1,26 @@
+{
+  "runs": [
+    "large-v3-turbo-auto-int8-b5",
+    "large-v3-auto-int8-b5"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "large-v3-auto-int8-b5 minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": 0.0851,
+      "low": 0.0364,
+      "high": 0.136,
+      "share_of_resamples_b_worse": 0.9995,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.1744,
+    "clips_won": {
+      "large-v3-turbo-auto-int8-b5": 65,
+      "tie": 42,
+      "large-v3-auto-int8-b5": 48
+    }
+  }
+}

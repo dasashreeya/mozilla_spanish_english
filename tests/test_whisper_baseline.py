@@ -4,6 +4,7 @@ import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 
 from lit_sp_en.transcripts import official_wer
@@ -14,18 +15,30 @@ pytestmark = pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg n
 TEXTS = ["Zorblat went to la tienda. Then quixotic", "I don... I don't flurbs", "Pero Maria wasn't"]
 
 
-class FakeModel:
+class FakeBackend:
     """Returns the reference for the first two clips and nothing for the third."""
+
+    name = "fake"
 
     def __init__(self, answers: dict[str, str]):
         self.answers = answers
-        self.calls: list[dict] = []
+        self.languages: list[str] = []
 
-    def transcribe(self, path: str, **kwargs):
-        self.calls.append(kwargs)
-        text = self.answers[Path(path).name]
-        segments = iter([SimpleNamespace(text=" " + text)] if text else [])
-        return segments, SimpleNamespace(language="en", language_probability=0.8)
+    def transcribe(self, clip: Path, language: str):
+        self.languages.append(language)
+        return self.answers[clip.name], "en", 0.8
+
+    def run_name(self, language: str) -> str:
+        return f"fake-{language}"
+
+    def provenance(self) -> dict:
+        return {"name": "fake", "repo_id": "fake", "revision": None, "weights_sha256": {}}
+
+    def decoding(self, language: str) -> dict:
+        return {"language": language}
+
+    def software(self) -> dict:
+        return {"fake": "0"}
 
 
 @pytest.fixture
@@ -42,14 +55,12 @@ def dev(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
         rows.append(f"{name}\t{'AB'[i % 2]}\t{text}\t{'spa' if i == 2 else 'enspa'}\t1")
         answers[name] = text if i < 2 else ""
     (directory / "metadata.tsv").write_text("\n".join(rows) + "\n", encoding="utf-8")
-    model = FakeModel(answers)
+    backend = FakeBackend(answers)
     monkeypatch.setattr(whisper_baseline, "DEV_DIR", directory)
     monkeypatch.setattr(whisper_baseline, "PREDICTIONS_DIR", tmp_path / "pred")
     monkeypatch.setattr(whisper_baseline, "REPORTS_DIR", tmp_path / "reports")
-    monkeypatch.setattr(whisper_baseline, "load_model", lambda *a: model)
-    monkeypatch.setattr(whisper_baseline, "model_provenance",
-                        lambda name: {"name": name, "repo_id": "fake", "revision": None})
-    return {"tmp": tmp_path, "model": model}
+    monkeypatch.setattr(whisper_baseline, "load_backend", lambda args: backend)
+    return {"tmp": tmp_path, "backend": backend, "clips": directory / "clips"}
 
 
 def test_baseline_scores_match_official_cli_and_stay_private(dev: dict) -> None:
@@ -62,8 +73,7 @@ def test_baseline_scores_match_official_cli_and_stay_private(dev: dict) -> None:
     assert report["scores"]["groups"]["language_label"]["spa"]["wer"] == 1.0
     assert set(report["scores"]["groups"]["speaker"]) == {"speaker_1", "speaker_2"}
     assert report["detected_language"] == {"en": {"clips": 3, "mean_probability": 0.8}}
-    assert report["decoding"]["language"] == "es"
-    assert all(call["language"] == "es" and call["beam_size"] == 5 for call in dev["model"].calls)
+    assert report["backend"] == "fake" and dev["backend"].languages == ["es"] * 3
     assert (dev["tmp"] / "pred" / "t.csv").is_file()
 
     serialized = json.dumps(report).lower()
@@ -71,9 +81,56 @@ def test_baseline_scores_match_official_cli_and_stay_private(dev: dict) -> None:
         assert token not in serialized
 
 
-def test_auto_language_passes_none_and_limit_truncates(dev: dict) -> None:
-    assert whisper_baseline.main(["--limit", "2", "--run-name", "s"]) == 0
-    report = json.loads((dev["tmp"] / "reports" / "s.json").read_text())
+def test_limit_truncates_and_default_run_name(dev: dict) -> None:
+    assert whisper_baseline.main(["--limit", "2"]) == 0
+    report = json.loads((dev["tmp"] / "reports" / "fake-auto-limit2.json").read_text())
     assert report["dataset"]["rows"] == 2
     assert report["scores"]["official"]["wer"] == 0.0
-    assert all(call["language"] is None for call in dev["model"].calls)
+
+
+def test_faster_whisper_adapter_maps_language_and_beam() -> None:
+    calls = []
+
+    class Model:
+        def transcribe(self, path, **kwargs):
+            calls.append(kwargs)
+            segments = iter([SimpleNamespace(text=" hola"), SimpleNamespace(text=" there ")])
+            return segments, SimpleNamespace(language="es", language_probability=0.9)
+
+    backend = whisper_baseline.FasterWhisperBackend("m", "int8", 4, 3, loaded=Model())
+    assert backend.transcribe(Path("x.mp3"), "auto") == ("hola there", "es", 0.9)
+    backend.transcribe(Path("x.mp3"), "en")
+    assert [c["language"] for c in calls] == [None, "en"]
+    assert all(c["beam_size"] == 3 and c["task"] == "transcribe" for c in calls)
+    assert backend.run_name("auto") == "m-auto-int8-b3"
+
+
+def test_qwen_adapter_passes_decoded_audio_and_language_names(dev: dict) -> None:
+    calls = []
+
+    class Model:
+        def transcribe(self, audio, language):
+            calls.append((audio, language))
+            return [SimpleNamespace(language="English,Spanish", text=" hola there ")]
+
+    backend = whisper_baseline.QwenBackend("Qwen/Qwen3-ASR-0.6B", "cpu", "float32", 512,
+                                           loaded=Model())
+    clip = dev["clips"] / "c0.mp3"
+    assert backend.transcribe(clip, "auto") == ("hola there", "English,Spanish", None)
+    backend.transcribe(clip, "es")
+    (wav, rate), language = calls[0]
+    assert rate == 16000 and wav.ndim == 1 and wav.dtype == np.float32
+    assert abs(wav.size / 16000 - 1.5) < 0.1
+    assert [lang for _, lang in calls] == [None, "Spanish"]
+    assert backend.run_name("auto") == "Qwen3-ASR-0.6B-auto-cpu-float32"
+
+
+def test_qwen_adapter_labels_empty_language(monkeypatch: pytest.MonkeyPatch) -> None:
+    class Model:
+        def transcribe(self, audio, language):
+            return [SimpleNamespace(language="", text="")]
+
+    monkeypatch.setattr(whisper_baseline.audio, "decode",
+                        lambda *a, **k: np.zeros((16000, 1), dtype=np.float32))
+    backend = whisper_baseline.QwenBackend("q", "cpu", "float32", 8, loaded=Model())
+    assert backend.transcribe(Path("silent.mp3"), "auto") == ("", "<none>", None)

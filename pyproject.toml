@@ -34,6 +34,22 @@ baseline = [
   "ctranslate2==4.8.2",
   "faster-whisper==1.2.1",
 ]
+qwen = [
+  # Official runtime uv.lock pins. transformers 4.57.6 requires huggingface-hub<1, which
+  # conflicts with the hf extra, so install into a separate environment:
+  #   UV_PROJECT_ENVIRONMENT=.venv-qwen uv sync --extra qwen --extra audit
+  "qwen-asr==0.0.6",
+  "transformers==4.57.6",
+  "torch==2.11.0",
+  "huggingface-hub==0.36.2",
+  "tokenizers==0.22.2",
+  "accelerate==1.12.0",
+]
+
+[tool.uv]
+conflicts = [
+  [{ extra = "hf" }, { extra = "qwen" }],
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/lit_sp_en", "scripts", "vendor"]
