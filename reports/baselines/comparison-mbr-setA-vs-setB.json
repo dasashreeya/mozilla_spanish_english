@@ -1,0 +1,26 @@
+{
+  "runs": [
+    "mbr-setB-turbo-q17-q06",
+    "mbr-setA-turbo-q17-q06-lv3"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "mbr-setA-turbo-q17-q06-lv3 minus mbr-setB-turbo-q17-q06": {
+      "difference_b_minus_a": -0.0034,
+      "low": -0.0263,
+      "high": 0.018,
+      "share_of_resamples_b_worse": 0.3635,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.1464,
+    "clips_won": {
+      "mbr-setB-turbo-q17-q06": 29,
+      "mbr-setA-turbo-q17-q06-lv3": 36,
+      "tie": 90
+    }
+  }
+}

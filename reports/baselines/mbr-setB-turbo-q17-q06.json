@@ -1,0 +1,143 @@
+{
+  "run": "mbr-setB-turbo-q17-q06",
+  "backend": "mbr-selection",
+  "generated_at": "2026-09-13T22:59:22+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "design": "docs/SELECTOR.md",
+  "candidates_in_tie_break_order": [
+    "large-v3-turbo-auto-int8-b5",
+    "Qwen3-ASR-1.7B-auto-cpu-float32",
+    "Qwen3-ASR-0.6B-auto-cpu-float32"
+  ],
+  "selection": {
+    "method": "minimum summed word edit distance to the other candidates, after the official normalizer; ties to the earliest candidate",
+    "chosen_counts": {
+      "large-v3-turbo-auto-int8-b5": 63,
+      "Qwen3-ASR-1.7B-auto-cpu-float32": 63,
+      "Qwen3-ASR-0.6B-auto-cpu-float32": 29
+    }
+  },
+  "dataset": {
+    "split": "dev",
+    "rows": 155
+  },
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.1746,
+      "substitutions": 554,
+      "deletions": 251,
+      "insertions": 67,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.1506,
+        "high": 0.2002
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 151,
+          "reference_words": 4935,
+          "wer": 0.1739,
+          "substitutions": 548,
+          "deletions": 244,
+          "insertions": 66
+        },
+        "spa": {
+          "clips": 4,
+          "reference_words": 59,
+          "wer": 0.2373,
+          "substitutions": 6,
+          "deletions": 7,
+          "insertions": 1
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 78,
+          "reference_words": 3014,
+          "wer": 0.1914,
+          "substitutions": 364,
+          "deletions": 165,
+          "insertions": 48
+        },
+        "speaker_2": {
+          "clips": 77,
+          "reference_words": 1980,
+          "wer": 0.149,
+          "substitutions": 190,
+          "deletions": 86,
+          "insertions": 19
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 89,
+          "reference_words": 2718,
+          "wer": 0.1744,
+          "substitutions": 309,
+          "deletions": 127,
+          "insertions": 38
+        },
+        "20-30": {
+          "clips": 16,
+          "reference_words": 996,
+          "wer": 0.1978,
+          "substitutions": 121,
+          "deletions": 59,
+          "insertions": 17
+        },
+        "5-10": {
+          "clips": 37,
+          "reference_words": 679,
+          "wer": 0.1546,
+          "substitutions": 60,
+          "deletions": 37,
+          "insertions": 8
+        },
+        "<5": {
+          "clips": 8,
+          "reference_words": 71,
+          "wer": 0.1972,
+          "substitutions": 12,
+          "deletions": 1,
+          "insertions": 1
+        },
+        ">=30": {
+          "clips": 5,
+          "reference_words": 530,
+          "wer": 0.1547,
+          "substitutions": 52,
+          "deletions": 27,
+          "insertions": 3
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.1634,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9632,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.17461,
+    "matches_in_process_wer": true
+  },
+  "versus_incumbent": {
+    "incumbent": "large-v3-turbo-auto-int8-b5",
+    "paired_selector_minus_incumbent": {
+      "difference_b_minus_a": -0.0487,
+      "low": -0.076,
+      "high": -0.0224,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    }
+  }
+}

@@ -27,10 +27,12 @@ A private mirror of the downloaded archives lives in the Hugging Face dataset re
 | `scripts/prepare_bangor.py` | CHAT → competition transcripts, 5–30 s segments, 16 kHz FLAC → `reports/bangor_segments_summary.json` |
 | `scripts/whisper_baseline.py` | Zero-shot faster-whisper or Qwen3-ASR on dev, official-scorer parity check → `reports/baselines/` |
 | `scripts/compare_runs.py` | Paired-bootstrap comparison of runs on the same clips |
+| `scripts/combine_runs.py` | Reference-free MBR selection over runs, scored like a run |
 | `src/lit_sp_en/` | Audio probing, CHAT parsing and conversion, segmentation, transcript conventions, evaluation, statistics |
 | `docs/DATA_AUDIT.md` | Audit findings |
 | `docs/BANGOR_PREP.md` | Conversion rules, segmentation choice, validation against dev |
-| `docs/ZERO_SHOT_BASELINES.md` | Zero-shot Whisper and Qwen3-ASR results on dev (current number to beat) |
+| `docs/ZERO_SHOT_BASELINES.md` | Zero-shot Whisper and Qwen3-ASR results on dev |
+| `docs/SELECTOR.md` | Pre-declared MBR selector design and results (current best on dev) |
 | `vendor/runtime_score.py` | Official scorer (git blob `6492e2ec`, runtime commit `c23d3d9942fe`) |
 
 ## Setup
