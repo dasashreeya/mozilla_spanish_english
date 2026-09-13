@@ -1,0 +1,43 @@
+# Lost in Transcription — Spanish-English track
+
+Code for the Mozilla Data Collective
+[Spanish-English ASR competition](https://competitions.mozilladatacollective.com/competitions/2/lost-in-transcription-sp-en/page/4/):
+code-switched North American Spanish-English speech, scored by corpus WER after
+the official normalization (`vendor/runtime_score.py`, copied unchanged from the
+runtime repository).
+
+## Data handling
+
+Competition rules forbid sending the Data, or nonpublic material derived from it,
+to hosted tools, and forbid redistributing it. Nothing under `data/` is committed.
+Reports in this repo contain aggregates only: no transcript text, file names,
+speaker codes or audio. `scripts/audit_data.py` enforces this with a leak guard.
+
+A private mirror of the downloaded archives lives in the Hugging Face dataset repo
+`GOVINDFROM/lit-sp-en-data` (private; never make it public).
+
+## Layout
+
+| Path | Purpose |
+|---|---|
+| `configs/datasets.json` | Pinned MDC dataset IDs, sizes, catalog SHA-256, scorer commit |
+| `scripts/mdc_fetch.py` | `download` (API key) or `ingest` (browser download): verify, extract, record provenance |
+| `scripts/hf_upload.py` | Mirror ingested datasets to the private HF repo |
+| `scripts/audit_data.py` | CPU data audit → `reports/data_audit.json` |
+| `src/lit_sp_en/` | Audio probing, CHAT parsing, transcript conventions, statistics |
+| `docs/DATA_AUDIT.md` | Audit findings |
+| `vendor/runtime_score.py` | Official scorer (git blob `6492e2ec`, runtime commit `c23d3d9942fe`) |
+
+## Setup
+
+```bash
+uv sync --extra audit --extra dev --extra hf
+uv run python -m scripts.mdc_fetch ingest dev ~/Downloads/<dev archive>.tar.gz
+uv run python -m scripts.mdc_fetch ingest bangor_miami ~/Downloads/<bangor archive>.tar.gz \
+  --accept-sha256 b2d3a0e4b6eadd9347bf79c97bdcca19fdb13e69c5a390009e849330545278a1
+uv run python scripts/audit_data.py
+uv run pytest -q
+```
+
+The Bangor Miami archive served by MDC does not match the catalog checksum; see
+`docs/DATA_AUDIT.md`. Requires `ffmpeg`/`ffprobe` on `PATH`.

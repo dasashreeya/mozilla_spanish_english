@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lost-in-transcription-sp-en"
+version = "0.1.0"
+description = "Mozilla Lost in Transcription, Spanish-English track"
+requires-python = ">=3.12,<3.13"
+license = "MPL-2.0"
+dependencies = []
+
+[project.optional-dependencies]
+audit = [
+  "numpy>=2.1",
+  "mutagen>=1.47",
+  # Imported by vendor/runtime_score.py, the official scorer.
+  "jiwer",
+  "pandas",
+  "typer",
+]
+hf = [
+  "huggingface-hub>=1.31",
+]
+dev = [
+  "pytest>=8.3",
+  "ruff>=0.12",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lit_sp_en", "scripts", "vendor"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["vendor"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

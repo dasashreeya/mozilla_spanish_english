@@ -1,0 +1,892 @@
+{
+  "generated_at": "2026-09-13T05:24:00+00:00",
+  "runtime_seconds": 105.3,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "published_facts": {
+    "problem_page": "https://competitions.mozilladatacollective.com/competitions/2/lost-in-transcription-sp-en/page/5/",
+    "submission_page": "https://competitions.mozilladatacollective.com/competitions/2/lost-in-transcription-sp-en/page/14/",
+    "dev": {
+      "clips": 155,
+      "approx_minutes": 36,
+      "conversations": 1,
+      "speakers": 2,
+      "clip_seconds_range": [
+        2,
+        60
+      ],
+      "language_labels": [
+        "enspa",
+        "spa"
+      ]
+    },
+    "test": {
+      "channels": "mono (downmixed)",
+      "sample_rates": "mostly 48 kHz, some 44.1 kHz",
+      "clip_seconds_range": [
+        1,
+        240
+      ],
+      "domain": "voice-note dialogues between pairs of bilingual speakers",
+      "inference_manifest_columns": [
+        "audio_filename",
+        "file_duration_seconds",
+        "language"
+      ]
+    },
+    "bangor": {
+      "recordings": 56,
+      "approx_hours": 35,
+      "approx_words": 240000,
+      "sample_rate": 44100
+    }
+  },
+  "provenance": {
+    "scorer": {
+      "repo": "drivendataorg/lost-in-transcription-runtime",
+      "path": "score.py",
+      "commit": "c23d3d9942fe",
+      "git_blob_sha": "6492e2ec358eeec6bdd392fe1d5c4609ec7c2772",
+      "vendored_as": "vendor/runtime_score.py"
+    },
+    "dev": {
+      "dataset_id": "cmtj5u8dn006gnz08gjnknbji",
+      "license": "CC-BY-SA-4.0",
+      "catalog_sha256": "504fbee8e98bb4310138cc6da13382d6661f75a9a2e23a082cdf1bb88e643884",
+      "archive_sha256": "504fbee8e98bb4310138cc6da13382d6661f75a9a2e23a082cdf1bb88e643884",
+      "checksum_status": "match",
+      "archive_bytes": 17031752,
+      "members": {
+        "files": 156,
+        "dirs": 2,
+        "skipped_non_regular": 0
+      },
+      "source": "mdc-web-ui"
+    },
+    "bangor_miami": {
+      "dataset_id": "cmmfulo4r018bnz07py4q9t09",
+      "license": "GPL-3.0",
+      "catalog_sha256": "c72d3be0f53b7313ce8019af8c3fe2fbc879b758e7855ff0a2d00fb0b81dbec2",
+      "archive_sha256": "b2d3a0e4b6eadd9347bf79c97bdcca19fdb13e69c5a390009e849330545278a1",
+      "checksum_status": "mismatch-accepted-explicitly",
+      "archive_bytes": 1199355238,
+      "members": {
+        "files": 172,
+        "dirs": 5,
+        "skipped_non_regular": 0
+      },
+      "source": "mdc-web-ui"
+    }
+  },
+  "dev": {
+    "schema": {
+      "columns": [
+        "audio_filename",
+        "speaker",
+        "transcript",
+        "language",
+        "convo_id"
+      ],
+      "columns_match_documentation": true,
+      "rows": 155,
+      "utf8_bom": false,
+      "tab_field_count_per_line": {
+        "5": 156
+      }
+    },
+    "integrity": {
+      "clip_files_on_disk": 155,
+      "metadata_rows_missing_audio": 0,
+      "audio_files_without_metadata": 0,
+      "duplicate_filenames_in_metadata": 0,
+      "duplicate_audio_by_sha256": 0,
+      "empty_transcripts": 0,
+      "duplicate_transcripts": 0,
+      "decode_failures": 0,
+      "empty_after_official_normalization": 0
+    },
+    "labels": {
+      "speakers": 2,
+      "conversations": 1,
+      "language_values": {
+        "enspa": 151,
+        "spa": 4
+      },
+      "per_language": {
+        "enspa": {
+          "rows": 151,
+          "seconds": 2129.51,
+          "tokens": 4935
+        },
+        "spa": {
+          "rows": 4,
+          "seconds": 24.34,
+          "tokens": 59
+        }
+      },
+      "per_speaker_pseudonymous": {
+        "speaker_2": {
+          "rows": 77,
+          "seconds": 994.52,
+          "tokens": 1980,
+          "language": {
+            "enspa": 77
+          }
+        },
+        "speaker_1": {
+          "rows": 78,
+          "seconds": 1159.32,
+          "tokens": 3014,
+          "language": {
+            "enspa": 74,
+            "spa": 4
+          }
+        }
+      }
+    },
+    "audio": {
+      "codec": {
+        "mp3": 155
+      },
+      "sample_rate": {
+        "48000": 155
+      },
+      "channels": {
+        "1": 155
+      },
+      "bit_rate": {
+        "count": 155,
+        "sum": 9920000.0,
+        "mean": 64000.0,
+        "min": 64000.0,
+        "max": 64000.0,
+        "p01": 64000.0,
+        "p05": 64000.0,
+        "p25": 64000.0,
+        "p50": 64000.0,
+        "p75": 64000.0,
+        "p95": 64000.0,
+        "p99": 64000.0
+      },
+      "duration_seconds": {
+        "count": 155,
+        "sum": 2153.841,
+        "mean": 13.896,
+        "min": 2.409,
+        "max": 59.753,
+        "p01": 3.095,
+        "p05": 5.104,
+        "p25": 9.567,
+        "p50": 12.82,
+        "p75": 16.212,
+        "p95": 26.454,
+        "p99": 34.229
+      },
+      "total_minutes": 35.9,
+      "duration_buckets_seconds": {
+        "<1": 0,
+        "1-2": 0,
+        "2-5": 8,
+        "5-10": 37,
+        "10-20": 89,
+        "20-30": 16,
+        "30-60": 5,
+        "60-240": 0,
+        ">=240": 0
+      },
+      "outside_documented_range": 0,
+      "outside_test_range": 0,
+      "probe_vs_decoded_seconds_abs_gap": {
+        "count": 155,
+        "sum": 0.036,
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p01": 0.0,
+        "p05": 0.0,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "peak_dbfs": {
+        "count": 155,
+        "sum": -146.6,
+        "mean": -0.946,
+        "min": -9.68,
+        "max": 0.72,
+        "p01": -6.033,
+        "p05": -3.572,
+        "p25": -1.0,
+        "p50": -0.49,
+        "p75": -0.3,
+        "p95": 0.023,
+        "p99": 0.192
+      },
+      "rms_dbfs": {
+        "count": 155,
+        "sum": -3125.89,
+        "mean": -20.167,
+        "min": -25.48,
+        "max": -17.1,
+        "p01": -23.973,
+        "p05": -22.261,
+        "p25": -20.805,
+        "p50": -20.08,
+        "p75": -19.495,
+        "p95": -18.207,
+        "p99": -17.846
+      },
+      "clips_with_any_clipping": 13,
+      "silence_ratio": {
+        "count": 155,
+        "sum": 11.91,
+        "mean": 0.077,
+        "min": 0.001,
+        "max": 0.467,
+        "p01": 0.002,
+        "p05": 0.002,
+        "p25": 0.009,
+        "p50": 0.04,
+        "p75": 0.114,
+        "p95": 0.284,
+        "p99": 0.427
+      },
+      "frame_dynamic_range_db": {
+        "count": 155,
+        "sum": 5600.6,
+        "mean": 36.133,
+        "min": 19.45,
+        "max": 58.7,
+        "p01": 21.179,
+        "p05": 26.343,
+        "p25": 30.665,
+        "p50": 34.73,
+        "p75": 41.3,
+        "p95": 53.344,
+        "p99": 56.04
+      },
+      "rolloff99_hz": {
+        "count": 155,
+        "sum": 876140.6,
+        "mean": 5652.52,
+        "min": 1218.8,
+        "max": 11132.8,
+        "p01": 1451.712,
+        "p05": 1720.33,
+        "p25": 4007.8,
+        "p50": 5414.1,
+        "p75": 7300.8,
+        "p95": 9569.52,
+        "p99": 10130.186
+      }
+    },
+    "text": {
+      "tokens_per_row_after_normalization": {
+        "count": 155,
+        "sum": 4994.0,
+        "mean": 32.219,
+        "min": 6.0,
+        "max": 161.0,
+        "p01": 6.0,
+        "p05": 11.0,
+        "p25": 20.0,
+        "p50": 25.0,
+        "p75": 39.0,
+        "p95": 72.9,
+        "p99": 98.76
+      },
+      "tokens_per_second": {
+        "count": 155,
+        "sum": 349.566,
+        "mean": 2.255,
+        "min": 0.788,
+        "max": 3.891,
+        "p01": 1.126,
+        "p05": 1.467,
+        "p25": 1.87,
+        "p50": 2.214,
+        "p75": 2.645,
+        "p95": 3.138,
+        "p99": 3.582
+      },
+      "rows_changed_by_normalization": 155,
+      "whitespace_tokens_before_normalization": 4999,
+      "conventions": {
+        "square_bracket_tag": {
+          "occurrences": 5,
+          "rows": 5
+        },
+        "unintelligible_[???]": {
+          "occurrences": 1,
+          "rows": 1
+        },
+        "ellipsis_...": {
+          "occurrences": 26,
+          "rows": 24
+        },
+        "hyphenated_word": {
+          "occurrences": 5,
+          "rows": 3
+        },
+        "straight_apostrophe": {
+          "occurrences": 124,
+          "rows": 74
+        },
+        "acute_accent_´": {
+          "occurrences": 1,
+          "rows": 1
+        },
+        "double_quote": {
+          "occurrences": 14,
+          "rows": 4
+        },
+        "inverted_question_¿": {
+          "occurrences": 17,
+          "rows": 14
+        },
+        "digit": {
+          "occurrences": 11,
+          "rows": 3
+        }
+      },
+      "unbalanced_row_indices": {
+        "square": [
+          89
+        ],
+        "paren": []
+      },
+      "symbols_before_normalization": {
+        ".": 255,
+        "'": 124,
+        ",": 62,
+        "?": 51,
+        "¿": 17,
+        "\"": 14,
+        "[": 6,
+        "]": 5,
+        "-": 5,
+        "´": 1,
+        "!": 1
+      },
+      "symbols_after_normalization": {
+        "'": 124,
+        ".": 75,
+        "-": 5,
+        "[": 1,
+        "´": 1
+      },
+      "scored_token_profile": {
+        "tokens": 4994,
+        "types": 1184,
+        "types_lowercased": 1169,
+        "with_uppercase": 186,
+        "all_caps_2plus_letters": 0,
+        "ending_in_ellipsis": 25,
+        "with_apostrophe": 124,
+        "with_hyphen": 4,
+        "with_digit": 5,
+        "with_non_ascii_letter": 290,
+        "with_other_symbol": 2
+      }
+    },
+    "scoring_sensitivity_wer": {
+      "oracle": 0.0,
+      "empty": 1.0,
+      "tags_removed": 0.0,
+      "curly_apostrophes": 0.0248,
+      "no_ellipsis": 0.0052,
+      "no_sentence_punctuation": 0.0188,
+      "lowercased": 0.0372,
+      "asr_style_lower_no_punct": 0.0429
+    },
+    "official_cli_oracle": {
+      "exit_code": 0,
+      "stdout_last_line": "WER: 0.000000"
+    }
+  },
+  "bangor_miami": {
+    "files": {
+      "audio": 56,
+      "chat": 56,
+      "word_tsv": 56,
+      "audio_chat_pairs_by_stem": 56,
+      "audio_without_chat": 0,
+      "chat_without_audio": 0,
+      "tsv_linked_to_chat_via_filename_column": 56,
+      "metadata_files": [
+        ".docx",
+        ".docx",
+        ".xls"
+      ],
+      "documentation_pdf": 1
+    },
+    "audio": {
+      "codec": {
+        "mp3": 56
+      },
+      "sample_rate": {
+        "44100": 56
+      },
+      "channels": {
+        "2": 56
+      },
+      "bit_rate": {
+        "count": 56,
+        "sum": 5856000.0,
+        "mean": 104571.429,
+        "min": 96000.0,
+        "max": 128000.0,
+        "p01": 96000.0,
+        "p05": 96000.0,
+        "p25": 96000.0,
+        "p50": 96000.0,
+        "p75": 128000.0,
+        "p95": 128000.0,
+        "p99": 128000.0
+      },
+      "decode_failures": 0,
+      "duplicate_audio_by_sha256": 0,
+      "total_hours": 35.66,
+      "recording_minutes": {
+        "count": 56,
+        "sum": 2139.375,
+        "mean": 38.203,
+        "min": 1.707,
+        "max": 161.617,
+        "p01": 3.289,
+        "p05": 12.667,
+        "p25": 29.695,
+        "p50": 30.786,
+        "p75": 35.509,
+        "p95": 100.422,
+        "p99": 152.907
+      },
+      "channel_correlation": {
+        "count": 56,
+        "sum": 10.892,
+        "mean": 0.194,
+        "min": -0.211,
+        "max": 1.0,
+        "p01": -0.148,
+        "p05": -0.062,
+        "p25": -0.013,
+        "p50": 0.015,
+        "p75": 0.143,
+        "p95": 1.0,
+        "p99": 1.0
+      },
+      "channel_level_gap_db": {
+        "count": 56,
+        "sum": 88.37,
+        "mean": 1.578,
+        "min": -15.38,
+        "max": 40.07,
+        "p01": -15.028,
+        "p05": -12.297,
+        "p25": -2.24,
+        "p50": 0.0,
+        "p75": 1.78,
+        "p95": 33.472,
+        "p99": 38.635
+      },
+      "rms_dbfs_mono_mix": {
+        "count": 56,
+        "sum": -1665.61,
+        "mean": -29.743,
+        "min": -46.7,
+        "max": -18.82,
+        "p01": -42.812,
+        "p05": -38.02,
+        "p25": -33.765,
+        "p50": -29.295,
+        "p75": -24.7,
+        "p95": -20.947,
+        "p99": -19.705
+      },
+      "peak_dbfs_mono_mix": {
+        "count": 56,
+        "sum": -190.12,
+        "mean": -3.395,
+        "min": -17.79,
+        "max": 1.23,
+        "p01": -13.813,
+        "p05": -6.605,
+        "p25": -5.265,
+        "p50": -3.54,
+        "p75": -0.993,
+        "p95": 0.677,
+        "p99": 0.999
+      },
+      "silence_ratio_mono_mix": {
+        "count": 56,
+        "sum": 8.475,
+        "mean": 0.151,
+        "min": 0.0,
+        "max": 0.874,
+        "p01": 0.0,
+        "p05": 0.0,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 0.094,
+        "p95": 0.753,
+        "p99": 0.866
+      },
+      "files_with_any_clipping": 1,
+      "rolloff99_hz_windows": {
+        "count": 164,
+        "sum": 378941.7,
+        "mean": 2310.62,
+        "min": 107.7,
+        "max": 7902.7,
+        "p01": 183.443,
+        "p05": 748.255,
+        "p25": 1636.5,
+        "p50": 2142.55,
+        "p75": 2869.275,
+        "p95": 4256.03,
+        "p99": 5272.167
+      }
+    },
+    "chat": {
+      "header_tags": {
+        "@Font": 45,
+        "@UTF8": 56,
+        "@Begin": 56,
+        "@Languages": 56,
+        "@Participants": 56,
+        "@ID": 131,
+        "@Situation": 56,
+        "@Date": 56,
+        "@Transcriber": 56,
+        "@Comment": 222,
+        "@Time Duration": 55,
+        "@Media": 56,
+        "@End": 56,
+        "@Warning": 14
+      },
+      "default_language_first_in_@Languages": {
+        "eng": 41,
+        "spa": 15
+      },
+      "speakers_per_file": {
+        "2": 41,
+        "3": 14,
+        "5": 1
+      },
+      "warnings_by_keyword": {
+        "overlap_or_quality": 2,
+        "unclassified": 10,
+        "untranscribed": 1,
+        "media_or_linkage": 1
+      },
+      "dependent_tiers": {
+        "%aut": 45605,
+        "%eng": 16591,
+        "%com": 872
+      },
+      "utterances": 52021,
+      "timing_checks": {
+        "utterances_without_timing": 3754,
+        "non_positive_duration": 0,
+        "ends_after_audio_end": 0,
+        "start_before_previous_start": 0,
+        "overlaps_previous_utterance": 28698
+      },
+      "overlap_seconds_with_previous": {
+        "count": 28698,
+        "sum": 8876.216,
+        "mean": 0.309,
+        "min": 0.001,
+        "max": 12.411,
+        "p01": 0.002,
+        "p05": 0.006,
+        "p25": 0.017,
+        "p50": 0.046,
+        "p75": 0.371,
+        "p95": 1.393,
+        "p99": 2.548
+      },
+      "overlap_buckets_seconds": {
+        "<0.05": 14850,
+        "0.05-0.1": 2584,
+        "0.1-0.5": 5270,
+        "0.5-1": 3210,
+        "1-2": 2186,
+        ">=2": 598
+      },
+      "timed_utterances": 48267,
+      "timed_hours": 26.02,
+      "utterance_seconds": {
+        "count": 48267,
+        "sum": 93684.603,
+        "mean": 1.941,
+        "min": 0.001,
+        "max": 27.627,
+        "p01": 0.302,
+        "p05": 0.476,
+        "p25": 0.963,
+        "p50": 1.527,
+        "p75": 2.415,
+        "p95": 4.835,
+        "p99": 7.737
+      },
+      "utterance_duration_buckets_seconds": {
+        "<0.5": 2775,
+        "0.5-1": 10201,
+        "1-2": 18671,
+        "2-5": 14445,
+        "5-10": 1995,
+        "10-15": 156,
+        "15-20": 17,
+        "20-30": 7,
+        "30-60": 0,
+        ">=60": 0
+      },
+      "per_file_timed_coverage_of_audio": {
+        "count": 56,
+        "sum": 44.214,
+        "mean": 0.79,
+        "min": 0.097,
+        "max": 0.998,
+        "p01": 0.119,
+        "p05": 0.216,
+        "p25": 0.8,
+        "p50": 0.908,
+        "p75": 0.976,
+        "p95": 0.995,
+        "p99": 0.998
+      },
+      "words_per_utterance": {
+        "count": 52021,
+        "sum": 266498.0,
+        "mean": 5.123,
+        "min": 0.0,
+        "max": 61.0,
+        "p01": 0.0,
+        "p05": 0.0,
+        "p25": 2.0,
+        "p50": 4.0,
+        "p75": 7.0,
+        "p95": 14.0,
+        "p99": 22.0
+      },
+      "words_total": 266498,
+      "vocabulary_types_lowercased": 14658,
+      "words_per_second": {
+        "count": 45312,
+        "sum": 142491.473,
+        "mean": 3.145,
+        "min": 0.091,
+        "max": 15.974,
+        "p01": 0.489,
+        "p05": 0.958,
+        "p25": 2.039,
+        "p50": 3.001,
+        "p75": 4.045,
+        "p95": 5.821,
+        "p99": 7.664
+      },
+      "word_language_from_chat_markers": {
+        "eng": 169192,
+        "spa": 90236,
+        "eng&spa": 6942,
+        "eng&spa+eng": 97,
+        "eng+spa": 16,
+        "spa+eng": 5,
+        "ita": 4,
+        "spa&eng": 3,
+        "fra": 2,
+        "eng&spag": 1
+      },
+      "utterance_language_mix": {
+        "eng_only": 28541,
+        "other_or_ambiguous_only": 1056,
+        "spa_only": 13346,
+        "no_words": 6223,
+        "mixed": 2855
+      },
+      "utterance_language_mix_hours": {
+        "eng_only": 14.58,
+        "other_or_ambiguous_only": 0.31,
+        "spa_only": 7.39,
+        "no_words": 1.18,
+        "mixed": 2.55
+      },
+      "eng_spa_switch_points": 4083,
+      "annotation_counts": {
+        "word_switch_@s": 21820,
+        "utterance_precode_[- lang]": 7091,
+        "event_&=": 2240,
+        "unintelligible_xxx": 3194,
+        "untranscribed_www": 4293,
+        "retrace_[/]": 4795,
+        "retrace_[//]": 1789,
+        "retrace_[///]": 741,
+        "uncertain_[?]": 548,
+        "other_square_code": 863,
+        "scope_<...>": 2682,
+        "omitted_sound_(x)": 1824,
+        "pause_(.)": 3396,
+        "trail_off_+...": 1725,
+        "interruption_+/.": 1323,
+        "self_interruption_+//.": 1067,
+        "quotation_+\"": 3736,
+        "lazy_overlap_+<": 7014,
+        "compound_underscore": 1801,
+        "lengthening_colon": 185
+      },
+      "trainable_estimate": {
+        "definition": "timed utterance, 0.5-30 s, at least one word, no xxx/www/yyy",
+        "utterances": 40764,
+        "hours": 22.84
+      }
+    },
+    "word_tsv": {
+      "header_layouts": [
+        {
+          "files": 44,
+          "columns": [
+            "word_id",
+            "utterance_id",
+            "location",
+            "surface",
+            "auto",
+            "fix",
+            "eng",
+            "com",
+            "speaker",
+            "langid",
+            "filename",
+            "clause",
+            "clauseno"
+          ]
+        },
+        {
+          "files": 8,
+          "columns": [
+            "word_id",
+            "utterance_id",
+            "location",
+            "surface",
+            "auto",
+            "fix",
+            "com",
+            "eng",
+            "speaker",
+            "langid",
+            "filename",
+            "clause",
+            "clauseno"
+          ]
+        },
+        {
+          "files": 3,
+          "columns": [
+            "word_id",
+            "utterance_id",
+            "location",
+            "surface",
+            "auto",
+            "fix",
+            "eng",
+            "speaker",
+            "langid",
+            "filename",
+            "clause",
+            "clauseno"
+          ]
+        },
+        {
+          "files": 1,
+          "columns": [
+            "word_id",
+            "utterance_id",
+            "location",
+            "surface",
+            "auto",
+            "fix",
+            "speaker",
+            "langid",
+            "filename",
+            "clause",
+            "clauseno"
+          ]
+        }
+      ],
+      "rows": 316600,
+      "blank_lines": 0,
+      "non_blank_rows_with_wrong_field_count": 56,
+      "langid": {
+        "eng": 166665,
+        "spa": 90844,
+        "999": 52021,
+        "eng&spa": 6942,
+        "eng&spa+eng": 97,
+        "eng+spa": 16,
+        "spa+eng": 5,
+        "ita": 4,
+        "spa&eng": 3,
+        "fra": 2,
+        "eng&spag": 1
+      },
+      "files_whose_utterance_count_matches_chat": 56,
+      "utterances_compared_for_word_count": 52021,
+      "utterances_with_equal_word_count_tsv_vs_chat_parser": 50430,
+      "word_count_gap_tsv_minus_chat_parser": {
+        "count": 52021,
+        "sum": -1919.0,
+        "mean": -0.037,
+        "min": -13.0,
+        "max": 0.0,
+        "p01": -1.0,
+        "p05": 0.0,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      }
+    }
+  },
+  "cross_dataset": {
+    "code_switching_estimate": {
+      "method": "word->language lexicon from Bangor CHAT tags (count>=2, share>=0.9); switches counted between consecutive lexicon-covered tokens",
+      "lexicon_words": 6355,
+      "dev_rows": {
+        "sequences": 155,
+        "tokens": 4995,
+        "lexicon_coverage": 0.8394,
+        "eng_share_of_covered": 0.5249,
+        "spa_share_of_covered": 0.4751,
+        "sequences_with_both_languages": 150,
+        "switch_points_per_100_covered_tokens": 13.236
+      },
+      "bangor_utterances_same_method": {
+        "sequences": 52021,
+        "tokens": 268450,
+        "lexicon_coverage": 0.8613,
+        "eng_share_of_covered": 0.6719,
+        "spa_share_of_covered": 0.3281,
+        "sequences_with_both_languages": 2992,
+        "switch_points_per_100_covered_tokens": 1.844
+      },
+      "bangor_gold_from_chat_markers": {
+        "utterances_with_both_languages": 2855,
+        "switch_points_per_100_eng_spa_words": 1.574
+      }
+    },
+    "dev_vs_bangor_vocabulary": {
+      "comparison": "lowercased letter tokens of officially normalized dev references vs lowercased words from the Bangor CHAT parser",
+      "dev_tokens": 4995,
+      "dev_token_oov_rate": 0.0501,
+      "dev_types": 1154,
+      "dev_type_oov_rate": 0.1646
+    },
+    "dev_6gram_overlap_with_bangor": {
+      "dev_rows_with_any_match": 1,
+      "dev_ngrams": 4220,
+      "dev_ngrams_found_in_bangor": 1
+    }
+  }
+}

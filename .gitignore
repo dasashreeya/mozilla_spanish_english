@@ -1,0 +1,15 @@
+# Competition Data must never be committed or sent to hosted tools.
+data/
+*.tar.gz
+*.mp3
+*.wav
+*.flac
+*.cha
+reports/private/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.DS_Store

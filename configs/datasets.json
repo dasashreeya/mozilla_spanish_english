@@ -1,0 +1,27 @@
+{
+  "api_base": "https://mozilladatacollective.com/api",
+  "verified_at": "2026-09-12",
+  "datasets": {
+    "dev": {
+      "id": "cmtj5u8dn006gnz08gjnknbji",
+      "name": "Lost In Transcription Competition - Development Data (Spanish-English)",
+      "license": "CC-BY-SA-4.0",
+      "size_bytes": 17031752,
+      "sha256": "504fbee8e98bb4310138cc6da13382d6661f75a9a2e23a082cdf1bb88e643884"
+    },
+    "bangor_miami": {
+      "id": "cmmfulo4r018bnz07py4q9t09",
+      "name": "Bangor Miami Spanish-English Corpus",
+      "license": "GPL-3.0",
+      "size_bytes": 1199355238,
+      "sha256": "c72d3be0f53b7313ce8019af8c3fe2fbc879b758e7855ff0a2d00fb0b81dbec2"
+    }
+  },
+  "scorer": {
+    "repo": "drivendataorg/lost-in-transcription-runtime",
+    "path": "score.py",
+    "commit": "c23d3d9942fe",
+    "git_blob_sha": "6492e2ec358eeec6bdd392fe1d5c4609ec7c2772",
+    "vendored_as": "vendor/runtime_score.py"
+  }
+}
