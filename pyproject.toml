@@ -29,6 +29,11 @@ dev = [
 prep = [
   "soundfile>=0.14.0",
 ]
+baseline = [
+  # Pinned to the official runtime (drivendataorg/lost-in-transcription-runtime).
+  "ctranslate2==4.8.2",
+  "faster-whisper==1.2.1",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/lit_sp_en", "scripts", "vendor"]

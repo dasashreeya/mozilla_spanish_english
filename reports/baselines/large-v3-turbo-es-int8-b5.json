@@ -1,0 +1,151 @@
+{
+  "run": "large-v3-turbo-es-int8-b5",
+  "generated_at": "2026-09-13T16:58:02+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "dataset": {
+    "split": "dev",
+    "rows": 155,
+    "limit": null
+  },
+  "model": {
+    "name": "large-v3-turbo",
+    "repo_id": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+    "revision": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf",
+    "model_bin_sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da"
+  },
+  "decoding": {
+    "language": "es",
+    "task": "transcribe",
+    "beam_size": 5,
+    "compute_type": "int8",
+    "device": "cpu",
+    "cpu_threads": 8,
+    "other_transcribe_arguments": "faster-whisper 1.2.1 defaults"
+  },
+  "software": {
+    "faster_whisper": "1.2.1",
+    "ctranslate2": "4.8.2",
+    "python": "3.12.13",
+    "machine": "arm64"
+  },
+  "timing": {
+    "audio_seconds": 2153.84,
+    "model_load_seconds": 1.3,
+    "decode_seconds": 555.4,
+    "real_time_factor": 0.2579
+  },
+  "detected_language": {
+    "es": {
+      "clips": 155,
+      "mean_probability": 1.0
+    }
+  },
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.2829,
+      "substitutions": 974,
+      "deletions": 386,
+      "insertions": 53,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.2434,
+        "high": 0.3245
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 151,
+          "reference_words": 4935,
+          "wer": 0.2837,
+          "substitutions": 967,
+          "deletions": 380,
+          "insertions": 53
+        },
+        "spa": {
+          "clips": 4,
+          "reference_words": 59,
+          "wer": 0.2203,
+          "substitutions": 7,
+          "deletions": 6,
+          "insertions": 0
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 78,
+          "reference_words": 3014,
+          "wer": 0.2399,
+          "substitutions": 469,
+          "deletions": 218,
+          "insertions": 36
+        },
+        "speaker_2": {
+          "clips": 77,
+          "reference_words": 1980,
+          "wer": 0.3485,
+          "substitutions": 505,
+          "deletions": 168,
+          "insertions": 17
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 89,
+          "reference_words": 2718,
+          "wer": 0.3326,
+          "substitutions": 648,
+          "deletions": 224,
+          "insertions": 32
+        },
+        "20-30": {
+          "clips": 16,
+          "reference_words": 996,
+          "wer": 0.24,
+          "substitutions": 161,
+          "deletions": 68,
+          "insertions": 10
+        },
+        "5-10": {
+          "clips": 37,
+          "reference_words": 679,
+          "wer": 0.2283,
+          "substitutions": 96,
+          "deletions": 55,
+          "insertions": 4
+        },
+        "<5": {
+          "clips": 8,
+          "reference_words": 71,
+          "wer": 0.3662,
+          "substitutions": 22,
+          "deletions": 4,
+          "insertions": 0
+        },
+        ">=30": {
+          "clips": 5,
+          "reference_words": 530,
+          "wer": 0.1679,
+          "substitutions": 47,
+          "deletions": 35,
+          "insertions": 7
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.2727,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9333,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.28294,
+    "matches_in_process_wer": true
+  }
+}

@@ -25,15 +25,18 @@ A private mirror of the downloaded archives lives in the Hugging Face dataset re
 | `scripts/hf_upload.py` | Mirror ingested or processed datasets to the private HF repo |
 | `scripts/audit_data.py` | CPU data audit → `reports/data_audit.json` |
 | `scripts/prepare_bangor.py` | CHAT → competition transcripts, 5–30 s segments, 16 kHz FLAC → `reports/bangor_segments_summary.json` |
-| `src/lit_sp_en/` | Audio probing, CHAT parsing and conversion, segmentation, transcript conventions, statistics |
+| `scripts/whisper_baseline.py` | Zero-shot faster-whisper on dev, official-scorer parity check → `reports/baselines/` |
+| `scripts/compare_runs.py` | Paired-bootstrap comparison of runs on the same clips |
+| `src/lit_sp_en/` | Audio probing, CHAT parsing and conversion, segmentation, transcript conventions, evaluation, statistics |
 | `docs/DATA_AUDIT.md` | Audit findings |
 | `docs/BANGOR_PREP.md` | Conversion rules, segmentation choice, validation against dev |
+| `docs/BASELINE_WHISPER.md` | Zero-shot Whisper results on dev (current number to beat) |
 | `vendor/runtime_score.py` | Official scorer (git blob `6492e2ec`, runtime commit `c23d3d9942fe`) |
 
 ## Setup
 
 ```bash
-uv sync --extra audit --extra dev --extra hf --extra prep
+uv sync --extra audit --extra dev --extra hf --extra prep --extra baseline
 uv run python -m scripts.mdc_fetch ingest dev ~/Downloads/<dev archive>.tar.gz
 uv run python -m scripts.mdc_fetch ingest bangor_miami ~/Downloads/<bangor archive>.tar.gz \
   --accept-sha256 b2d3a0e4b6eadd9347bf79c97bdcca19fdb13e69c5a390009e849330545278a1

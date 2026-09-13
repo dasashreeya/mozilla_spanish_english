@@ -64,7 +64,9 @@ end to end with the dev references as their own predictions prints
   156 lines, no BOM. Zero missing audio, orphan audio, duplicate names, duplicate
   audio hashes, empty transcripts, duplicate transcripts, decode failures, or
   references that normalize to empty (MEASURED: `dev.schema`, `dev.integrity`).
-  The last point matters because jiwer rejects empty references.
+  (Correction, 2026-09-13: an earlier version said jiwer rejects empty references.
+  jiwer 4.0.0 accepts an empty reference inside a list without raising — VERIFIED —
+  so this is a data-quality check, not a crash risk.)
 - One conversation, two speakers (MEASURED: `dev.labels`):
 
 | Pseudonym | Rows | Seconds | Scored tokens | Language labels |

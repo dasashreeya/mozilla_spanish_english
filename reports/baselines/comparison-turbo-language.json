@@ -1,0 +1,43 @@
+{
+  "runs": [
+    "large-v3-turbo-auto-int8-b5",
+    "large-v3-turbo-en-int8-b5",
+    "large-v3-turbo-es-int8-b5"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "large-v3-turbo-en-int8-b5 minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": 0.0304,
+      "low": -0.0006,
+      "high": 0.0653,
+      "share_of_resamples_b_worse": 0.9735,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "large-v3-turbo-es-int8-b5 minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": 0.0597,
+      "low": 0.012,
+      "high": 0.1081,
+      "share_of_resamples_b_worse": 0.991,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "large-v3-turbo-es-int8-b5 minus large-v3-turbo-en-int8-b5": {
+      "difference_b_minus_a": 0.0292,
+      "low": -0.0316,
+      "high": 0.087,
+      "share_of_resamples_b_worse": 0.843,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.1466,
+    "clips_won": {
+      "tie": 115,
+      "large-v3-turbo-es-int8-b5": 22,
+      "large-v3-turbo-en-int8-b5": 18
+    }
+  }
+}

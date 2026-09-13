@@ -76,8 +76,10 @@ def _dev_clip(path: Path) -> dict:
     return result
 
 
-def read_dev_metadata() -> tuple[list[str], list[dict[str, str]], Counter, bool]:
-    path = DEV_DIR / "metadata.tsv"
+def read_dev_metadata(
+    directory: Path | None = None,
+) -> tuple[list[str], list[dict[str, str]], Counter, bool]:
+    path = (directory or DEV_DIR) / "metadata.tsv"
     raw = path.read_bytes()
     field_counts = Counter(len(line.split(b"\t")) for line in raw.splitlines() if line)
     with path.open(encoding="utf-8-sig", newline="") as handle:
