@@ -78,6 +78,31 @@ def test_refuses_dirty_tree_unless_allowed(fake: Path, monkeypatch: pytest.Monke
     assert pack_submission.pack("both", allow_dirty=True)["git"]["dirty"] is True
 
 
+def test_git_state_ignores_changes_outside_package_inputs(tmp_path: Path,
+                                                         monkeypatch: pytest.MonkeyPatch) -> None:
+    import subprocess
+
+    repo = tmp_path / "g"
+    (repo / "submission_src").mkdir(parents=True)
+    (repo / "scripts").mkdir()
+    (repo / "reports").mkdir()
+    (repo / "submission_src" / "main.py").write_text("a\n")
+    (repo / "scripts" / "pack_submission.py").write_text("b\n")
+    (repo / "reports" / "turbo.json").write_text("{}\n")
+    for command in (["init", "-q"], ["add", "."],
+                    ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "-m", "x"]):
+        subprocess.run(["git", *command], cwd=repo, check=True)
+    monkeypatch.setattr(pack_submission, "ROOT", repo)
+
+    (repo / "reports" / "turbo.json").write_text('{"rebuilt": true}\n')
+    assert pack_submission.git_state()["dirty"] is False
+    (repo / "submission_src" / "new_helper.py").write_text("c\n")
+    assert pack_submission.git_state()["dirty"] is True
+    (repo / "submission_src" / "new_helper.py").unlink()
+    (repo / "scripts" / "pack_submission.py").write_text("changed\n")
+    assert pack_submission.git_state()["dirty"] is True
+
+
 def test_real_variants_reference_known_models() -> None:
     import importlib
 

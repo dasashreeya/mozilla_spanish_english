@@ -90,13 +90,24 @@ def model_files(model_id: str) -> list[Path]:
     return files
 
 
+# Everything that determines a zip's bytes, apart from the pinned model snapshots.
+PACKAGE_INPUTS = ["submission_src", "scripts/pack_submission.py"]
+
+
 def git_state() -> dict:
+    """HEAD commit, and whether the package inputs differ from it.
+
+    Only PACKAGE_INPUTS count: the packer itself rewrites tracked report files, which
+    must not make the next build look dirty.
+    """
+
     def git(*args: str) -> str:
         return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True,
                               check=False).stdout.strip()
 
-    return {"commit": git("rev-parse", "HEAD"),
-            "dirty": bool(git("status", "--porcelain", "--untracked-files=no"))}
+    changed = git("status", "--porcelain", "--untracked-files=all", "--", *PACKAGE_INPUTS)
+    return {"commit": git("rev-parse", "HEAD"), "dirty": bool(changed),
+            "dirty_scope": PACKAGE_INPUTS}
 
 
 def build_config(variant: str) -> dict:
