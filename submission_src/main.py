@@ -31,7 +31,7 @@ warnings.filterwarnings("ignore")
 SRC = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC))
 
-from selection import mbr_select  # noqa: E402
+from selection import mbr_select, prompt_leaked  # noqa: E402
 
 WORKING_DIR = Path("/code_execution")
 DATA_DIR = Path(os.environ.get("LIT_DATA_DIR", WORKING_DIR / "data"))
@@ -112,17 +112,30 @@ class FasterWhisperBackend:
 
         settings = spec[device]
         self.beam_size = spec["beam_size"]
+        self.initial_prompt = spec.get("initial_prompt") or None
+        self.leak_ngram = int(spec.get("prompt_leak_ngram", 4))
+        self.fallbacks = 0
         self.model = WhisperModel(str(SRC / spec["path"]), device=device,
                                   compute_type=settings["compute_type"],
                                   cpu_threads=settings.get("threads", 0))
+
+    def _decode(self, path: Path, prompt: str | None) -> str:
+        segments, _ = self.model.transcribe(str(path), language=None, task="transcribe",
+                                            beam_size=self.beam_size, initial_prompt=prompt)
+        return " ".join(s.text.strip() for s in segments).strip()
+
+    def transcribe_one(self, path: Path) -> str:
+        text = self._decode(path, self.initial_prompt)
+        if self.initial_prompt and prompt_leaked(text, self.initial_prompt, self.leak_ngram):
+            self.fallbacks += 1
+            text = self._decode(path, None)
+        return text
 
     def transcribe_all(self, paths: list[Path], progress: Progress) -> tuple[list[str], int]:
         outputs, failures = [], 0
         for done, path in enumerate(paths, start=1):
             try:
-                segments, _ = self.model.transcribe(str(path), language=None, task="transcribe",
-                                                    beam_size=self.beam_size)
-                outputs.append(" ".join(s.text.strip() for s in segments).strip())
+                outputs.append(self.transcribe_one(path))
             except Exception:
                 outputs.append("")
                 failures += 1
@@ -244,7 +257,8 @@ def main() -> int:
             if reference_seconds is None:
                 reference_seconds = (t2 - t0) / spec.get("relative_cost", 1.0)
             log(f"{spec['id']}: done load={t1 - t0:.0f}s decode={t2 - t1:.0f}s "
-                f"failures={failures} empty={sum(not h for h in hypotheses)}")
+                f"failures={failures} empty={sum(not h for h in hypotheses)} "
+                f"prompt_fallbacks={getattr(backend, 'fallbacks', 0)}")
         except Exception as exc:
             log(f"{spec['id']}: FAILED {type(exc).__name__}: {exc}")
         finally:

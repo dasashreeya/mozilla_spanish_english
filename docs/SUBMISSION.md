@@ -132,3 +132,18 @@ real git repository), which is what determines a zip's contents.
    track `transformers.pipeline` failed there because Keras 3 lacks `tf_keras`; this
    package does not call `pipeline`, but qwen-asr's `AutoModel` path has not been run
    in that image.
+
+## Prompted turbo variant and prompt-leak guard (design written 2026-09-14, before scoring the guard)
+
+Variant `turbo-prompt`: the `turbo` backend with `initial_prompt` = the round-2 prompt
+("Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?",
+`docs/SELECTOR.md`), dev 0.1396.
+
+Guard, motivated by the one dev clip whose prompted output copied prompt words: after a
+prompted decode, lowercase the output and the prompt and split both into letter words
+(apostrophes kept); if any 4 consecutive prompt words appear consecutively in the output,
+decode that clip again without the prompt and use that output. The window (4 words) is
+fixed here and not tuned. Its dev effect is computed from existing predictions: a clip
+that triggers the guard takes the unprompted turbo prediction
+(`large-v3-turbo-auto-int8-b5`), which is exactly what the re-decode produces with the same
+settings.

@@ -1,0 +1,52 @@
+{
+  "run": "large-v3-turbo-auto-int8-b5-prompt-guard",
+  "design": "docs/SUBMISSION.md (prompt-leak guard)",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "window": 4,
+  "clips_triggered": 1,
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.1396,
+      "substitutions": 396,
+      "deletions": 257,
+      "insertions": 44,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.1216,
+        "high": 0.1583
+      }
+    },
+    "diagnostics": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.1286,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9573,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.139567,
+    "matches_in_process_wer": true
+  },
+  "paired": {
+    "large-v3-turbo-auto-int8-b5-prompt-guard minus large-v3-turbo-auto-int8-b5-prompt": {
+      "difference_b_minus_a": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "large-v3-turbo-auto-int8-b5-prompt-guard minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": -0.0837,
+      "low": -0.118,
+      "high": -0.0518,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    }
+  }
+}

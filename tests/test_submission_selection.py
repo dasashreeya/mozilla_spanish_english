@@ -114,6 +114,18 @@ def test_rover_backbone_variants() -> None:
         selection.rover(candidates, backbone="nope")
 
 
+@pytest.mark.parametrize(("output", "leaked"), [
+    ("Hola cómo estás I'm good", True),        # 4 consecutive prompt words
+    ("hola, ¿CÓMO estás? fine", False),        # only 3 consecutive (case-insensitive)
+    ("vamos a la tienda", True),
+    ("vamos a la playa tienda later", False),
+    ("", False),
+])
+def test_prompt_leaked(output: str, leaked: bool) -> None:
+    prompt = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?"
+    assert selection.prompt_leaked(output, prompt, 4) is leaked
+
+
 def test_mbr_rejects_fewer_than_three_systems() -> None:
     with pytest.raises(ValueError):
         selection.mbr_select({"a": ["x"], "b": ["y"]})

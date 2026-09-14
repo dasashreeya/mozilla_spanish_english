@@ -43,8 +43,14 @@ MODELS = {
                  "cpu": {"compute_type": "int8", "threads": 8},
                  "cuda": {"compute_type": "float16"}, "relative_cost": 1.89},
 }
+# Round-2 prompt, fixed in docs/SELECTOR.md before any prompted run was scored.
+CODE_SWITCH_PROMPT = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?"
+
 VARIANTS = {
     "turbo": {"backends": ["turbo"], "selection": "first"},
+    "turbo-prompt": {"backends": ["turbo"], "selection": "first",
+                     "overrides": {"turbo": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                             "prompt_leak_ngram": 4}}},
     "mbr-setA": {"backends": ["turbo", "q17", "q06", "large-v3"], "selection": "mbr"},
     "mbr-setB": {"backends": ["turbo", "q17", "q06"], "selection": "mbr"},
 }
@@ -115,7 +121,8 @@ def build_config(variant: str) -> dict:
     backends = []
     for model_id in spec["backends"]:
         model = {k: v for k, v in MODELS[model_id].items() if k not in {"repo_id", "revision"}}
-        backends.append({"id": model_id, "path": f"models/{model_id}"} | model)
+        overrides = spec.get("overrides", {}).get(model_id, {})
+        backends.append({"id": model_id, "path": f"models/{model_id}"} | model | overrides)
     return {"variant": variant, "selection": spec["selection"], "budget": BUDGET,
             "backends": backends}
 

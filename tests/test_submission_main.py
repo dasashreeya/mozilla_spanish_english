@@ -138,6 +138,31 @@ def test_quiet_libraries_undoes_a_library_basicconfig(monkeypatch, tmp_path, cap
         logging.getLogger("faster_whisper").setLevel(logging.NOTSET)
 
 
+def test_prompted_backend_falls_back_when_prompt_leaks(monkeypatch, tmp_path) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+    calls = []
+
+    class Model:
+        def transcribe(self, path, **kwargs):
+            calls.append(kwargs["initial_prompt"])
+            from types import SimpleNamespace
+            text = ("I'm good gracias vamos a la tienda" if kwargs["initial_prompt"]
+                    else "plain decode")
+            return iter([SimpleNamespace(text=text)]), None
+
+    backend = main.FasterWhisperBackend.__new__(main.FasterWhisperBackend)
+    backend.beam_size, backend.leak_ngram, backend.fallbacks = 5, 4, 0
+    backend.initial_prompt = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later"
+    backend.model = Model()
+    assert backend.transcribe_one(Path("x.mp3")) == "plain decode"
+    assert backend.fallbacks == 1 and calls == [backend.initial_prompt, None]
+
+    calls.clear()
+    backend.initial_prompt = "Something unrelated to the output entirely"
+    assert backend.transcribe_one(Path("x.mp3")).startswith("I'm good")
+    assert calls == [backend.initial_prompt] and backend.fallbacks == 1
+
+
 def test_progress_logs_quarters_once(monkeypatch, tmp_path, capsys) -> None:
     main, _ = load_main(monkeypatch, tmp_path, config("a"))
     progress = main.Progress("a", 8)

@@ -69,6 +69,22 @@ def normalize_text(text):
     return text
 
 
+_LETTER_WORD = re.compile(r"[^\W\d_]+(?:'[^\W\d_]+)?")
+
+
+def prompt_leaked(output: str, prompt: str, window: int = 4) -> bool:
+    """True if `window` consecutive prompt words appear consecutively in `output`.
+
+    Case and punctuation are ignored (docs/SUBMISSION.md, prompt-leak guard).
+    """
+
+    prompt_words = _LETTER_WORD.findall(prompt.lower())
+    output_words = _LETTER_WORD.findall(output.lower())
+    grams = {tuple(prompt_words[i:i + window]) for i in range(len(prompt_words) - window + 1)}
+    return any(tuple(output_words[i:i + window]) in grams
+               for i in range(len(output_words) - window + 1))
+
+
 def word_edit_distance(a: str, b: str) -> int:
     """Minimum word substitutions + deletions + insertions turning `a` into `b`."""
 
