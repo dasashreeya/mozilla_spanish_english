@@ -1,0 +1,84 @@
+{
+  "variant": "turbo-prompt",
+  "built_at": "2026-09-14T22:57:22+00:00",
+  "git": {
+    "commit": "9c6d1772220dcf000526dc5ad7b42ccdbbba2a02",
+    "dirty": false,
+    "dirty_scope": [
+      "submission_src",
+      "scripts/pack_submission.py"
+    ]
+  },
+  "zip": {
+    "name": "submission-turbo-prompt.zip",
+    "bytes": 1621687148,
+    "sha256": "7c67c374c9aa46b66fa048891009d8bc19b8cf430a51670d08c09b7919d0e336"
+  },
+  "models": {
+    "turbo": {
+      "repo_id": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "revision": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+    }
+  },
+  "config": {
+    "variant": "turbo-prompt",
+    "selection": "first",
+    "budget": {
+      "seconds": 7200,
+      "safety_factor": 1.3,
+      "load_margin_seconds": 300
+    },
+    "backends": [
+      {
+        "id": "turbo",
+        "path": "models/turbo",
+        "kind": "faster-whisper",
+        "beam_size": 5,
+        "cpu": {
+          "compute_type": "int8",
+          "threads": 8
+        },
+        "cuda": {
+          "compute_type": "float16"
+        },
+        "relative_cost": 1.0,
+        "initial_prompt": "Hola, \u00bfc\u00f3mo est\u00e1s? I'm good, gracias. Vamos a la tienda later, okay?",
+        "prompt_leak_ngram": 4
+      }
+    ]
+  },
+  "files": {
+    "main.py": {
+      "bytes": 11023,
+      "sha256": "ebc4767b8790f9af29f83a55652dfc6f6f5c985747cddcfe10a724e77af8cfa6"
+    },
+    "selection.py": {
+      "bytes": 8582,
+      "sha256": "2d9adc9f90c84f700e4cc861a21be68f8c3e103329d2def0cfe35ef486112a79"
+    },
+    "config.json": {
+      "bytes": 594,
+      "sha256": "05b89c054b93a3ecc31222f0327fcf23d8526dac69b37cecb9b3a492fadb09c6"
+    },
+    "models/turbo/config.json": {
+      "bytes": 2263,
+      "sha256": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e"
+    },
+    "models/turbo/model.bin": {
+      "bytes": 1617884929,
+      "sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da"
+    },
+    "models/turbo/preprocessor_config.json": {
+      "bytes": 340,
+      "sha256": "7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711"
+    },
+    "models/turbo/tokenizer.json": {
+      "bytes": 2710337,
+      "sha256": "297b13372ac43916285644fb9687add3cc62ee2a1adb60da3dc25cc94c1871fd"
+    },
+    "models/turbo/vocabulary.json": {
+      "bytes": 1068114,
+      "sha256": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+    }
+  }
+}
