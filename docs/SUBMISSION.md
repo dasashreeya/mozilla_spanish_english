@@ -52,6 +52,16 @@ the zip, and re-opens the zip to check layout, sizes and CRCs.
 - Offline: `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`; warnings and transformers
   logging are silenced, and progress is logged at quarter marks only, to stay inside the
   500-line log cap.
+- Logs carry fixed events only (start with variant, device and backend ids; per backend
+  `loaded`, quarter marks, `done`, `skipped` or `FAILED <exception type>`; `wrote`;
+  `finished`). The runtime page says a submission "does not print or log any information
+  about the test dataset", so there are no clip names or counts, no failure, empty or
+  prompt-fallback counts, no timings and no exception messages
+  (`tests/test_submission_main.py::test_log_does_not_depend_on_the_test_set`: two runs
+  with different clips, outputs and failures give identical logs). Builds before this
+  change (`submission-turbo.zip` `991dacd4…`, `submission-mbr-setA.zip` `6d5f3268…`,
+  `submission-turbo-prompt.zip` `7c67c374…`) logged such counts and must not be
+  submitted.
 - Qwen audio is decoded with the `ffmpeg` binary to 16 kHz mono float32, as in the dev
   runs.
 

@@ -169,4 +169,22 @@ def test_progress_logs_quarters_once(monkeypatch, tmp_path, capsys) -> None:
     for done in range(1, 9):
         progress(done)
     assert [line for line in capsys.readouterr().out.splitlines() if "%" in line] == [
-        "[lit] a: 25% (2/8)", "[lit] a: 50% (4/8)", "[lit] a: 75% (6/8)", "[lit] a: 100% (8/8)"]
+        "[lit] a: 25%", "[lit] a: 50%", "[lit] a: 75%", "[lit] a: 100%"]
+
+
+def test_log_does_not_depend_on_the_test_set(monkeypatch, tmp_path, capsys) -> None:
+    """Different clip counts, names, outputs and failures must produce the same log."""
+
+    logs = []
+    for run, (clips, fail_clips) in enumerate([(3, 0), (7, 2)]):
+        main, names = load_main(monkeypatch, tmp_path / str(run), config("a", "b", "c"),
+                                clips=clips)
+        monkeypatch.setattr(main, "BACKENDS", {
+            "a": fake_backend([f"out {run} {i}" for i in range(clips)], fail_clips=fail_clips),
+            "b": fake_backend([], fail_load=True),
+            "c": fake_backend([""] * clips)})
+        assert main.main() == 0
+        out = capsys.readouterr().out
+        assert not any(name in out for name in names) and "cannot load" not in out
+        logs.append(out)
+    assert logs[0] == logs[1]

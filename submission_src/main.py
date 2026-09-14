@@ -42,6 +42,8 @@ SAMPLE_RATE = 16000
 
 
 def log(message: str) -> None:
+    # The runtime forbids logging any information about the test dataset, so messages
+    # carry fixed events only: no clip names or counts, timings, or exception text.
     print(f"[lit] {message}"[:300], flush=True)
 
 
@@ -102,7 +104,7 @@ class Progress:
 
     def __call__(self, done: int) -> None:
         while self.total and self.next_quarter <= 4 and done * 4 >= self.next_quarter * self.total:
-            log(f"{self.backend_id}: {self.next_quarter * 25}% ({done}/{self.total})")
+            log(f"{self.backend_id}: {self.next_quarter * 25}%")
             self.next_quarter += 1
 
 
@@ -229,50 +231,47 @@ def main() -> int:
     started = time.monotonic()
     quiet_libraries()
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    names, manifest = read_manifest()
+    names, _ = read_manifest()
     if int(os.environ.get("LIT_LIMIT", "0") or 0):
         names = names[: int(os.environ["LIT_LIMIT"])]
     paths = [DATA_DIR / "clips" / name for name in names]
     device = choose_device()
     order = [spec["id"] for spec in config["backends"]]
-    log(f"variant={config['variant']} clips={len(names)} manifest={manifest} device={device} "
-        f"missing_audio={sum(not p.is_file() for p in paths)} backends={','.join(order)}")
+    log(f"variant={config['variant']} device={device} backends={','.join(order)}")
 
     outputs: dict[str, list[str]] = {}
     reference_seconds = None
     for spec in config["backends"]:
         elapsed = time.monotonic() - started
         if not should_start(spec, elapsed, reference_seconds, config["budget"]):
-            log(f"{spec['id']}: skipped, estimated time exceeds budget (elapsed {elapsed:.0f}s)")
+            log(f"{spec['id']}: skipped, estimated time exceeds budget")
             continue
         backend = None
         try:
             t0 = time.monotonic()
             backend = BACKENDS[spec["kind"]](spec, device)
             quiet_libraries()
-            t1 = time.monotonic()
-            hypotheses, failures = backend.transcribe_all(paths, Progress(spec["id"], len(paths)))
+            log(f"{spec['id']}: loaded")
+            hypotheses, _ = backend.transcribe_all(paths, Progress(spec["id"], len(paths)))
             t2 = time.monotonic()
             outputs[spec["id"]] = hypotheses
             if reference_seconds is None:
                 reference_seconds = (t2 - t0) / spec.get("relative_cost", 1.0)
-            log(f"{spec['id']}: done load={t1 - t0:.0f}s decode={t2 - t1:.0f}s "
-                f"failures={failures} empty={sum(not h for h in hypotheses)} "
-                f"prompt_fallbacks={getattr(backend, 'fallbacks', 0)}")
+            log(f"{spec['id']}: done")
         except Exception as exc:
-            log(f"{spec['id']}: FAILED {type(exc).__name__}: {exc}")
+            log(f"{spec['id']}: FAILED {type(exc).__name__}")
         finally:
             del backend
             release_memory()
         if outputs:
-            transcripts, chosen = select(outputs, order, config["selection"])
+            transcripts, _ = select(outputs, order, config["selection"])
             write_submission(names, transcripts)
-            log(f"wrote {OUTPUT_PATH.name}: rows={len(names)} chosen={chosen}")
+            log(f"wrote {OUTPUT_PATH.name}")
 
     if not outputs:
         log("no backend produced output; failing so the run is not scored as empty")
         return 1
-    log(f"finished in {time.monotonic() - started:.0f}s")
+    log("finished")
     return 0
 
 
