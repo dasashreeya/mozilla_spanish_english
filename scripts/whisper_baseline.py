@@ -61,13 +61,20 @@ def snapshot_provenance(repo_id: str) -> dict:
     return {"repo_id": repo_id, "revision": snapshot.name, "weights_sha256": weights}
 
 
+def _sha256(text: str | None) -> str | None:
+    import hashlib
+
+    return hashlib.sha256(text.encode("utf-8")).hexdigest() if text else None
+
+
 class FasterWhisperBackend:
     name = "faster-whisper"
 
-    def __init__(self, model: str, compute_type: str, threads: int, beam_size: int,
-                 loaded=None):
+    def __init__(self, model: str, compute_type: str, threads: int, beam_size: int, *,
+                 initial_prompt: str | None = None, loaded=None):
         self.model_name, self.compute_type = model, compute_type
         self.threads, self.beam_size = threads, beam_size
+        self.initial_prompt = initial_prompt or None
         if loaded is None:
             from faster_whisper import WhisperModel
 
@@ -81,12 +88,14 @@ class FasterWhisperBackend:
             language=None if language == "auto" else language,
             task="transcribe",
             beam_size=self.beam_size,
+            initial_prompt=self.initial_prompt,
         )
         text = " ".join(segment.text.strip() for segment in segments).strip()
         return text, info.language, info.language_probability
 
     def run_name(self, language: str) -> str:
-        return "-".join([self.model_name, language, self.compute_type, f"b{self.beam_size}"])
+        parts = [self.model_name, language, self.compute_type, f"b{self.beam_size}"]
+        return "-".join(parts + (["prompt"] if self.initial_prompt else []))
 
     def provenance(self) -> dict:
         from faster_whisper.utils import _MODELS
@@ -98,6 +107,7 @@ class FasterWhisperBackend:
         return {"language": language, "task": "transcribe", "beam_size": self.beam_size,
                 "compute_type": self.compute_type, "device": "cpu",
                 "cpu_threads": self.threads,
+                "initial_prompt_sha256": _sha256(self.initial_prompt),
                 "other_transcribe_arguments": "faster-whisper 1.2.1 defaults"}
 
     def software(self) -> dict:
@@ -110,9 +120,11 @@ class FasterWhisperBackend:
 class QwenBackend:
     name = "qwen-asr"
 
-    def __init__(self, model: str, device: str, dtype: str, max_new_tokens: int, loaded=None):
+    def __init__(self, model: str, device: str, dtype: str, max_new_tokens: int, *,
+                 context: str = "", loaded=None):
         self.model_name, self.device, self.dtype = model, device, dtype
         self.max_new_tokens = max_new_tokens
+        self.context = context or ""
         if loaded is None:
             import torch
             from qwen_asr import Qwen3ASRModel
@@ -125,11 +137,13 @@ class QwenBackend:
     def transcribe(self, clip: Path, language: str) -> tuple[str, str, float | None]:
         # Same ffmpeg decode for every clip, so no MP3 decoder differs between runs.
         wav = audio.decode(clip, 16000, 1)[:, 0]
-        result = self.model.transcribe(audio=(wav, 16000), language=QWEN_LANGUAGE[language])[0]
+        result = self.model.transcribe(audio=(wav, 16000), context=self.context,
+                                       language=QWEN_LANGUAGE[language])[0]
         return result.text.strip(), result.language or "<none>", None
 
     def run_name(self, language: str) -> str:
-        return "-".join([self.model_name.split("/")[-1], language, self.device, self.dtype])
+        parts = [self.model_name.split("/")[-1], language, self.device, self.dtype]
+        return "-".join(parts + (["ctx"] if self.context else []))
 
     def provenance(self) -> dict:
         return {"name": self.model_name} | snapshot_provenance(self.model_name)
@@ -139,7 +153,8 @@ class QwenBackend:
                 "device": self.device, "dtype": self.dtype,
                 "max_new_tokens": self.max_new_tokens, "max_inference_batch_size": 1,
                 "input": "ffmpeg-decoded 16 kHz mono float32",
-                "other_transcribe_arguments": "qwen-asr 0.0.6 defaults (context='')"}
+                "context_sha256": _sha256(self.context),
+                "other_transcribe_arguments": "qwen-asr 0.0.6 defaults"}
 
     def software(self) -> dict:
         from importlib.metadata import version
@@ -150,8 +165,10 @@ class QwenBackend:
 
 def load_backend(args: argparse.Namespace):
     if args.backend == "qwen":
-        return QwenBackend(args.model, args.device, args.dtype, args.max_new_tokens)
-    return FasterWhisperBackend(args.model, args.compute_type, args.threads, args.beam_size)
+        return QwenBackend(args.model, args.device, args.dtype, args.max_new_tokens,
+                           context=args.context)
+    return FasterWhisperBackend(args.model, args.compute_type, args.threads, args.beam_size,
+                                initial_prompt=args.initial_prompt)
 
 
 def _duration_bucket(seconds: float) -> str:
@@ -194,6 +211,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--device", default="cpu", help="qwen only: cpu or mps")
     parser.add_argument("--dtype", default="float32", help="qwen only: torch dtype name")
     parser.add_argument("--max-new-tokens", type=int, default=1024, help="qwen only")
+    parser.add_argument("--initial-prompt", help="faster-whisper only; reports store its SHA-256")
+    parser.add_argument("--context", default="", help="qwen only; reports store its SHA-256")
     parser.add_argument("--limit", type=int, help="first N rows only (smoke test)")
     parser.add_argument("--run-name")
     args = parser.parse_args(argv)

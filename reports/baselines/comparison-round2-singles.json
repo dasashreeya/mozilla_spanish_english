@@ -1,0 +1,70 @@
+{
+  "runs": [
+    "large-v3-turbo-auto-int8-b5",
+    "large-v3-turbo-auto-int8-b5-prompt",
+    "mbr-setA-turbo-q17-q06-lv3",
+    "Qwen3-ASR-1.7B-es-cpu-float32"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "large-v3-turbo-auto-int8-b5-prompt minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": -0.0837,
+      "low": -0.118,
+      "high": -0.0518,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "mbr-setA-turbo-q17-q06-lv3 minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": -0.0521,
+      "low": -0.0852,
+      "high": -0.0192,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "Qwen3-ASR-1.7B-es-cpu-float32 minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": -0.0439,
+      "low": -0.0826,
+      "high": -0.0067,
+      "share_of_resamples_b_worse": 0.011,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "mbr-setA-turbo-q17-q06-lv3 minus large-v3-turbo-auto-int8-b5-prompt": {
+      "difference_b_minus_a": 0.0316,
+      "low": 0.0032,
+      "high": 0.0602,
+      "share_of_resamples_b_worse": 0.9835,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "Qwen3-ASR-1.7B-es-cpu-float32 minus large-v3-turbo-auto-int8-b5-prompt": {
+      "difference_b_minus_a": 0.0398,
+      "low": 0.013,
+      "high": 0.0679,
+      "share_of_resamples_b_worse": 0.997,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "Qwen3-ASR-1.7B-es-cpu-float32 minus mbr-setA-turbo-q17-q06-lv3": {
+      "difference_b_minus_a": 0.0082,
+      "low": -0.0171,
+      "high": 0.0341,
+      "share_of_resamples_b_worse": 0.741,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.0991,
+    "clips_won": {
+      "Qwen3-ASR-1.7B-es-cpu-float32": 28,
+      "tie": 87,
+      "large-v3-turbo-auto-int8-b5-prompt": 26,
+      "large-v3-turbo-auto-int8-b5": 6,
+      "mbr-setA-turbo-q17-q06-lv3": 8
+    }
+  }
+}

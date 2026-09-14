@@ -1,0 +1,159 @@
+{
+  "run": "Qwen3-ASR-0.6B-es-cpu-float32",
+  "backend": "qwen-asr",
+  "generated_at": "2026-09-14T12:31:06+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "dataset": {
+    "split": "dev",
+    "rows": 155,
+    "limit": null
+  },
+  "model": {
+    "name": "Qwen/Qwen3-ASR-0.6B",
+    "repo_id": "Qwen/Qwen3-ASR-0.6B",
+    "revision": "5eb144179a02acc5e5ba31e748d22b0cf3e303b0",
+    "weights_sha256": {
+      "model.safetensors": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea"
+    }
+  },
+  "decoding": {
+    "language": "es",
+    "qwen_language_argument": "Spanish",
+    "device": "cpu",
+    "dtype": "float32",
+    "max_new_tokens": 1024,
+    "max_inference_batch_size": 1,
+    "input": "ffmpeg-decoded 16 kHz mono float32",
+    "context_sha256": null,
+    "other_transcribe_arguments": "qwen-asr 0.0.6 defaults"
+  },
+  "software": {
+    "qwen-asr": "0.0.6",
+    "transformers": "4.57.6",
+    "torch": "2.11.0",
+    "huggingface-hub": "0.36.2",
+    "accelerate": "1.12.0",
+    "python": "3.12.13",
+    "machine": "arm64"
+  },
+  "timing": {
+    "audio_seconds": 2153.84,
+    "model_load_seconds": 6.4,
+    "decode_seconds": 262.1,
+    "real_time_factor": 0.1217
+  },
+  "detected_language": {
+    "Spanish": {
+      "clips": 155,
+      "mean_probability": null
+    }
+  },
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.2517,
+      "substitutions": 861,
+      "deletions": 334,
+      "insertions": 62,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.2265,
+        "high": 0.2793
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 151,
+          "reference_words": 4935,
+          "wer": 0.2519,
+          "substitutions": 852,
+          "deletions": 329,
+          "insertions": 62
+        },
+        "spa": {
+          "clips": 4,
+          "reference_words": 59,
+          "wer": 0.2373,
+          "substitutions": 9,
+          "deletions": 5,
+          "insertions": 0
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 78,
+          "reference_words": 3014,
+          "wer": 0.28,
+          "substitutions": 578,
+          "deletions": 226,
+          "insertions": 40
+        },
+        "speaker_2": {
+          "clips": 77,
+          "reference_words": 1980,
+          "wer": 0.2086,
+          "substitutions": 283,
+          "deletions": 108,
+          "insertions": 22
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 89,
+          "reference_words": 2718,
+          "wer": 0.2329,
+          "substitutions": 429,
+          "deletions": 168,
+          "insertions": 36
+        },
+        "20-30": {
+          "clips": 16,
+          "reference_words": 996,
+          "wer": 0.2912,
+          "substitutions": 210,
+          "deletions": 63,
+          "insertions": 17
+        },
+        "5-10": {
+          "clips": 37,
+          "reference_words": 679,
+          "wer": 0.2769,
+          "substitutions": 123,
+          "deletions": 59,
+          "insertions": 6
+        },
+        "<5": {
+          "clips": 8,
+          "reference_words": 71,
+          "wer": 0.2817,
+          "substitutions": 18,
+          "deletions": 2,
+          "insertions": 0
+        },
+        ">=30": {
+          "clips": 5,
+          "reference_words": 530,
+          "wer": 0.2377,
+          "substitutions": 81,
+          "deletions": 42,
+          "insertions": 3
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.2417,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9455,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.251702,
+    "matches_in_process_wer": true
+  }
+}

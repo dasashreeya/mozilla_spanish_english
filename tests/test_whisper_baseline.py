@@ -109,7 +109,7 @@ def test_qwen_adapter_passes_decoded_audio_and_language_names(dev: dict) -> None
     calls = []
 
     class Model:
-        def transcribe(self, audio, language):
+        def transcribe(self, audio, language, context=""):
             calls.append((audio, language))
             return [SimpleNamespace(language="English,Spanish", text=" hola there ")]
 
@@ -125,9 +125,41 @@ def test_qwen_adapter_passes_decoded_audio_and_language_names(dev: dict) -> None
     assert backend.run_name("auto") == "Qwen3-ASR-0.6B-auto-cpu-float32"
 
 
+def test_prompt_and_context_are_passed_hashed_and_named(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = []
+
+    class Whisper:
+        def transcribe(self, path, **kwargs):
+            calls.append(kwargs)
+            return iter([]), SimpleNamespace(language="en", language_probability=0.5)
+
+    class Qwen:
+        def transcribe(self, audio, language, context=""):
+            calls.append({"context": context})
+            return [SimpleNamespace(language="English", text="x")]
+
+    monkeypatch.setattr(whisper_baseline.audio, "decode",
+                        lambda *a, **k: np.zeros((16000, 1), dtype=np.float32))
+    prompt, context = "Hola, how are you?", "Bilingual conversation."
+    fw = whisper_baseline.FasterWhisperBackend("m", "int8", 4, 5, initial_prompt=prompt,
+                                               loaded=Whisper())
+    fw.transcribe(Path("a.mp3"), "auto")
+    qw = whisper_baseline.QwenBackend("Qwen/X", "cpu", "float32", 8, context=context,
+                                      loaded=Qwen())
+    qw.transcribe(Path("a.mp3"), "auto")
+    assert calls[0]["initial_prompt"] == prompt and calls[1]["context"] == context
+    assert fw.run_name("auto").endswith("-prompt") and qw.run_name("auto").endswith("-ctx")
+    decoding = json.dumps(fw.decoding("auto")) + json.dumps(qw.decoding("auto"))
+    assert prompt not in decoding and context not in decoding
+    assert fw.decoding("auto")["initial_prompt_sha256"] == whisper_baseline._sha256(prompt)
+    plain = whisper_baseline.FasterWhisperBackend("m", "int8", 4, 5, loaded=Whisper())
+    assert plain.run_name("auto") == "m-auto-int8-b5"
+    assert plain.decoding("auto")["initial_prompt_sha256"] is None
+
+
 def test_qwen_adapter_labels_empty_language(monkeypatch: pytest.MonkeyPatch) -> None:
     class Model:
-        def transcribe(self, audio, language):
+        def transcribe(self, audio, language, context=""):
             return [SimpleNamespace(language="", text="")]
 
     monkeypatch.setattr(whisper_baseline.audio, "decode",

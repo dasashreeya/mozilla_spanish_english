@@ -1,0 +1,181 @@
+{
+  "run": "mbr-C2-9cand",
+  "backend": "mbr-selection",
+  "generated_at": "2026-09-14T13:30:01+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "design": "docs/SELECTOR.md",
+  "candidates_in_tie_break_order": [
+    "large-v3-turbo-en-int8-b5",
+    "large-v3-turbo-es-int8-b5",
+    "Qwen3-ASR-1.7B-auto-cpu-float32",
+    "Qwen3-ASR-1.7B-en-cpu-float32",
+    "Qwen3-ASR-1.7B-es-cpu-float32",
+    "Qwen3-ASR-0.6B-auto-cpu-float32",
+    "Qwen3-ASR-0.6B-en-cpu-float32",
+    "Qwen3-ASR-0.6B-es-cpu-float32",
+    "large-v3-auto-int8-b5"
+  ],
+  "selection": {
+    "method": "minimum summed word edit distance to the other candidates, after the official normalizer; ties to the earliest candidate",
+    "chosen_counts": {
+      "large-v3-turbo-en-int8-b5": 36,
+      "large-v3-turbo-es-int8-b5": 11,
+      "Qwen3-ASR-1.7B-auto-cpu-float32": 45,
+      "Qwen3-ASR-1.7B-en-cpu-float32": 5,
+      "Qwen3-ASR-1.7B-es-cpu-float32": 20,
+      "Qwen3-ASR-0.6B-auto-cpu-float32": 23,
+      "Qwen3-ASR-0.6B-en-cpu-float32": 6,
+      "Qwen3-ASR-0.6B-es-cpu-float32": 0,
+      "large-v3-auto-int8-b5": 9
+    }
+  },
+  "dataset": {
+    "split": "dev",
+    "rows": 155
+  },
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.1424,
+      "substitutions": 409,
+      "deletions": 250,
+      "insertions": 52,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.1259,
+        "high": 0.1619
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 151,
+          "reference_words": 4935,
+          "wer": 0.1414,
+          "substitutions": 405,
+          "deletions": 241,
+          "insertions": 52
+        },
+        "spa": {
+          "clips": 4,
+          "reference_words": 59,
+          "wer": 0.2203,
+          "substitutions": 4,
+          "deletions": 9,
+          "insertions": 0
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 78,
+          "reference_words": 3014,
+          "wer": 0.1699,
+          "substitutions": 286,
+          "deletions": 191,
+          "insertions": 35
+        },
+        "speaker_2": {
+          "clips": 77,
+          "reference_words": 1980,
+          "wer": 0.1005,
+          "substitutions": 123,
+          "deletions": 59,
+          "insertions": 17
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 89,
+          "reference_words": 2718,
+          "wer": 0.1376,
+          "substitutions": 225,
+          "deletions": 118,
+          "insertions": 31
+        },
+        "20-30": {
+          "clips": 16,
+          "reference_words": 996,
+          "wer": 0.1496,
+          "substitutions": 80,
+          "deletions": 57,
+          "insertions": 12
+        },
+        "5-10": {
+          "clips": 37,
+          "reference_words": 679,
+          "wer": 0.1296,
+          "substitutions": 45,
+          "deletions": 38,
+          "insertions": 5
+        },
+        "<5": {
+          "clips": 8,
+          "reference_words": 71,
+          "wer": 0.169,
+          "substitutions": 9,
+          "deletions": 3,
+          "insertions": 0
+        },
+        ">=30": {
+          "clips": 5,
+          "reference_words": 530,
+          "wer": 0.166,
+          "substitutions": 50,
+          "deletions": 34,
+          "insertions": 4
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.13,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9604,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.142371,
+    "matches_in_process_wer": true
+  },
+  "versus_incumbent": {
+    "incumbent": "large-v3-turbo-en-int8-b5",
+    "paired_selector_minus_incumbent": {
+      "difference_b_minus_a": -0.1113,
+      "low": -0.153,
+      "high": -0.0706,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "comparisons": {
+    "mbr-C2-9cand minus mbr-setA-turbo-q17-q06-lv3": {
+      "difference_b_minus_a": -0.0288,
+      "low": -0.0512,
+      "high": -0.0066,
+      "share_of_resamples_b_worse": 0.003,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "mbr-C2-9cand minus large-v3-turbo-auto-int8-b5": {
+      "difference_b_minus_a": -0.0809,
+      "low": -0.1168,
+      "high": -0.046,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "mbr-C2-9cand minus large-v3-turbo-auto-int8-b5-prompt": {
+      "difference_b_minus_a": 0.0028,
+      "low": -0.0183,
+      "high": 0.0236,
+      "share_of_resamples_b_worse": 0.6345,
+      "level": 0.95,
+      "reps": 2000
+    }
+  }
+}

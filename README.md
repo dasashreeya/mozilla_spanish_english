@@ -38,6 +38,7 @@ A private mirror of the downloaded archives lives in the Hugging Face dataset re
 | `docs/SELECTOR.md` | Pre-declared MBR selector design and results (current best on dev) |
 | `docs/SUBMISSION.md` | Runtime contract, package layout, local validation, open risks |
 | `docs/ROVER.md` | Pre-declared word-level combination; did not beat the MBR selector |
+| `docs/FINETUNE_PLAN.md` | Staged, capped GPU fine-tuning plan awaiting approval |
 | `vendor/runtime_score.py` | Official scorer (git blob `6492e2ec`, runtime commit `c23d3d9942fe`) |
 
 ## Setup
