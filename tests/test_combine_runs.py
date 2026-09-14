@@ -62,6 +62,20 @@ def test_selection_is_scored_with_parity_and_compared_to_incumbent(workspace: Pa
     assert "zorblat" not in serialized and "quixotic" not in serialized
 
 
+@pytest.mark.parametrize("method", ["rover-backbone", "rover-order"])
+def test_rover_methods_are_scored_and_compared(workspace: Path, method: str) -> None:
+    assert combine_runs.main(["a", "b", "c", "--name", "r", "--method", method,
+                              "--compare-to", "a"]) == 0
+    report = json.loads((workspace / "reports" / "r.json").read_text())
+    assert report["backend"] == method and report["design"] == "docs/ROVER.md"
+    assert report["official_cli"]["matches_in_process_wer"] is True
+    assert "clips_changed_from_backbone" in report["selection"]
+    assert list(report["comparisons"]) == ["r minus a"]
+    assert report["scores"]["official"]["wer"] <= official_wer(REFS, RUNS["a"])
+    serialized = json.dumps(report).lower()
+    assert "zorblat" not in serialized and "quixotic" not in serialized
+
+
 def test_refuses_runs_over_different_clips(workspace: Path) -> None:
     _write(workspace / "pred" / "c.csv", ["x.mp3", "c1.mp3", "c2.mp3"], RUNS["c"])
     with pytest.raises(SystemExit, match="differ"):

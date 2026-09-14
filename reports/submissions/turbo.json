@@ -1,0 +1,78 @@
+{
+  "variant": "turbo",
+  "built_at": "2026-09-13T23:13:53+00:00",
+  "git": {
+    "commit": "4a8375368f5b0d5105306bf506725aecea56a33d",
+    "dirty": true
+  },
+  "zip": {
+    "name": "submission-turbo.zip",
+    "bytes": 1621681470,
+    "sha256": "822f57bd243393121f9115c29bfe169c7e247dcb2dbe02c81215cbeb6fab6c47"
+  },
+  "models": {
+    "turbo": {
+      "repo_id": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "revision": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+    }
+  },
+  "config": {
+    "variant": "turbo",
+    "selection": "first",
+    "budget": {
+      "seconds": 7200,
+      "safety_factor": 1.3,
+      "load_margin_seconds": 300
+    },
+    "backends": [
+      {
+        "id": "turbo",
+        "path": "models/turbo",
+        "kind": "faster-whisper",
+        "beam_size": 5,
+        "cpu": {
+          "compute_type": "int8",
+          "threads": 8
+        },
+        "cuda": {
+          "compute_type": "float16"
+        },
+        "relative_cost": 1.0
+      }
+    ]
+  },
+  "files": {
+    "main.py": {
+      "bytes": 9640,
+      "sha256": "3b5600e18ef41611b5fa21ae603d6bbf984d5282999deb4949ef0a46b9d9a2e7"
+    },
+    "selection.py": {
+      "bytes": 4435,
+      "sha256": "37335bef7034a5207beb33a71f09d5110427d2090eb5ba53ee2726e6e27b5079"
+    },
+    "config.json": {
+      "bytes": 446,
+      "sha256": "951ccdbe67f968488e884d8e80a4297eab131ec5c24640d78ee27139da54669a"
+    },
+    "models/turbo/config.json": {
+      "bytes": 2263,
+      "sha256": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e"
+    },
+    "models/turbo/model.bin": {
+      "bytes": 1617884929,
+      "sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da"
+    },
+    "models/turbo/preprocessor_config.json": {
+      "bytes": 340,
+      "sha256": "7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711"
+    },
+    "models/turbo/tokenizer.json": {
+      "bytes": 2710337,
+      "sha256": "297b13372ac43916285644fb9687add3cc62ee2a1adb60da3dc25cc94c1871fd"
+    },
+    "models/turbo/vocabulary.json": {
+      "bytes": 1068114,
+      "sha256": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+    }
+  }
+}

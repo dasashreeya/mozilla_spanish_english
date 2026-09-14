@@ -28,11 +28,16 @@ A private mirror of the downloaded archives lives in the Hugging Face dataset re
 | `scripts/whisper_baseline.py` | Zero-shot faster-whisper or Qwen3-ASR on dev, official-scorer parity check → `reports/baselines/` |
 | `scripts/compare_runs.py` | Paired-bootstrap comparison of runs on the same clips |
 | `scripts/combine_runs.py` | Reference-free MBR selection over runs, scored like a run |
+| `submission_src/` | Offline entry point (`main.py`) and dependency-free selection for the runtime |
+| `scripts/pack_submission.py` | Build `artifacts/submission-<variant>.zip` from pinned model snapshots |
+| `scripts/validate_submission.py` | Run a packed zip locally on dev laid out like the runtime |
 | `src/lit_sp_en/` | Audio probing, CHAT parsing and conversion, segmentation, transcript conventions, evaluation, statistics |
 | `docs/DATA_AUDIT.md` | Audit findings |
 | `docs/BANGOR_PREP.md` | Conversion rules, segmentation choice, validation against dev |
 | `docs/ZERO_SHOT_BASELINES.md` | Zero-shot Whisper and Qwen3-ASR results on dev |
 | `docs/SELECTOR.md` | Pre-declared MBR selector design and results (current best on dev) |
+| `docs/SUBMISSION.md` | Runtime contract, package layout, local validation, open risks |
+| `docs/ROVER.md` | Pre-declared word-level combination; did not beat the MBR selector |
 | `vendor/runtime_score.py` | Official scorer (git blob `6492e2ec`, runtime commit `c23d3d9942fe`) |
 
 ## Setup

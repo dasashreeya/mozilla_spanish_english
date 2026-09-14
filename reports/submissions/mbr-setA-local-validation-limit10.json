@@ -1,0 +1,50 @@
+{
+  "variant": "mbr-setA",
+  "validated_at": "2026-09-13T23:42:40+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "zip": "submission-mbr-setA.zip",
+  "limit": 10,
+  "device": "cpu",
+  "checks": {
+    "exit_code": 0,
+    "wall_seconds": 239.7,
+    "log_lines": 26,
+    "log_lines_within_limit": true,
+    "longest_log_line": 117,
+    "log_line_length_within_limit": true,
+    "header_ok": true,
+    "rows": 10,
+    "rows_match_manifest": true,
+    "duplicate_rows": 0,
+    "empty_transcripts": 0
+  },
+  "official_cli_wer": 0.162319,
+  "scores": {
+    "official": {
+      "clips": 10,
+      "reference_words": 345,
+      "wer": 0.1623,
+      "substitutions": 41,
+      "deletions": 10,
+      "insertions": 5,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.0736,
+        "high": 0.3091
+      }
+    },
+    "diagnostics": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.1333,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9855,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "parity": {
+    "run": "mbr-setA-turbo-q17-q06-lv3",
+    "clips": 10,
+    "identical_transcripts": 10
+  }
+}
