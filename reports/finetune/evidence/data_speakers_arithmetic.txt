@@ -1,0 +1,15 @@
+$ date -u
+2026-09-14T23:10:27Z
+$ (training data: counts, hashes, per-speaker counts, train/dev speaker intersection, batch/step arithmetic, item-count guard)
+manifest sha256: ab68a62eab202a9523408706089a3f6625b34f806a4e68a487e12c3a7b4ed02c | segment_languages sha256: b128730abe7b5c7e12a5a98b16b2854cbf62d17c30d7d734838189995a0ebdc5
+manifest rows: 7200 | audit export.manifest_rows: 7200 | equal: True
+hours: 18.74 | audit export.audio_hours_written: 18.74
+per-language segment counts (training token): {'en': 4683, 'es': 2517}
+training speakers (Bangor CHAT codes): 85 | segments per speaker, descending (codes withheld): [3043, 194, 154, 137, 136, 132, 131, 127, 125, 125, 122, 120, 117, 116, 116, 113, 112, 112, 112, 109, 108, 106, 104, 103, 102, 102, 100, 100, 100, 98, 97, 97, 96, 96, 96, 95, 95, 94, 94, 93, 91, 91, 90, 90, 89, 89, 87, 87, 86, 83, 83, 82, 82, 81, 81, 80, 80, 79, 78, 77, 77, 77, 74, 73, 72, 70, 70, 70, 70, 68, 66, 65, 63, 63, 59, 59, 59, 57, 53, 52, 51, 41, 36, 3, 1]
+segments by number of speakers: {1: 3887, 2: 3263, 3: 49, 4: 1}
+dev speakers: 2 | dev rows per speaker (codes withheld): [78, 77]
+train/dev speaker label intersection: 0
+corpora: training = Bangor Miami (MDC cmmfulo4r018bnz07py4q9t09); dev = MDC cmtj5u8dn006gnz08gjnknbji; dev clip names in training ids/sources/audio: 0
+load_items usable segments: 7200 | check_item_count(expected=7200): passed
+batches per epoch = ceil(7200 / 16) = 450; optimizer steps per epoch = batches / 2 = 225; total for 2 epochs = 450; samples for 2 epochs = 14400
+exit=0

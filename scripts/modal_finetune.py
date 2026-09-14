@@ -49,15 +49,22 @@ def _run(stage: str, **overrides) -> dict:
     return report
 
 
-# S1: 10 minutes of training (plus load and save) under a 20-minute hard timeout.
-@app.function(image=image, gpu=GPU, cpu=8.0, memory=65536, timeout=20 * 60,
-              volumes={VOLUME: volume}, retries=0)
+# (request, limit) tuples make CPU and memory hard limits, not just requests.
+CPU = (8.0, 8.0)
+MEMORY = (65536, 65536)
+STARTUP_TIMEOUT = 10 * 60
+EXPECTED_ITEMS = 7200
+
+
+# S1: 10 minutes of training (plus load and save) under a 20-minute execution timeout.
+@app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=20 * 60,
+              startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
 def trial() -> dict:
-    return _run("trial", epochs=2.0, max_train_seconds=600.0)
+    return _run("trial", epochs=2.0, max_train_seconds=600.0, expected_items=EXPECTED_ITEMS)
 
 
 # S2: the full 2-epoch run, only after S1's throughput projects it under the cap.
-@app.function(image=image, gpu=GPU, cpu=8.0, memory=65536, timeout=75 * 60,
-              volumes={VOLUME: volume}, retries=0)
+@app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=75 * 60,
+              startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
 def full() -> dict:
-    return _run("full", epochs=2.0)
+    return _run("full", epochs=2.0, expected_items=EXPECTED_ITEMS)

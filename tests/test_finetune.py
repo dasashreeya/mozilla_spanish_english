@@ -38,6 +38,31 @@ def test_load_items_limit(tmp_path: Path) -> None:
     assert len(load_items(cfg)) == 1
 
 
+def test_item_count_guard() -> None:
+    import pytest
+
+    from lit_sp_en.finetune import check_item_count
+
+    with pytest.raises(ValueError, match="no training items"):
+        check_item_count([], 0)
+    with pytest.raises(ValueError, match="expected 3"):
+        check_item_count([{}, {}], 3)
+    check_item_count([{}, {}], 2)
+    check_item_count([{}], 0)
+
+
+def test_finite_loss_guard() -> None:
+    import pytest
+
+    from lit_sp_en.finetune import check_finite_loss
+
+    check_finite_loss(1.25, [(5, 2.0), (10, 1.0)])
+    with pytest.raises(ValueError, match="non-finite"):
+        check_finite_loss(float("nan"), [(5, 2.0)])
+    with pytest.raises(ValueError, match=r"\[10\]"):
+        check_finite_loss(1.0, [(5, 2.0), (10, float("inf"))])
+
+
 def test_majority_language_ties_go_to_english() -> None:
     assert majority_language([("a", "spa"), ("b", "spa"), ("c", "eng")]) == "es"
     assert majority_language([("a", "spa"), ("c", "eng")]) == "en"

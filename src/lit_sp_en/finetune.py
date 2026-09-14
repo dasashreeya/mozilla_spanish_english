@@ -34,6 +34,7 @@ class FinetuneConfig:
     spec_augment: bool = True
     num_workers: int = 8
     max_label_tokens: int = 448
+    expected_items: int = 0  # >0: refuse to train unless exactly this many usable segments
 
 
 def load_items(cfg: FinetuneConfig) -> list[dict]:
@@ -53,6 +54,23 @@ def load_items(cfg: FinetuneConfig) -> list[dict]:
             items.append({"id": row["id"], "audio": str(audio), "text": text,
                           "language": languages[row["id"]]})
     return items[: cfg.limit_segments] if cfg.limit_segments else items
+
+
+def check_item_count(items: list[dict], expected: int) -> None:
+    if not items:
+        raise ValueError("no training items")
+    if expected and len(items) != expected:
+        raise ValueError(f"{len(items)} usable segments, expected {expected}; refusing to train")
+
+
+def check_finite_loss(training_loss: float, logged: list[tuple[int, float]]) -> None:
+    """Fail before saving if the mean loss or any logged loss is not finite."""
+
+    import math
+
+    bad = [step for step, loss in logged if not math.isfinite(loss)]
+    if not math.isfinite(training_loss) or bad:
+        raise ValueError(f"non-finite loss: mean={training_loss}, at logged steps {bad}")
 
 
 class SegmentDataset:
@@ -131,31 +149,14 @@ def make_callback(max_train_seconds: float, samples_per_step: int):
     return TimeCap()
 
 
-def train(cfg: FinetuneConfig) -> dict:
-    import torch
-    from transformers import (
-        Seq2SeqTrainer,
-        Seq2SeqTrainingArguments,
-        WhisperForConditionalGeneration,
-        WhisperProcessor,
-    )
+MODEL_OVERRIDES = {"use_cache": False, "forced_decoder_ids": None}
+SPEC_AUGMENT_OVERRIDES = {"apply_spec_augment": True, "mask_time_prob": 0.05}
 
-    started = time.monotonic()
-    cuda = torch.cuda.is_available()
-    processor = WhisperProcessor.from_pretrained(cfg.base_model)
-    model = WhisperForConditionalGeneration.from_pretrained(cfg.base_model)
-    model.config.use_cache = False
-    model.config.forced_decoder_ids = None
-    model.generation_config.forced_decoder_ids = None
-    if cfg.spec_augment:
-        model.config.apply_spec_augment = True
-        model.config.mask_time_prob = 0.05
-    items = load_items(cfg)
-    if not items:
-        raise ValueError("no training items")
-    samples_per_step = cfg.per_device_batch * cfg.grad_accum
-    callback = make_callback(cfg.max_train_seconds, samples_per_step)
-    args = Seq2SeqTrainingArguments(
+
+def build_training_arguments(cfg: FinetuneConfig, cuda: bool):
+    from transformers import Seq2SeqTrainingArguments
+
+    return Seq2SeqTrainingArguments(
         output_dir=cfg.output_dir, per_device_train_batch_size=cfg.per_device_batch,
         gradient_accumulation_steps=cfg.grad_accum, learning_rate=cfg.learning_rate,
         warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
@@ -168,6 +169,31 @@ def train(cfg: FinetuneConfig) -> dict:
         eval_strategy="no", report_to=[], dataloader_num_workers=cfg.num_workers if cuda else 0,
         remove_unused_columns=False, seed=cfg.seed,
     )
+
+
+def train(cfg: FinetuneConfig) -> dict:
+    import torch
+    from transformers import (
+        Seq2SeqTrainer,
+        WhisperForConditionalGeneration,
+        WhisperProcessor,
+    )
+
+    started = time.monotonic()
+    cuda = torch.cuda.is_available()
+    processor = WhisperProcessor.from_pretrained(cfg.base_model)
+    model = WhisperForConditionalGeneration.from_pretrained(cfg.base_model)
+    for key, value in MODEL_OVERRIDES.items():
+        setattr(model.config, key, value)
+    model.generation_config.forced_decoder_ids = None
+    if cfg.spec_augment:
+        for key, value in SPEC_AUGMENT_OVERRIDES.items():
+            setattr(model.config, key, value)
+    items = load_items(cfg)
+    check_item_count(items, cfg.expected_items)
+    samples_per_step = cfg.per_device_batch * cfg.grad_accum
+    callback = make_callback(cfg.max_train_seconds, samples_per_step)
+    args = build_training_arguments(cfg, cuda)
     trainer = Seq2SeqTrainer(
         model=model, args=args,
         train_dataset=SegmentDataset(items, processor, cfg.max_label_tokens),
@@ -175,6 +201,7 @@ def train(cfg: FinetuneConfig) -> dict:
         callbacks=[callback],
     )
     result = trainer.train()
+    check_finite_loss(result.training_loss, callback.losses)
     final_dir = Path(cfg.output_dir) / "final"
     trainer.save_model(str(final_dir))
     processor.save_pretrained(str(final_dir))

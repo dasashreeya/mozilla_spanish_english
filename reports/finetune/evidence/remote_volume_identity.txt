@@ -1,0 +1,20 @@
+$ date -u
+2026-09-14T23:09:39Z
+$ uv run --extra train modal volume ls --json lit-sp-en-train /
+[
+  {
+    "Filename": "bangor",
+    "Type": "dir",
+    "Created/Modified": "2026-09-14 18:38 EDT",
+    "Size": "4.0 KiB"
+  }
+]
+$ uv run --extra train modal volume get lit-sp-en-train /bangor /private/tmp/claude-501/-Users-shreeyadasa-Documents-mozilla-mozilla-english-spanish/bf634507-a6be-4765-985c-144b9dbc29cf/scratchpad/volume_check
+get exit=0
+$ (sha256 of every downloaded file vs the local copy)
+remote flac files: 7200 | local flac files: 7200 | same relative paths: True
+files compared by sha256: 7202 | mismatches: 0
+remote manifest sha256: ab68a62eab202a9523408706089a3f6625b34f806a4e68a487e12c3a7b4ed02c
+remote segment_languages sha256: b128730abe7b5c7e12a5a98b16b2854cbf62d17c30d7d734838189995a0ebdc5
+remote /bangor top-level entries: ['audio', 'manifest.jsonl', 'segment_languages.json']
+exit=0

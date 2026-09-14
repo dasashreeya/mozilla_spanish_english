@@ -1,0 +1,191 @@
+$ date -u
+2026-09-14T23:11:05Z
+$ (FinetuneConfig and fully resolved Seq2SeqTrainingArguments for stage trial, built by the same function train() uses)
+transformers 4.57.6
+FinetuneConfig: {"base_model": "openai/whisper-large-v3-turbo", "data_dir": "/vol/bangor", "languages_file": "/vol/bangor/segment_languages.json", "output_dir": "/vol/runs/trial", "epochs": 2.0, "max_steps": -1, "max_train_seconds": 600.0, "limit_segments": 0, "per_device_batch": 16, "grad_accum": 2, "learning_rate": 1e-05, "warmup_steps": 50, "weight_decay": 0.0, "seed": 20260914, "gradient_checkpointing": true, "spec_augment": true, "num_workers": 8, "max_label_tokens": 448, "expected_items": 7200}
+model config overrides: {'use_cache': False, 'forced_decoder_ids': None} | spec augment overrides: {'apply_spec_augment': True, 'mask_time_prob': 0.05} | generation_config.forced_decoder_ids = None
+Seq2SeqTrainingArguments.to_dict() (cuda=True):
+{
+ "accelerator_config": {
+  "dispatch_batches": null,
+  "even_batches": true,
+  "gradient_accumulation_kwargs": null,
+  "non_blocking": false,
+  "split_batches": false,
+  "use_seedable_sampler": true
+ },
+ "adafactor": false,
+ "adam_beta1": 0.9,
+ "adam_beta2": 0.999,
+ "adam_epsilon": 1e-08,
+ "auto_find_batch_size": false,
+ "average_tokens_across_devices": true,
+ "batch_eval_metrics": false,
+ "bf16": true,
+ "bf16_full_eval": false,
+ "data_seed": null,
+ "dataloader_drop_last": false,
+ "dataloader_num_workers": 8,
+ "dataloader_persistent_workers": false,
+ "dataloader_pin_memory": true,
+ "dataloader_prefetch_factor": null,
+ "ddp_backend": null,
+ "ddp_broadcast_buffers": null,
+ "ddp_bucket_cap_mb": null,
+ "ddp_find_unused_parameters": null,
+ "ddp_timeout": 1800,
+ "debug": [],
+ "deepspeed": null,
+ "disable_tqdm": false,
+ "do_eval": false,
+ "do_predict": false,
+ "do_train": false,
+ "eval_accumulation_steps": null,
+ "eval_delay": 0,
+ "eval_do_concat_batches": true,
+ "eval_on_start": false,
+ "eval_steps": null,
+ "eval_strategy": "no",
+ "eval_use_gather_object": false,
+ "fp16": false,
+ "fp16_backend": "auto",
+ "fp16_full_eval": false,
+ "fp16_opt_level": "O1",
+ "fsdp": [],
+ "fsdp_config": {
+  "min_num_params": 0,
+  "xla": false,
+  "xla_fsdp_grad_ckpt": false,
+  "xla_fsdp_v2": false
+ },
+ "fsdp_min_num_params": 0,
+ "fsdp_transformer_layer_cls_to_wrap": null,
+ "full_determinism": false,
+ "generation_config": null,
+ "generation_max_length": null,
+ "generation_num_beams": null,
+ "gradient_accumulation_steps": 2,
+ "gradient_checkpointing": true,
+ "gradient_checkpointing_kwargs": {
+  "use_reentrant": false
+ },
+ "greater_is_better": null,
+ "group_by_length": false,
+ "half_precision_backend": "auto",
+ "hub_always_push": false,
+ "hub_model_id": null,
+ "hub_private_repo": null,
+ "hub_revision": null,
+ "hub_strategy": "every_save",
+ "hub_token": "<HUB_TOKEN>",
+ "ignore_data_skip": false,
+ "include_for_metrics": [],
+ "include_inputs_for_metrics": false,
+ "include_num_input_tokens_seen": "no",
+ "include_tokens_per_second": false,
+ "jit_mode_eval": false,
+ "label_names": null,
+ "label_smoothing_factor": 0.0,
+ "learning_rate": 1e-05,
+ "length_column_name": "length",
+ "liger_kernel_config": null,
+ "load_best_model_at_end": false,
+ "local_rank": 0,
+ "log_level": "passive",
+ "log_level_replica": "warning",
+ "log_on_each_node": true,
+ "logging_dir": "/vol/runs/trial/runs/Sep14_19-11-07_Shreeyas-MacBook-Pro-3.local",
+ "logging_first_step": false,
+ "logging_nan_inf_filter": true,
+ "logging_steps": 5,
+ "logging_strategy": "steps",
+ "lr_scheduler_kwargs": null,
+ "lr_scheduler_type": "linear",
+ "max_grad_norm": 1.0,
+ "max_steps": -1,
+ "metric_for_best_model": null,
+ "mp_parameters": "",
+ "neftune_noise_alpha": null,
+ "no_cuda": false,
+ "num_train_epochs": 2.0,
+ "optim": "adamw_torch_fused",
+ "optim_args": null,
+ "optim_target_modules": null,
+ "output_dir": "/vol/runs/trial",
+ "overwrite_output_dir": false,
+ "parallelism_config": null,
+ "past_index": -1,
+ "per_device_eval_batch_size": 8,
+ "per_device_train_batch_size": 16,
+ "per_gpu_eval_batch_size": null,
+ "per_gpu_train_batch_size": null,
+ "predict_with_generate": false,
+ "prediction_loss_only": false,
+ "project": "huggingface",
+ "push_to_hub": false,
+ "push_to_hub_model_id": null,
+ "push_to_hub_organization": null,
+ "push_to_hub_token": "<PUSH_TO_HUB_TOKEN>",
+ "ray_scope": "last",
+ "remove_unused_columns": false,
+ "report_to": [],
+ "restore_callback_states_from_checkpoint": false,
+ "resume_from_checkpoint": null,
+ "run_name": null,
+ "save_on_each_node": false,
+ "save_only_model": false,
+ "save_safetensors": true,
+ "save_steps": 500,
+ "save_strategy": "no",
+ "save_total_limit": null,
+ "seed": 20260914,
+ "skip_memory_metrics": true,
+ "sortish_sampler": false,
+ "tf32": null,
+ "torch_compile": false,
+ "torch_compile_backend": null,
+ "torch_compile_mode": null,
+ "torch_empty_cache_steps": null,
+ "torchdynamo": null,
+ "tpu_metrics_debug": false,
+ "tpu_num_cores": null,
+ "trackio_space_id": "trackio",
+ "use_cpu": false,
+ "use_legacy_prediction_loop": false,
+ "use_liger_kernel": false,
+ "use_mps_device": false,
+ "warmup_ratio": 0.0,
+ "warmup_steps": 50,
+ "weight_decay": 0.0
+}
+$ grep -n (schedule length, warmup and linear decay, time cap semantics) in installed transformers 4.57.6
+5689:                max_steps = math.ceil(args.num_train_epochs * num_update_steps_per_epoch)
+105:def get_linear_schedule_with_warmup(optimizer, num_warmup_steps, num_training_steps, last_epoch=-1):
+107-    Create a schedule with a learning rate that decreases linearly from the initial lr set in the optimizer to 0, after
+108-    a warmup period during which it increases linearly from 0 to the initial lr set in the optimizer.
+113-        num_warmup_steps (`int`):
+114-            The number of steps for the warmup phase.
+2772:                    if self.control.should_epoch_stop or self.control.should_training_stop:
+2777:                if self.control.should_epoch_stop or self.control.should_training_stop:
+2787:                self.control.should_training_stop = True
+$ grep -n (SpecAugment use of apply_spec_augment / mask_time_prob) in modeling_whisper.py
+1005:        # `config.apply_spec_augment` can set masking to False
+1006:        if not getattr(self.config, "apply_spec_augment", True):
+1012:        if self.config.mask_time_prob > 0 and self.training:
+1016:                mask_prob=self.config.mask_time_prob,
+1017:                mask_length=self.config.mask_time_length,
+$ grep -n (use_cache with gradient checkpointing) in modeling_whisper.py
+905:                    "`use_cache = True` is incompatible with gradient checkpointing. Setting `use_cache = False`..."
+907:                use_cache = False
+$ grep -n (bf16 and gradient_checkpointing_kwargs help text) in training_args.py
+1068:    bf16: bool = field(
+1069-        default=False,
+1070-        metadata={
+1071-            "help": (
+1072-                "Whether to use bf16 (mixed) precision instead of 32-bit. Requires Ampere or higher NVIDIA"
+1411:    gradient_checkpointing_kwargs: Optional[Union[dict[str, Any], str]] = field(
+1412-        default=None,
+1413-        metadata={
+1414-            "help": "Gradient checkpointing key word arguments such as `use_reentrant`. Will be passed to `torch.utils.checkpoint.checkpoint` through `model.gradient_checkpointing_enable`."
+1415-        },
+exit=0
