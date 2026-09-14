@@ -108,6 +108,21 @@ clips.
 The `mbr-setA` output on all 155 clips through the package was not run locally; the
 per-backend code paths are the same as in the 10-clip run, and selection is per clip.
 
+## Current builds (clean, from commit `a6e307d`)
+
+MEASURED: `reports/submissions/{turbo,mbr-setA}.json` (`git.dirty` false) and
+`reports/submissions/{turbo,mbr-setA}-local-validation-limit10.json`.
+
+| Zip | Bytes | SHA-256 | Members | 10-clip local check | Log lines | Parity |
+|---|---:|---|---:|---|---:|---|
+| `submission-turbo.zip` | 1,621,685,723 | `991dacd4f4a05146006c5848d27fc4419a35011ea0622f88589245800bbd33b5` | 8 | exit 0, WER 0.153623 | 8 | 10 / 10 with `large-v3-turbo-auto-int8-b5` |
+| `submission-mbr-setA.zip` | 11,296,141,817 | `6d5f3268a8cb07645ec9a903874a4fba85b367579cf8cfb49b2613edaeaa7d92` | 31 | exit 0, WER 0.162319 | 26 | 10 / 10 with `mbr-setA-turbo-q17-q06-lv3` |
+
+The first clean `mbr-setA` build was refused by the packer's own dirty check, because
+building `turbo` had rewritten a tracked report. The check now covers only
+`submission_src/` and `scripts/pack_submission.py` (commit `a6e307d`, tested against a
+real git repository), which is what determines a zip's contents.
+
 ## Not yet verified
 
 1. The package on the real runtime image with a GPU (CUDA decode paths, bfloat16

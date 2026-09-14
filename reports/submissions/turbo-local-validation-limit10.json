@@ -1,0 +1,50 @@
+{
+  "variant": "turbo",
+  "validated_at": "2026-09-14T01:23:23+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "zip": "submission-turbo.zip",
+  "limit": 10,
+  "device": "cpu",
+  "checks": {
+    "exit_code": 0,
+    "wall_seconds": 98.0,
+    "log_lines": 8,
+    "log_lines_within_limit": true,
+    "longest_log_line": 97,
+    "log_line_length_within_limit": true,
+    "header_ok": true,
+    "rows": 10,
+    "rows_match_manifest": true,
+    "duplicate_rows": 0,
+    "empty_transcripts": 0
+  },
+  "official_cli_wer": 0.153623,
+  "scores": {
+    "official": {
+      "clips": 10,
+      "reference_words": 345,
+      "wer": 0.1536,
+      "substitutions": 39,
+      "deletions": 9,
+      "insertions": 5,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.0637,
+        "high": 0.2928
+      }
+    },
+    "diagnostics": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.1246,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9884,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "parity": {
+    "run": "large-v3-turbo-auto-int8-b5",
+    "clips": 10,
+    "identical_transcripts": 10
+  }
+}

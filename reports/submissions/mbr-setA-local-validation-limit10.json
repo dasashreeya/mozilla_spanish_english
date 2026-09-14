@@ -1,13 +1,13 @@
 {
   "variant": "mbr-setA",
-  "validated_at": "2026-09-13T23:42:40+00:00",
+  "validated_at": "2026-09-14T01:30:42+00:00",
   "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
   "zip": "submission-mbr-setA.zip",
   "limit": 10,
   "device": "cpu",
   "checks": {
     "exit_code": 0,
-    "wall_seconds": 239.7,
+    "wall_seconds": 352.0,
     "log_lines": 26,
     "log_lines_within_limit": true,
     "longest_log_line": 117,
