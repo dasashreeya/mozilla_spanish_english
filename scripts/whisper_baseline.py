@@ -87,10 +87,12 @@ class FasterWhisperBackend:
     name = "faster-whisper"
 
     def __init__(self, model: str, compute_type: str, threads: int, beam_size: int, *,
-                 initial_prompt: str | None = None, loaded=None):
+                 initial_prompt: str | None = None, decode_options: dict | None = None,
+                 loaded=None):
         self.model_name, self.compute_type = model, compute_type
         self.threads, self.beam_size = threads, beam_size
         self.initial_prompt = initial_prompt or None
+        self.decode_options = dict(decode_options or {})
         if loaded is None:
             from faster_whisper import WhisperModel
 
@@ -105,6 +107,7 @@ class FasterWhisperBackend:
             task="transcribe",
             beam_size=self.beam_size,
             initial_prompt=self.initial_prompt,
+            **self.decode_options,
         )
         text = " ".join(segment.text.strip() for segment in segments).strip()
         return text, info.language, info.language_probability
@@ -126,6 +129,7 @@ class FasterWhisperBackend:
                 "compute_type": self.compute_type, "device": "cpu",
                 "cpu_threads": self.threads,
                 "initial_prompt_sha256": _sha256(self.initial_prompt),
+                "extra_transcribe_arguments": self.decode_options,
                 "other_transcribe_arguments": "faster-whisper 1.2.1 defaults"}
 
     def software(self) -> dict:
@@ -185,8 +189,15 @@ def load_backend(args: argparse.Namespace):
     if args.backend == "qwen":
         return QwenBackend(args.model, args.device, args.dtype, args.max_new_tokens,
                            context=args.context)
+    options = {}
+    if args.no_temperature_fallback:
+        options["temperature"] = [0.0]
+    if args.vad_filter:
+        options["vad_filter"] = True
+    if args.repetition_penalty is not None:
+        options["repetition_penalty"] = args.repetition_penalty
     return FasterWhisperBackend(args.model, args.compute_type, args.threads, args.beam_size,
-                                initial_prompt=args.initial_prompt)
+                                initial_prompt=args.initial_prompt, decode_options=options)
 
 
 def _duration_bucket(seconds: float) -> str:
@@ -231,6 +242,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-new-tokens", type=int, default=1024, help="qwen only")
     parser.add_argument("--initial-prompt", help="faster-whisper only; reports store its SHA-256")
     parser.add_argument("--context", default="", help="qwen only; reports store its SHA-256")
+    parser.add_argument("--no-temperature-fallback", action="store_true",
+                        help="faster-whisper only: temperature=[0.0]")
+    parser.add_argument("--vad-filter", action="store_true", help="faster-whisper only")
+    parser.add_argument("--repetition-penalty", type=float, help="faster-whisper only")
     parser.add_argument("--limit", type=int, help="first N rows only (smoke test)")
     parser.add_argument("--run-name")
     args = parser.parse_args(argv)

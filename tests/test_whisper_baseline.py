@@ -181,3 +181,29 @@ def test_local_model_directory_provenance_hashes_files(tmp_path) -> None:
     assert provenance["files_sha256"] == {
         "config.json": hashlib.sha256(b"{}").hexdigest(),
         "model.bin": hashlib.sha256(b"weights").hexdigest()}
+
+
+def test_extra_decode_options_are_passed_and_recorded() -> None:
+    import argparse
+
+    seen = {}
+
+    class Model:
+        def transcribe(self, path, **kwargs):
+            seen.update(kwargs)
+            return iter([]), type("Info", (), {"language": "en", "language_probability": 0.9})()
+
+    options = {"temperature": [0.0], "vad_filter": True, "repetition_penalty": 1.1}
+    backend = whisper_baseline.FasterWhisperBackend("m", "int8", 4, 5, decode_options=options,
+                                                    loaded=Model())
+    backend.transcribe(Path("x.mp3"), "auto")
+    assert {k: seen[k] for k in options} == options
+    assert backend.decoding("auto")["extra_transcribe_arguments"] == options
+    args = argparse.Namespace(backend="faster-whisper", model="m", compute_type="int8", threads=1,
+                              beam_size=5, initial_prompt=None, no_temperature_fallback=True,
+                              vad_filter=True, repetition_penalty=1.1)
+    import unittest.mock as mock
+
+    with mock.patch.object(whisper_baseline, "FasterWhisperBackend") as backend_class:
+        whisper_baseline.load_backend(args)
+    assert backend_class.call_args.kwargs["decode_options"] == options
