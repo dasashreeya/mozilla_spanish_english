@@ -30,27 +30,43 @@ os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 warnings.filterwarnings("ignore")
 
 
+# Our log lines go to this stream only. Under __main__ it becomes a private copy of the original
+# stdout, and file descriptors 1 and 2 are pointed at /dev/null (silence_native_output).
+_LOG_STREAM = sys.stdout
+
+
+def emit(line: str) -> None:
+    print(line[:300], file=_LOG_STREAM, flush=True)
+
+
 def sanitized_excepthook(exc_type, exc, tb) -> None:
     """Uncaught exceptions print their type only: messages and tracebacks can carry data."""
 
-    print(f"[lit] FAILED {exc_type.__name__}", flush=True)
+    emit(f"[lit] FAILED {exc_type.__name__}")
 
 
 def sanitized_thread_excepthook(args) -> None:
-    print(f"[lit] FAILED in thread {args.exc_type.__name__}", flush=True)
+    emit(f"[lit] FAILED in thread {args.exc_type.__name__}")
 
 
 def sanitized_unraisablehook(unraisable) -> None:
-    print(f"[lit] FAILED unraisable {type(unraisable.exc_value).__name__}", flush=True)
+    emit(f"[lit] FAILED unraisable {type(unraisable.exc_value).__name__}")
 
 
-def silence_native_stderr() -> None:
-    """Point file descriptor 2 at /dev/null so native libraries (CTranslate2's C++ logger,
-    FFmpeg) cannot print to the log. Our own messages go to stdout."""
+def silence_native_output() -> None:
+    """Keep a private copy of stdout for our log, then point file descriptors 1 and 2 at
+    /dev/null, so no native library (CTranslate2, FFmpeg, CUDA) or Python code other than
+    emit() can write to the log on any path."""
 
+    global _LOG_STREAM
+    sys.stdout.flush()
+    sys.stderr.flush()
+    _LOG_STREAM = os.fdopen(os.dup(1), "w", encoding="utf-8", buffering=1)
     devnull = os.open(os.devnull, os.O_WRONLY)
+    os.dup2(devnull, 1)
     os.dup2(devnull, 2)
     os.close(devnull)
+    sys.stdout = open(os.devnull, "w", encoding="utf-8")  # noqa: SIM115
     sys.stderr = open(os.devnull, "w", encoding="utf-8")  # noqa: SIM115
 
 
@@ -59,7 +75,7 @@ sys.excepthook = sanitized_excepthook
 threading.excepthook = sanitized_thread_excepthook
 sys.unraisablehook = sanitized_unraisablehook
 if __name__ == "__main__":
-    silence_native_stderr()
+    silence_native_output()
 
 SRC = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC))
@@ -77,7 +93,7 @@ SAMPLE_RATE = 16000
 def log(message: str) -> None:
     # The runtime forbids logging any information about the test dataset, so messages
     # carry fixed events only: no clip names or counts, timings, or exception text.
-    print(f"[lit] {message}"[:300], flush=True)
+    emit(f"[lit] {message}")
 
 
 def quiet_libraries() -> None:

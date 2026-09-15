@@ -234,19 +234,19 @@ def test_log_does_not_depend_on_the_test_set(monkeypatch, tmp_path, capsys) -> N
     assert logs[0] == logs[1]
 
 
-def test_entrypoint_silences_native_stderr(tmp_path) -> None:
-    """Native code writing straight to file descriptor 2 must not reach the log."""
+def test_entrypoint_silences_native_stdout_and_stderr(tmp_path) -> None:
+    """Writes straight to file descriptors 1 and 2, and Python prints, must not reach the log;
+    only emit() does."""
 
     script = tmp_path / "probe.py"
     script.write_text(
-        "import os, runpy, sys\n"
-        f"sys.argv = [{str(ROOT / 'submission_src' / 'main.py')!r}]\n"
-        "import builtins\n"
-        "real_main = None\n"
+        "import os, runpy\n"
         f"ns = runpy.run_path({str(ROOT / 'submission_src' / 'main.py')!r}, run_name='probe')\n"
-        "ns['silence_native_stderr']()\n"
-        "os.write(2, b'native secret_clip_0042.mp3\\n')\n"
-        "print('[lit] ok', flush=True)\n")
+        "ns['silence_native_output']()\n"
+        "os.write(1, b'native stdout secret_clip_0042.mp3\\n')\n"
+        "os.write(2, b'native stderr secret_clip_0042.mp3\\n')\n"
+        "print('python print secret_clip_0042.mp3')\n"
+        "ns['log']('ok')\n")
     result = subprocess.run([sys.executable, str(script)], capture_output=True, check=False)
     assert result.returncode == 0
     assert result.stdout == b"[lit] ok\n" and result.stderr == b""
