@@ -137,3 +137,13 @@ def test_local_model_is_packed_only_with_its_pinned_files(fake: Path) -> None:
     (local / "extra.bin").write_bytes(b"x")
     with pytest.raises(pack_submission.PackError, match="differ from the pinned list"):
         pack_submission.pack("ft", allow_dirty=False)
+
+
+def test_round3_variants_carry_postprocess_and_backbone_order() -> None:
+    import importlib
+
+    real = importlib.reload(pack_submission)
+    rover = real.VARIANTS["rover3-breaks"]
+    assert rover["backends"][0] == "ft-s2" and rover["selection"] == "rover-order"
+    assert rover["postprocess"] == real.VARIANTS["ft-s2-prompt-breaks"]["postprocess"]
+    assert rover["overrides"]["q17"]["max_new_tokens"] == 1024

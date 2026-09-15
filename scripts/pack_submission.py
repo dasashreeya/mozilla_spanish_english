@@ -59,6 +59,8 @@ MODELS = {
 }
 # Round-2 prompt, fixed in docs/SELECTOR.md before any prompted run was scored.
 CODE_SWITCH_PROMPT = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?"
+# Round-2 Qwen context (docs/SELECTOR.md), scored as Qwen3-ASR-1.7B-auto-cpu-float32-ctx.
+QWEN_CONTEXT = "Bilingual Spanish-English conversation with frequent code-switching."
 
 VARIANTS = {
     "turbo": {"backends": ["turbo"], "selection": "first"},
@@ -68,6 +70,19 @@ VARIANTS = {
     "ft-s2-prompt": {"backends": ["ft-s2"], "selection": "first",
                      "overrides": {"ft-s2": {"initial_prompt": CODE_SWITCH_PROMPT,
                                              "prompt_leak_ngram": 4}}},
+    # docs/METHODS.md M9b: the fine-tuned model with internal sentence breaks removed.
+    "ft-s2-prompt-breaks": {"backends": ["ft-s2"], "selection": "first",
+                            "postprocess": "sentence-breaks-keep-ellipsis",
+                            "overrides": {"ft-s2": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                                    "prompt_leak_ngram": 4}}},
+    # docs/METHODS.md M11b: M9b on each backend, then ROVER with the fine-tuned backbone.
+    "rover3-breaks": {"backends": ["ft-s2", "turbo", "q17"], "selection": "rover-order",
+                      "postprocess": "sentence-breaks-keep-ellipsis",
+                      "overrides": {"ft-s2": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                              "prompt_leak_ngram": 4},
+                                    "turbo": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                              "prompt_leak_ngram": 4},
+                                    "q17": {"context": QWEN_CONTEXT, "max_new_tokens": 1024}}},
     "mbr-setA": {"backends": ["turbo", "q17", "q06", "large-v3"], "selection": "mbr"},
     "mbr-setB": {"backends": ["turbo", "q17", "q06"], "selection": "mbr"},
 }
@@ -159,7 +174,8 @@ def build_config(variant: str) -> dict:
                  if k not in {"repo_id", "revision", "local_dir", "files_sha256"}}
         overrides = spec.get("overrides", {}).get(model_id, {})
         backends.append({"id": model_id, "path": f"models/{model_id}"} | model | overrides)
-    return {"variant": variant, "selection": spec["selection"], "budget": BUDGET,
+    return {"variant": variant, "selection": spec["selection"],
+            "postprocess": spec.get("postprocess", "none"), "budget": BUDGET,
             "backends": backends}
 
 

@@ -257,3 +257,54 @@ def test_unraisable_hook_prints_the_type_only(monkeypatch, tmp_path, capsys) -> 
     unraisable = type("U", (), {"exc_value": ValueError("secret_clip_name.mp3")})()
     main.sanitized_unraisablehook(unraisable)
     assert capsys.readouterr().out == "[lit] FAILED unraisable ValueError\n"
+
+
+def test_rover_selection_with_postprocess_matches_the_offline_combination(monkeypatch,
+                                                                          tmp_path) -> None:
+    import sys as _sys
+
+    _sys.path.insert(0, str(ROOT))
+    from submission_src import selection
+
+    cfg = config("a", "b", "c", selection="rover-order") | {
+        "postprocess": "sentence-breaks-keep-ellipsis"}
+    main, _ = load_main(monkeypatch, tmp_path, cfg)
+    texts = {"a": ["Yo fui. I went home.", "Hola. Pues nada", "So... Okay. Bye", "one"],
+             "b": ["yo fui I went home", "hola pues nada", "so okay bye", "one two"],
+             "c": ["Yo fui. I went", "hola pues", "so... okay bye", "one"]}
+    monkeypatch.setattr(main, "BACKENDS", {k: fake_backend(v) for k, v in texts.items()})
+    assert main.main() == 0
+    got = [r["transcript"] for r in read_output(tmp_path)]
+    processed = {k: [selection.remove_sentence_breaks(t, True) for t in v]
+                 for k, v in texts.items()}
+    expected, _ = selection.rover(processed, backbone="order")
+    assert got == expected
+
+
+def test_single_backend_postprocess_applies_the_rule(monkeypatch, tmp_path) -> None:
+    cfg = config("a", selection="first") | {"postprocess": "sentence-breaks-keep-ellipsis"}
+    main, _ = load_main(monkeypatch, tmp_path, cfg)
+    monkeypatch.setattr(main, "BACKENDS", {"a": fake_backend(["Yo fui. I went. Pero bueno"] * 4)})
+    assert main.main() == 0
+    assert {r["transcript"] for r in read_output(tmp_path)} == {"Yo fui I went pero bueno"}
+
+
+def test_qwen_backend_passes_context_per_clip(monkeypatch, tmp_path) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+    calls = []
+
+    class Model:
+        def transcribe(self, audio, context, language):
+            calls.append(context)
+            from types import SimpleNamespace
+            return [SimpleNamespace(text="x") for _ in audio]
+
+    backend = main.QwenBackend.__new__(main.QwenBackend)
+    backend.batch, backend.context, backend.model = 2, "Bilingual.", Model()
+    monkeypatch.setattr(main, "decode_16k_mono", lambda path: [0.0])
+    clips = [tmp_path / f"c{i}.mp3" for i in range(3)]
+    for clip in clips:
+        clip.write_bytes(b"x")
+    outputs, failures = backend.transcribe_all(clips, main.Progress("a", 3))
+    assert outputs == ["x", "x", "x"] and failures == 0
+    assert calls == [["Bilingual.", "Bilingual."], ["Bilingual."]]

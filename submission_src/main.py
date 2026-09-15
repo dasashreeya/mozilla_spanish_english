@@ -64,7 +64,7 @@ if __name__ == "__main__":
 SRC = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC))
 
-from selection import mbr_select, prompt_leaked  # noqa: E402
+from selection import mbr_select, prompt_leaked, remove_sentence_breaks, rover  # noqa: E402
 
 WORKING_DIR = Path("/code_execution")
 DATA_DIR = Path(os.environ.get("LIT_DATA_DIR", WORKING_DIR / "data"))
@@ -195,13 +195,15 @@ class QwenBackend:
         quiet_libraries()
         settings = spec[device]
         self.batch = settings["batch"]
+        self.context = spec.get("context", "")
         self.model = Qwen3ASRModel.from_pretrained(
             str(SRC / spec["path"]), dtype=getattr(torch, settings["dtype"]),
             device_map="cuda:0" if device == "cuda" else "cpu",
             max_inference_batch_size=self.batch, max_new_tokens=spec["max_new_tokens"])
 
     def _one(self, path: Path) -> str:
-        result = self.model.transcribe(audio=(decode_16k_mono(path), SAMPLE_RATE), language=None)
+        result = self.model.transcribe(audio=(decode_16k_mono(path), SAMPLE_RATE),
+                                       context=self.context, language=None)
         return result[0].text.strip()
 
     def transcribe_all(self, paths: list[Path], progress: Progress) -> tuple[list[str], int]:
@@ -213,7 +215,8 @@ class QwenBackend:
             indices = order[start:start + self.batch]
             try:
                 audios = [(decode_16k_mono(paths[i]), SAMPLE_RATE) for i in indices]
-                results = self.model.transcribe(audio=audios, language=None)
+                results = self.model.transcribe(audio=audios, context=[self.context] * len(audios),
+                                                language=None)
                 for i, result in zip(indices, results, strict=True):
                     outputs[i] = result.text.strip()
             except Exception:
@@ -241,12 +244,29 @@ def release_memory() -> None:
         pass
 
 
-def select(outputs: dict[str, list[str]], order: list[str], method: str):
+def postprocess(texts: list[str], method: str) -> list[str]:
+    """Per-backend text rule applied before selection (docs/METHODS.md M9, M9b)."""
+
+    if method == "none":
+        return texts
+    if method in ("sentence-breaks", "sentence-breaks-keep-ellipsis"):
+        keep = method == "sentence-breaks-keep-ellipsis"
+        return [remove_sentence_breaks(text, keep) for text in texts]
+    raise ValueError(f"unknown postprocess {method!r}")
+
+
+def select(outputs: dict[str, list[str]], order: list[str], method: str,
+           postprocess_method: str = "none"):
     finished = [name for name in order if name in outputs]
+    processed = {name: postprocess(outputs[name], postprocess_method) for name in finished}
     if method == "mbr" and len(finished) >= 3:
-        selected, chosen = mbr_select({name: outputs[name] for name in finished})
+        selected, chosen = mbr_select(processed)
         return selected, {name: chosen.count(name) for name in finished}
-    return outputs[finished[0]], {finished[0]: len(outputs[finished[0]])}
+    if method == "rover-order" and len(finished) >= 3:
+        # ROVER over the finished backends in config order; the first is the backbone (M2).
+        selected, _ = rover(processed, backbone="order")
+        return selected, {"rover": len(selected)}
+    return processed[finished[0]], {finished[0]: len(processed[finished[0]])}
 
 
 def write_submission(names: list[str], transcripts: list[str]) -> None:
@@ -306,7 +326,8 @@ def main() -> int:
             del backend
             release_memory()
         if outputs:
-            transcripts, _ = select(outputs, order, config["selection"])
+            transcripts, _ = select(outputs, order, config["selection"],
+                                    config.get("postprocess", "none"))
             write_submission(names, transcripts)
             log(f"wrote {OUTPUT_PATH.name}")
 
