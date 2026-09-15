@@ -1,0 +1,4 @@
+dev references | clips 155 | words 4994 | capitalized non-initial /100 3.72 | I-forms /100 2.52 | lowercase i-forms /100 0.46 | fillers /100 1.00 | adjacent repeats /100 0.90 | raw tokens with . , ? /100 6.28 | digit tokens /100 0.10
+Bangor training labels | clips 7200 | words 209159 | capitalized non-initial /100 4.14 | I-forms /100 1.81 | lowercase i-forms /100 1.20 | fillers /100 1.37 | adjacent repeats /100 2.13 | raw tokens with . , ? /100 16.85 | digit tokens /100 0.00
+fine-tuned output on dev | clips 155 | words 5022 | capitalized non-initial /100 2.89 | I-forms /100 1.93 | lowercase i-forms /100 1.17 | fillers /100 1.06 | adjacent repeats /100 1.15 | raw tokens with . , ? /100 12.33 | digit tokens /100 0.00
+turbo-prompt output on dev | clips 155 | words 4781 | capitalized non-initial /100 3.41 | I-forms /100 2.15 | lowercase i-forms /100 0.96 | fillers /100 0.29 | adjacent repeats /100 0.29 | raw tokens with . , ? /100 21.32 | digit tokens /100 0.63

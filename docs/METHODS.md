@@ -55,6 +55,23 @@ Decoding variants of the fine-tuned model (full dev, CPU int8, same prompt unles
 - **M7 — Repetition penalty 1.1.**
 - **M8 — No prompt** (completes the S4 secondary run).
 
+## Round 3b — designed 2026-09-15 after round-3 combinations, before scoring these
+
+Motivation (counts from `reports/finetune/evidence/conventions_round3b.txt`): raw tokens
+carrying `.`, `,` or `?` per 100 words are 6.28 in the dev references, 16.85 in the Bangor
+training labels and 12.33 in the fine-tuned output. The official normalizer lowercases the
+first letter after `.`, `!` or `?`, so an extra sentence break in a hypothesis lowercases a
+capitalized word that the reference keeps (the fine-tuned output has 1.93 "I"-forms and 1.17
+lowercase "i"-forms per 100 words; the references 2.52 and 0.46).
+
+- **M9 — Remove internal sentence breaks:** in the fine-tuned output, delete `.`, `!` and `?`
+  that end a sentence before the last word of a clip, and lowercase the first letter of the
+  word that followed unless that word is an "I"-form (I, I'm, I've, I'll, I'd) or has an
+  uppercase second letter. Commas and the final punctuation are left alone (the normalizer
+  removes them without case effects).
+- **M11 — M9 then ROVER (M2 design):** apply M9 to all three M2 inputs, then ROVER with the
+  fine-tuned output as backbone.
+
 ## GPU candidates (need the user's go; not run in round 3)
 
 - **G1** — retrain with Bangor transcripts normalized towards the competition conventions.
