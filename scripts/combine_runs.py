@@ -43,10 +43,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--name", required=True, help="output run name")
     parser.add_argument("--method", choices=("mbr", "rover-backbone", "rover-order",
                                              "case-vote", "collapse-repeats",
-                                             "sentence-breaks"),
+                                             "sentence-breaks", "sentence-breaks-keep-ellipsis"),
                         default="mbr", help="design: docs/SELECTOR.md (mbr), docs/ROVER.md, "
                                             "docs/METHODS.md (case-vote, collapse-repeats)")
-    parser.add_argument("--preprocess", choices=("none", "sentence-breaks"), default="none",
+    parser.add_argument("--preprocess", choices=("none", "sentence-breaks",
+                                                 "sentence-breaks-keep-ellipsis"), default="none",
                         help="apply to every candidate before combining (docs/METHODS.md M11)")
     parser.add_argument("--compare-to", action="append", default=[], metavar="RUN",
                         help="also report a paired comparison with this run")
@@ -67,8 +68,9 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit(f"{run}: clips or references differ from {args.runs[0]}")
         candidates[run] = hyp_texts
     raw_candidates = dict(candidates)
-    if args.preprocess == "sentence-breaks":
-        candidates = {run: [selection.remove_sentence_breaks(h) for h in texts]
+    if args.preprocess != "none":
+        keep = args.preprocess == "sentence-breaks-keep-ellipsis"
+        candidates = {run: [selection.remove_sentence_breaks(h, keep) for h in texts]
                       for run, texts in candidates.items()}
 
     if args.method == "mbr":
@@ -87,9 +89,10 @@ def main(argv: list[str] | None = None) -> int:
                                     "voters (docs/METHODS.md M3)",
                           "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
                                                                       strict=True))}
-    elif args.method == "sentence-breaks":
+    elif args.method in ("sentence-breaks", "sentence-breaks-keep-ellipsis"):
         primary = args.runs[0]
-        selected = [selection.remove_sentence_breaks(text) for text in candidates[primary]]
+        keep = args.method == "sentence-breaks-keep-ellipsis"
+        selected = [selection.remove_sentence_breaks(text, keep) for text in candidates[primary]]
         selection_info = {"method": "remove internal sentence breaks, lowercase the next word "
                                     "(docs/METHODS.md M9)",
                           "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],

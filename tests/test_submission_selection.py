@@ -159,3 +159,9 @@ def test_remove_sentence_breaks_keeps_i_forms_and_acronyms() -> None:
     assert remove_sentence_breaks("Hola.") == "Hola."
     assert remove_sentence_breaks("") == ""
     assert remove_sentence_breaks("Well... Maybe") == "Well maybe"
+
+
+def test_remove_sentence_breaks_can_keep_ellipses() -> None:
+    from submission_src.selection import remove_sentence_breaks
+
+    assert remove_sentence_breaks("So... Maybe. Yes", keep_ellipsis=True) == "So... Maybe yes"

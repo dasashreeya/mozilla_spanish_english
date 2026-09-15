@@ -115,4 +115,11 @@ the fine-tuned output (12 such words to 1).
 - **M9b** — M9, but a word ending in `...` keeps its ellipsis and the next word is unchanged.
 - **M11b** — M9b applied to the three M2 inputs, then ROVER as M2.
 
+| Method | Dev WER | Paired diff vs fine-tuned [95% CI] | Result | Why |
+|---|---:|---|---|---|
+| M9b (M9, ellipses kept) | 0.1055 | −0.0052 [−0.0077, −0.0028] | PASS | differs from M9 by 0.0004: keeping `...` matches a few reference words; within noise, and designed after seeing dev |
+| M11b (M9b, then ROVER as M2) | 0.0989 | −0.0118 [−0.0198, −0.0036] | PASS | ROVER normalizes each input, so the ellipsis choice barely matters here (M11 0.0987) |
+
+Outputs: `reports/finetune/evidence/round3c_results.txt`, `reports/baselines/r3c-*.json`.
+
 (decoding variants M5–M8 below when they finish)

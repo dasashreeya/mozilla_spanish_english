@@ -266,15 +266,17 @@ _I_FORMS = {"I", "I'm", "I've", "I'll", "I'd"}
 _SENTENCE_END = re.compile(r"[.!?]+$")
 
 
-def remove_sentence_breaks(text: str) -> str:
+def remove_sentence_breaks(text: str, keep_ellipsis: bool = False) -> str:
     """Delete sentence-ending . ! ? before a clip's last word and lowercase the next word's
     first letter unless it is an I-form or an acronym (round-3b M9). The official normalizer
-    lowercases letters after such breaks, so breaks the reference lacks cost case errors."""
+    lowercases letters after such breaks, so breaks the reference lacks cost case errors.
+    keep_ellipsis leaves a word ending in "..." and the word after it unchanged (M9b)."""
 
     tokens = text.split()
     for i in range(len(tokens) - 1):
-        lead, core, trail = _split_edges(tokens[i])
         if not _SENTENCE_END.search(tokens[i]):
+            continue
+        if keep_ellipsis and tokens[i].endswith("..."):
             continue
         tokens[i] = _SENTENCE_END.sub("", tokens[i])
         n_lead, n_core, n_trail = _split_edges(tokens[i + 1])

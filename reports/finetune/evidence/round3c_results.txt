@@ -1,0 +1,10 @@
+$ git rev-parse HEAD; git status --porcelain -- submission_src scripts
+191ba31208048e3bdee11de1e08df2b0343dc54e
+ M scripts/combine_runs.py
+ M submission_src/selection.py
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt --name r3c-M9b --method sentence-breaks-keep-ellipsis
+r3c-M9b: WER=0.1055 [0.0938, 0.1168] cli=0.105527 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: -0.0052 [-0.0077, -0.0028] | selection={'clips_changed': 141}
+M9b exit=0
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt large-v3-turbo-auto-int8-b5-prompt-guard Qwen3-ASR-1.7B-auto-cpu-float32-ctx --name r3c-M11b --method rover-order --preprocess sentence-breaks-keep-ellipsis
+r3c-M11b: WER=0.0989 [0.0877, 0.1106] cli=0.098919 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: -0.0118 [-0.0198, -0.0036] | selection={'clips_changed_from_backbone': 89}
+M11b exit=0
