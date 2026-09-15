@@ -1,7 +1,8 @@
 """S0 dry run: the full fine-tuning path on CPU with whisper-tiny and 8 Bangor segments.
 
 train (2 steps, finite-loss check) -> save -> convert to CTranslate2 -> load with
-faster-whisper -> decode one training segment with a prompt. Writes
+faster-whisper -> decode one training segment with a prompt; then the trial's path,
+train with save_final=False, which must write no weights. Writes
 reports/finetune/S0-dryrun.json (aggregates only: steps, losses, file lists, detected
 language, output length) and exits non-zero on any failure. Run it in an environment
 with torch, transformers, ctranslate2 and faster-whisper (e.g. .venv-qwen).
@@ -14,6 +15,7 @@ import math
 import platform
 import sys
 import time
+from dataclasses import replace
 from datetime import UTC, datetime
 from importlib.metadata import version
 from pathlib import Path
@@ -46,6 +48,8 @@ def main() -> int:
     segments, info = model.transcribe(str(Path(cfg.data_dir) / first["audio"]), beam_size=1,
                                       initial_prompt="Hola, how are you?")
     text = " ".join(segment.text for segment in segments)
+    nosave = train(replace(cfg, output_dir=str(out / "nosave"), save_final=False))
+    assert nosave["final_dir"] is None and not (out / "nosave" / "final").exists()
     result = {
         "stage": "S0",
         "ran_at": datetime.now(UTC).isoformat(timespec="seconds"),
@@ -59,6 +63,10 @@ def main() -> int:
         "saved_files": sorted(p.name for p in final.iterdir()),
         "ct2_files": sorted(p.name for p in ct2.iterdir()),
         "decode": {"detected_language": info.language, "output_characters": len(text)},
+        "no_save_check": {"final_dir": nosave["final_dir"],
+                          "final_exists": (out / "nosave" / "final").exists(),
+                          "files_written": sorted(p.name for p in (out / "nosave").iterdir()),
+                          "training_loss": nosave["training_loss"]},
         "software": {p: version(p) for p in ("torch", "transformers", "accelerate",
                                               "ctranslate2", "faster-whisper")}
         | {"python": platform.python_version()},
@@ -68,7 +76,8 @@ def main() -> int:
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({k: result[k] for k in ("items", "optimizer_steps", "training_loss",
-                                             "ct2_files", "decode", "result")}))
+                                             "ct2_files", "decode", "no_save_check",
+                                             "result")}))
     return 0
 
 

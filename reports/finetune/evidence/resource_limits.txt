@@ -1,0 +1,15 @@
+$ date -u
+Mon Sep 14 23:17:04 UTC 2026
+$ uv run --extra train python (import scripts/modal_finetune.py constants; pass them to installed modal._resources.convert_fn_config_to_resources_config, which _functions.py:1099/1114 calls)
+modal 1.2.6 | GPU A100-80GB | CPU (8.0, 8.0) | MEMORY (65536, 65536) | STARTUP_TIMEOUT 600
+milli_cpu 8000 milli_cpu_max 8000 | memory_mb 65536 memory_mb_max 65536 | gpu A100-80GB count 1
+exit=0
+$ grep -n (function decorators) scripts/modal_finetune.py
+29:GPU = "A100-80GB"
+53:CPU = (8.0, 8.0)
+54:MEMORY = (65536, 65536)
+55:STARTUP_TIMEOUT = 10 * 60
+60:@app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=20 * 60,
+61:              startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
+67:@app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=75 * 60,
+68:              startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)

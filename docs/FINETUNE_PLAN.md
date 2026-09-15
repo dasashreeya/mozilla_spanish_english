@@ -55,7 +55,7 @@ code-switching rate.
 | Stage | What | Cap | Stops if |
 |---|---|---:|---|
 | S0 (free) | Write the trainer; CPU dry run on 20 segments for 2 steps: data loads, loss is finite, save → convert → load → decode works | $0 | anything fails |
-| S1 | Turbo trial on an A100: 10 min of training, measure samples/s and peak memory, confirm loss falls | **$1.20** (DERIVED: 20 min wall incl. startup × $3.387/h = $1.13) | loss not falling, OOM, or throughput implies S2 > $6 |
+| S1 | Turbo trial on an A100: 10 min of training, measure samples/s and peak memory, confirm loss falls | **$1.69** hard (watchdog: 30 min × $3.387/h; was $1.20 before the guards) | loss not falling, OOM, or throughput implies S2 > $6 |
 | S2 | Turbo full fine-tune: 2 epochs over 7,200 segments (14,400 samples), checkpoint each epoch | **$6** | S1-projected time exceeded by 50% |
 | S3 | Only if decision 1 allows: Qwen3-ASR-1.7B trial, then full SFT, same staging | **$7** | as S1/S2 |
 | S4 (free) | Convert, decode dev on CPU, score, paired bootstrap vs the zero-shot model and vs the current selector; add to the selector (new sets pre-declared first) | $0 | — |
@@ -72,6 +72,35 @@ prompted turbo, dev 0.1396, statistically tied with the 11-decode C1 selector
 only if its paired-bootstrap 95% interval against prompted turbo lies entirely below
 zero on dev. A selector including it replaces the current best only if its paired
 interval against that system lies entirely below zero.
+
+## Decisions and guards (2026-09-15)
+
+Decisions recorded in `reports/finetune/approvals.md`: Whisper turbo only; **$15 is the
+budget for the whole of model training**; the S1 trial may launch if the only remaining
+pre-gpu block is speaker disjointness between Bangor and dev (different corpora, no shared
+speaker label space).
+
+Cost guards, because Modal restarts a preempted or crashed container on the same input
+even with `retries=0` (modal.com/docs/guide/preemption, /guide/retries) and a function's
+timeouts apply per attempt (/guide/timeouts):
+
+1. **One attempt per run id.** Each launch takes `--run-id`; the function first creates
+   `/vol/runs/<stage>-<run id>/ATTEMPT` exclusively and commits the volume. A restarted
+   attempt finds the marker, prints `GUARD` and returns before loading anything
+   (`claim_attempt`, `run_directory` in `src/lit_sp_en/finetune.py`; tested).
+2. **Wall-clock deadline across all attempts.** `scripts/modal_watchdog.py` launches the
+   stage, reads the app ID and stops the app at `--max-minutes` from launch, then waits
+   for `stopped`. It also stops an app left with no running tasks after the job, so no
+   idle app remains. S1 runs with `--max-minutes 30`: at most 30 min × $3.387/h = $1.69
+   of container time at the configured CPU and memory maxima, whatever Modal restarts
+   (DERIVED). It only works while this machine is awake; the function timeouts remain.
+3. **No weights from the trial.** `trial` sets `save_final=False`; only `full` saves and
+   converts.
+4. **Non-finite losses are visible.** `logging_nan_inf_filter=False`, so a nan or inf
+   step loss reaches the logged loss and `check_finite_loss` stops the run.
+
+A Workspace budget on Modal's Usage & Billing page is the only hard cap Modal itself
+enforces (modal.com/docs/guide/budgets); setting one is the account owner's choice.
 
 ## Reporting during GPU work
 

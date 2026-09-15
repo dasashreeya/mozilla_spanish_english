@@ -8,9 +8,11 @@ inside functions so the Modal wrapper can import this module without them.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import time
 from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -35,6 +37,7 @@ class FinetuneConfig:
     num_workers: int = 8
     max_label_tokens: int = 448
     expected_items: int = 0  # >0: refuse to train unless exactly this many usable segments
+    save_final: bool = True  # False: train and report only, write no weights
 
 
 def load_items(cfg: FinetuneConfig) -> list[dict]:
@@ -61,6 +64,33 @@ def check_item_count(items: list[dict], expected: int) -> None:
         raise ValueError("no training items")
     if expected and len(items) != expected:
         raise ValueError(f"{len(items)} usable segments, expected {expected}; refusing to train")
+
+
+RUN_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,39}")
+
+
+def run_directory(root: Path, stage: str, run_id: str) -> Path:
+    if not RUN_ID.fullmatch(run_id):
+        raise ValueError(f"run id {run_id!r} must match {RUN_ID.pattern}")
+    return root / f"{stage}-{run_id}"
+
+
+def claim_attempt(run_dir: Path) -> bool:
+    """Create run_dir/ATTEMPT exclusively; False if an earlier attempt already made it.
+
+    Modal restarts a preempted or crashed container on the same input, even with
+    retries=0 (docs/FINETUNE_PLAN.md). A restarted attempt finds the marker and stops
+    before loading anything, so one run id is trained at most once.
+    """
+
+    run_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        with (run_dir / "ATTEMPT").open("x", encoding="utf-8") as handle:
+            claimed_at = datetime.now(UTC).isoformat(timespec="seconds")
+            handle.write(json.dumps({"claimed_at": claimed_at}) + "\n")
+    except FileExistsError:
+        return False
+    return True
 
 
 def check_finite_loss(training_loss: float, logged: list[tuple[int, float]]) -> None:
@@ -166,6 +196,9 @@ def build_training_arguments(cfg: FinetuneConfig, cuda: bool):
         # fails on Whisper's encoder states shared by every layer (S0 dry run).
         gradient_checkpointing_kwargs={"use_reentrant": False},
         logging_steps=5, save_strategy="no",
+        # The default (True) replaces a nan/inf step loss with the window average in the
+        # logged loss, which would hide it from check_finite_loss (trainer.py:2676).
+        logging_nan_inf_filter=False,
         eval_strategy="no", report_to=[], dataloader_num_workers=cfg.num_workers if cuda else 0,
         remove_unused_columns=False, seed=cfg.seed,
     )
@@ -202,9 +235,10 @@ def train(cfg: FinetuneConfig) -> dict:
     )
     result = trainer.train()
     check_finite_loss(result.training_loss, callback.losses)
-    final_dir = Path(cfg.output_dir) / "final"
-    trainer.save_model(str(final_dir))
-    processor.save_pretrained(str(final_dir))
+    final_dir = Path(cfg.output_dir) / "final" if cfg.save_final else None
+    if final_dir:
+        trainer.save_model(str(final_dir))
+        processor.save_pretrained(str(final_dir))
     return {
         "config": asdict(cfg), "device": "cuda" if cuda else "cpu",
         "gpu": torch.cuda.get_device_name(0) if cuda else None,
@@ -215,7 +249,8 @@ def train(cfg: FinetuneConfig) -> dict:
         "peak_gpu_memory_gib": round(torch.cuda.max_memory_allocated() / 2**30, 2)
         if cuda else None,
         "wall_seconds": round(time.monotonic() - started, 1),
-        "final_dir": str(final_dir),
+        "final_dir": str(final_dir) if final_dir else None,
+        "training_args": args.to_dict(),
     } | callback.summary()
 
 

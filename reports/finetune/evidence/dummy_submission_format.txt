@@ -1,0 +1,10 @@
+$ date -u
+Mon Sep 14 23:23:50 UTC 2026
+$ (dummy submission: every dev manifest row with transcript "hola", written to the scratchpad; one copy with the last row dropped)
+dev manifest rows: 155 | header: ['audio_filename', 'transcript'] | rows: 155 | ids equal manifest order: True | duplicate ids: 0 | empty transcripts: 0
+exit=0
+$ uv run --no-sync python vendor/runtime_score.py data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.reference.csv --predicted-path <scratchpad>/dummy_submission.csv
+WER: 0.999199
+exit=0
+$ uv run --no-sync python vendor/runtime_score.py data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.reference.csv --predicted-path <scratchpad>/dummy_submission_missing_row.csv (output withheld: the error names a clip; only exit code and message shape shown)
+exit=2 | message says 'missing 1 rows': 1

@@ -67,3 +67,74 @@ def test_majority_language_ties_go_to_english() -> None:
     assert majority_language([("a", "spa"), ("b", "spa"), ("c", "eng")]) == "es"
     assert majority_language([("a", "spa"), ("c", "eng")]) == "en"
     assert majority_language([("a", "eng&spa")]) == "en"
+
+
+def test_run_directory_rejects_unsafe_run_ids(tmp_path: Path) -> None:
+    import pytest
+
+    from lit_sp_en.finetune import run_directory
+
+    assert run_directory(tmp_path, "trial", "s1") == tmp_path / "trial-s1"
+    for bad in ("", "../x", "a/b", "-s1", "x" * 41):
+        with pytest.raises(ValueError, match="run id"):
+            run_directory(tmp_path, "trial", bad)
+
+
+def test_claim_attempt_succeeds_once(tmp_path: Path) -> None:
+    from lit_sp_en.finetune import claim_attempt
+
+    run = tmp_path / "runs" / "trial-s1"
+    assert claim_attempt(run) is True
+    assert "claimed_at" in json.loads((run / "ATTEMPT").read_text())
+    assert claim_attempt(run) is False
+
+
+def test_training_arguments_keep_nan_losses_visible(tmp_path: Path) -> None:
+    import pytest
+
+    pytest.importorskip("transformers")  # installed in .venv-qwen, not in .venv
+    from lit_sp_en.finetune import FinetuneConfig, build_training_arguments
+
+    args = build_training_arguments(FinetuneConfig(output_dir=str(tmp_path)), cuda=False)
+    assert args.logging_nan_inf_filter is False
+    assert args.save_strategy == "no"
+    assert args.gradient_checkpointing_kwargs == {"use_reentrant": False}
+
+
+class _FakeVolume:
+    def __init__(self) -> None:
+        self.calls: list[str] = []
+
+    def reload(self) -> None:
+        self.calls.append("reload")
+
+    def commit(self) -> None:
+        self.calls.append("commit")
+
+
+def test_modal_run_trains_once_per_run_id(monkeypatch, tmp_path: Path) -> None:
+    import pytest
+
+    pytest.importorskip("modal")  # installed with the train extra in .venv, not in .venv-qwen
+    import lit_sp_en.finetune as finetune
+    from scripts import modal_finetune
+
+    trained = []
+
+    def fake_train(cfg):
+        trained.append(cfg)
+        return {"config": {}, "loss_curve": [(5, 2.0)], "final_dir": None}
+
+    fake_volume = _FakeVolume()
+    monkeypatch.setattr(modal_finetune, "VOLUME", str(tmp_path))
+    monkeypatch.setattr(modal_finetune, "volume", fake_volume)
+    monkeypatch.setattr(finetune, "train", fake_train)
+
+    report = modal_finetune._run("trial", "s1", save_final=False, expected_items=7200)
+    assert len(trained) == 1 and trained[0].save_final is False
+    assert trained[0].output_dir == str(tmp_path / "runs" / "trial-s1")
+    assert fake_volume.calls == ["reload", "commit", "commit"]
+    assert (tmp_path / "runs" / "trial-s1" / "report.json").is_file() and "guard" not in report
+
+    again = modal_finetune._run("trial", "s1", save_final=False, expected_items=7200)
+    assert again == {"guard": "refused", "run": "trial-s1"} and len(trained) == 1

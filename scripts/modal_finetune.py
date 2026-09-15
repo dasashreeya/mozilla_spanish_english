@@ -2,12 +2,16 @@
 
 Stages are separate functions so each has its own hard timeout, which bounds its cost:
 
-    uv run --extra train modal run --detach scripts/modal_finetune.py::trial
-    uv run --extra train modal run --detach scripts/modal_finetune.py::full
+    uv run --extra train modal run --detach scripts/modal_finetune.py::trial --run-id s1
+    uv run --extra train modal run --detach scripts/modal_finetune.py::full --run-id s2
 
+Launch through scripts/modal_watchdog.py, which stops the app at a wall-clock deadline.
 Data comes from the `lit-sp-en-train` volume (/bangor: manifest, FLAC, segment
-languages). Dev audio never goes to Modal. Each stage writes /runs/<stage>/report.json
-and prints one `REPORT {...}` line with aggregates only.
+languages). Dev audio never goes to Modal. Each run writes /runs/<stage>-<run id>/
+(ATTEMPT marker, report.json; weights for `full` only) and prints one `REPORT {...}`
+line with aggregates only. A second attempt of the same run id (Modal restarts
+preempted or crashed containers even with retries=0) prints `GUARD` and returns
+before loading anything.
 """
 
 from __future__ import annotations
@@ -30,10 +34,21 @@ GPU = "A100-80GB"
 VOLUME = "/vol"
 
 
-def _run(stage: str, **overrides) -> dict:
-    from lit_sp_en.finetune import FinetuneConfig, convert_to_ctranslate2, train
+def _run(stage: str, run_id: str, **overrides) -> dict:
+    from lit_sp_en.finetune import (
+        FinetuneConfig,
+        claim_attempt,
+        convert_to_ctranslate2,
+        run_directory,
+        train,
+    )
 
-    out = Path(VOLUME) / "runs" / stage
+    out = run_directory(Path(VOLUME) / "runs", stage, run_id)
+    volume.reload()
+    if not claim_attempt(out):
+        print(f"GUARD {out.name}: an earlier attempt exists; not training", flush=True)
+        return {"guard": "refused", "run": out.name}
+    volume.commit()
     cfg = FinetuneConfig(data_dir=f"{VOLUME}/bangor",
                          languages_file=f"{VOLUME}/bangor/segment_languages.json",
                          output_dir=str(out), **overrides)
@@ -43,7 +58,8 @@ def _run(stage: str, **overrides) -> dict:
         report["ct2_dir"] = str(out / "ct2")
     (out / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     volume.commit()
-    compact = {k: v for k, v in report.items() if k not in ("config", "loss_curve")}
+    compact = {k: v for k, v in report.items()
+               if k not in ("config", "loss_curve", "training_args")}
     compact["loss_first_last"] = [report["loss_curve"][:1], report["loss_curve"][-1:]]
     print("REPORT " + json.dumps(compact), flush=True)
     return report
@@ -56,15 +72,16 @@ STARTUP_TIMEOUT = 10 * 60
 EXPECTED_ITEMS = 7200
 
 
-# S1: 10 minutes of training (plus load and save) under a 20-minute execution timeout.
+# S1: 10 minutes of training (plus load) under a 20-minute execution timeout; no weights kept.
 @app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=20 * 60,
               startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
-def trial() -> dict:
-    return _run("trial", epochs=2.0, max_train_seconds=600.0, expected_items=EXPECTED_ITEMS)
+def trial(run_id: str) -> dict:
+    return _run("trial", run_id, epochs=2.0, max_train_seconds=600.0,
+                expected_items=EXPECTED_ITEMS, save_final=False)
 
 
 # S2: the full 2-epoch run, only after S1's throughput projects it under the cap.
 @app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=75 * 60,
               startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
-def full() -> dict:
-    return _run("full", epochs=2.0, expected_items=EXPECTED_ITEMS)
+def full(run_id: str) -> dict:
+    return _run("full", run_id, epochs=2.0, expected_items=EXPECTED_ITEMS)

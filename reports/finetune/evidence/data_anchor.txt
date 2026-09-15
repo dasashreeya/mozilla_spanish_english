@@ -1,0 +1,15 @@
+$ date -u
+Mon Sep 14 23:51:18 UTC 2026
+$ git log -1 --format="%h %ad %s" --date=iso-strict -- scripts/segment_languages.py scripts/prepare_bangor.py; git status --porcelain -- scripts/segment_languages.py scripts/prepare_bangor.py src/lit_sp_en
+9c6d177 2026-09-14T18:57:17-04:00 Package prompted turbo with a prompt-leak guard, and add the trainer
+240fb29 2026-09-13T01:57:00-04:00 Convert Bangor Miami CHAT and cut it into training segments
+(empty status above = scripts match HEAD)
+$ (1) manifest: Hugging Face private dataset file metadata (token read from ../.env, not printed) vs local git blob id and sha256
+HF processed/bangor_segments/manifest.jsonl | blob_id 9c94137bf4cd51eb66ae4cffd30c87ea5f0ade59 | size 3985913 | last_commit 56a5bc206536f38bcdc22d748d97298da8a86c8c 2026-09-13T06:00:05+00:00
+local manifest | git blob id 9c94137bf4cd51eb66ae4cffd30c87ea5f0ade59 | size 3985913 | sha256 ab68a62eab202a9523408706089a3f6625b34f806a4e68a487e12c3a7b4ed02c
+blob ids equal: True | sizes equal: True
+exit=0
+$ (2) language map: rerun committed scripts/segment_languages.py main() with OUTPUT redirected to the scratchpad; compare sha256 with the file used for training
+{"segments": 7200, "language_counts": {"en": 4683, "es": 2517}}
+main() returned 0 | regenerated sha256 b128730abe7b5c7e12a5a98b16b2854cbf62d17c30d7d734838189995a0ebdc5 | training file sha256 b128730abe7b5c7e12a5a98b16b2854cbf62d17c30d7d734838189995a0ebdc5 | equal: True
+exit=0
