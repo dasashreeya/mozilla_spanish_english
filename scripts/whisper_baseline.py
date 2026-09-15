@@ -61,6 +61,22 @@ def snapshot_provenance(repo_id: str) -> dict:
     return {"repo_id": repo_id, "revision": snapshot.name, "weights_sha256": weights}
 
 
+def local_model_provenance(directory: str) -> dict:
+    """SHA-256 of every file in a local model directory (Hub lookups reject local paths)."""
+
+    import hashlib
+
+    digests = {}
+    for path in sorted(Path(directory).iterdir()):
+        if path.is_file():
+            digest = hashlib.sha256()
+            with path.open("rb") as handle:
+                for chunk in iter(lambda: handle.read(1 << 20), b""):
+                    digest.update(chunk)
+            digests[path.name] = digest.hexdigest()
+    return {"local_dir": str(Path(directory).resolve()), "files_sha256": digests}
+
+
 def _sha256(text: str | None) -> str | None:
     import hashlib
 
@@ -100,6 +116,8 @@ class FasterWhisperBackend:
     def provenance(self) -> dict:
         from faster_whisper.utils import _MODELS
 
+        if Path(self.model_name).is_dir():  # a local conversion, e.g. a fine-tuned model
+            return {"name": Path(self.model_name).name} | local_model_provenance(self.model_name)
         return {"name": self.model_name} | snapshot_provenance(
             _MODELS.get(self.model_name, self.model_name))
 

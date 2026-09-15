@@ -107,6 +107,41 @@ timeouts apply per attempt (/guide/timeouts):
 A Workspace budget on Modal's Usage & Billing page is the only hard cap Modal itself
 enforces (modal.com/docs/guide/budgets); setting one is the account owner's choice.
 
+## S4 evaluation design (written 2026-09-15 while S2 trains, before any fine-tuned output exists)
+
+Candidate: the S2 model as converted on Modal (`/vol/runs/full-s2/ct2`, CTranslate2 float16),
+downloaded to `artifacts/finetune/full-s2/ct2` and decoded on this CPU exactly like the
+zero-shot turbo runs: faster-whisper 1.2.1, int8, beam 5, language auto, 8 threads.
+
+Runs, all 155 dev clips, nothing else tried on dev in this round:
+
+1. `ft-s2-turbo-auto-int8-b5-prompt`: with the code-switched prompt
+   (`CODE_SWITCH_PROMPT`, SHA-256 `c44393b0…`).
+2. `ft-s2-turbo-auto-int8-b5`: without a prompt.
+3. `ft-s2-turbo-auto-int8-b5-prompt-guard`: `scripts/apply_prompt_guard.py`, window 4, from
+   runs 1 and 2 (the submission's guard).
+
+Primary comparison: run 3 minus `large-v3-turbo-auto-int8-b5-prompt-guard` (dev 0.1396),
+paired bootstrap as in `scripts/compare_runs.py`. **Pass rule: the 95% interval lies
+entirely below zero.** Secondary, reported only: run 2 minus unprompted turbo (0.2233), run 1
+minus prompted turbo. A pass makes it the candidate for packaging (a new variant, full-dev
+package validation, smoke test); a fail keeps prompted turbo and the model may still enter
+a pre-declared selector set.
+
+Limits stated in advance: dev speakers are not shown to be absent from Bangor (V4 of the
+pre-gpu claim); S2 trains 2 epochs with no held-out stopping, so the model it produces is
+the one scored; CPU int8 decoding differs from the runtime's CUDA float16.
+
+Commands (after the download):
+
+```sh
+P="Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?"
+.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/full-s2/ct2 --initial-prompt "$P" --run-name ft-s2-turbo-auto-int8-b5-prompt
+.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/full-s2/ct2 --run-name ft-s2-turbo-auto-int8-b5
+uv run python scripts/apply_prompt_guard.py --prompted ft-s2-turbo-auto-int8-b5-prompt --unprompted ft-s2-turbo-auto-int8-b5 --name ft-s2-turbo-auto-int8-b5-prompt-guard
+uv run python scripts/compare_runs.py large-v3-turbo-auto-int8-b5-prompt-guard ft-s2-turbo-auto-int8-b5-prompt-guard large-v3-turbo-auto-int8-b5 ft-s2-turbo-auto-int8-b5 --output comparison-ft-s2.json
+```
+
 ## Reporting during GPU work
 
 Every GPU job is launched detached, logs are polled, and each update gives phase,

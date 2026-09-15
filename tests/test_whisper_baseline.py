@@ -166,3 +166,18 @@ def test_qwen_adapter_labels_empty_language(monkeypatch: pytest.MonkeyPatch) -> 
                         lambda *a, **k: np.zeros((16000, 1), dtype=np.float32))
     backend = whisper_baseline.QwenBackend("q", "cpu", "float32", 8, loaded=Model())
     assert backend.transcribe(Path("silent.mp3"), "auto") == ("", "<none>", None)
+
+
+def test_local_model_directory_provenance_hashes_files(tmp_path) -> None:
+    import hashlib
+
+    model_dir = tmp_path / "ct2"
+    model_dir.mkdir()
+    (model_dir / "model.bin").write_bytes(b"weights")
+    (model_dir / "config.json").write_text("{}")
+    backend = whisper_baseline.FasterWhisperBackend(str(model_dir), "int8", 4, 5, loaded=object())
+    provenance = backend.provenance()
+    assert provenance["name"] == "ct2"
+    assert provenance["files_sha256"] == {
+        "config.json": hashlib.sha256(b"{}").hexdigest(),
+        "model.bin": hashlib.sha256(b"weights").hexdigest()}
