@@ -142,6 +142,31 @@ uv run python scripts/apply_prompt_guard.py --prompted ft-s2-turbo-auto-int8-b5-
 uv run python scripts/compare_runs.py large-v3-turbo-auto-int8-b5-prompt-guard ft-s2-turbo-auto-int8-b5-prompt-guard large-v3-turbo-auto-int8-b5 ft-s2-turbo-auto-int8-b5 --output comparison-ft-s2.json
 ```
 
+## S4 results (computed after the design above, 2026-09-15)
+
+S2 (`reports/finetune/runs/full-s2.report.json`): 450 optimizer steps, 14,400 samples, 15.35
+samples/s, logged loss 1.263 (step 5) to 0.359 (step 450), peak GPU 19.15 GiB, about $0.98 of
+container time (S1 about $0.65).
+
+| Run | Dev WER | 95% CI | S / D / I |
+|---|---:|---|---|
+| prompted turbo + guard (zero-shot bar) | 0.1396 | 0.1216–0.1583 | 396 / 257 / 44 |
+| **`ft-s2-turbo-auto-int8-b5-prompt`** | **0.1107** (official CLI 0.110733) | 0.0991–0.1223 | 331 / 97 / 125 |
+
+**Primary comparison: pass.** The guard triggers on 0 of 155 clips of the prompted run
+(`reports/finetune/evidence/S4_primary_s2.txt`), so run 3 equals run 1 clip for clip and the
+comparison uses run 1: fine-tuned minus prompted turbo + guard = **−0.0288, 95% interval −0.0466
+to −0.0119**, worse in 0.05% of 2,000 resamples (`reports/baselines/comparison-ft-s2-primary.json`).
+Per-clip oracle over the two: 0.0889 (a ceiling that uses the references).
+
+Deviation from the design, stated: run 2 (unprompted) was killed twice by the machine running out
+of memory (swap full), so the secondary comparison is not yet computed; it does not affect the
+primary result, because no clip takes the unprompted output.
+
+What this does not show: dev (two speakers) also chose the prompt, so the gain on new speakers is
+UNKNOWN; decoding here is CPU int8, the runtime is CUDA float16; the dev-to-public offset is
+UNKNOWN. Deletions fell (257 to 97) while insertions rose (44 to 125).
+
 ## Reporting during GPU work
 
 Every GPU job is launched detached, logs are polled, and each update gives phase,

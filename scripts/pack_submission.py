@@ -42,6 +42,20 @@ MODELS = {
                  "revision": "edaa852ec7e145841d8ffdb056a99866b5f0a478", "beam_size": 5,
                  "cpu": {"compute_type": "int8", "threads": 8},
                  "cuda": {"compute_type": "float16"}, "relative_cost": 1.89},
+    # Fine-tuned turbo from S2 (docs/FINETUNE_PLAN.md), pinned to the files scored in S4
+    # (reports/finetune/evidence/S4_eval_s2.txt); downloaded from the Modal volume.
+    "ft-s2": {"kind": "faster-whisper", "local_dir": "artifacts/finetune/full-s2/ct2",
+              "files_sha256": {
+                  "config.json": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e",
+                  "model.bin": "6eb11f4b1191ff260c3363767f70f94bacfa99791edcb7873b3b977239cd82c4",
+                  "preprocessor_config.json":
+                      "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499",
+                  "tokenizer.json":
+                      "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b",
+                  "vocabulary.json":
+                      "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"},
+              "beam_size": 5, "cpu": {"compute_type": "int8", "threads": 8},
+              "cuda": {"compute_type": "float16"}, "relative_cost": 1.0},
 }
 # Round-2 prompt, fixed in docs/SELECTOR.md before any prompted run was scored.
 CODE_SWITCH_PROMPT = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?"
@@ -50,6 +64,9 @@ VARIANTS = {
     "turbo": {"backends": ["turbo"], "selection": "first"},
     "turbo-prompt": {"backends": ["turbo"], "selection": "first",
                      "overrides": {"turbo": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                             "prompt_leak_ngram": 4}}},
+    "ft-s2-prompt": {"backends": ["ft-s2"], "selection": "first",
+                     "overrides": {"ft-s2": {"initial_prompt": CODE_SWITCH_PROMPT,
                                              "prompt_leak_ngram": 4}}},
     "mbr-setA": {"backends": ["turbo", "q17", "q06", "large-v3"], "selection": "mbr"},
     "mbr-setB": {"backends": ["turbo", "q17", "q06"], "selection": "mbr"},
@@ -80,8 +97,26 @@ def snapshot_dir(repo_id: str) -> Path:
     return Path(config).parent
 
 
+def local_model_files(model_id: str) -> list[Path]:
+    """Files of a local model directory, refused unless they are exactly the pinned ones."""
+
+    spec = MODELS[model_id]
+    directory = ROOT / spec["local_dir"]
+    if not directory.is_dir():
+        raise PackError(f"{model_id}: {spec['local_dir']} does not exist")
+    files = sorted(p for p in directory.iterdir() if p.is_file())
+    if {p.name for p in files} != set(spec["files_sha256"]):
+        raise PackError(f"{model_id}: files in {spec['local_dir']} differ from the pinned list")
+    for path in files:
+        if sha256(path) != spec["files_sha256"][path.name]:
+            raise PackError(f"{model_id}: {path.name} is not the evaluated file")
+    return files
+
+
 def model_files(model_id: str) -> list[Path]:
     spec = MODELS[model_id]
+    if "local_dir" in spec:
+        return local_model_files(model_id)
     snapshot = snapshot_dir(spec["repo_id"])
     if snapshot.name != spec["revision"]:
         raise PackError(f"{model_id}: cached revision {snapshot.name} is not the evaluated "
@@ -120,7 +155,8 @@ def build_config(variant: str) -> dict:
     spec = VARIANTS[variant]
     backends = []
     for model_id in spec["backends"]:
-        model = {k: v for k, v in MODELS[model_id].items() if k not in {"repo_id", "revision"}}
+        model = {k: v for k, v in MODELS[model_id].items()
+                 if k not in {"repo_id", "revision", "local_dir", "files_sha256"}}
         overrides = spec.get("overrides", {}).get(model_id, {})
         backends.append({"id": model_id, "path": f"models/{model_id}"} | model | overrides)
     return {"variant": variant, "selection": spec["selection"], "budget": BUDGET,
@@ -139,8 +175,10 @@ def pack(variant: str, allow_dirty: bool) -> dict:
     models = {}
     for model_id in VARIANTS[variant]["backends"]:
         files = model_files(model_id)
-        models[model_id] = {"repo_id": MODELS[model_id]["repo_id"],
-                            "revision": MODELS[model_id]["revision"]}
+        spec = MODELS[model_id]
+        models[model_id] = ({"local_dir": spec["local_dir"], "files_sha256": spec["files_sha256"]}
+                            if "local_dir" in spec
+                            else {"repo_id": spec["repo_id"], "revision": spec["revision"]})
         entries += [(path, f"models/{model_id}/{path.name}") for path in files]
 
     manifest_files = {}

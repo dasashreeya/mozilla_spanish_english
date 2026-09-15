@@ -110,3 +110,30 @@ def test_real_variants_reference_known_models() -> None:
     for variant, spec in real.VARIANTS.items():
         assert set(spec["backends"]) <= set(real.MODELS), variant
     assert real.VARIANTS["mbr-setA"]["backends"] == ["turbo", "q17", "q06", "large-v3"]
+
+
+def test_local_model_is_packed_only_with_its_pinned_files(fake: Path) -> None:
+    local = fake / "artifacts" / "ft" / "ct2"
+    local.mkdir(parents=True)
+    contents = {"model.bin": b"weights", "config.json": b"{}", "tokenizer.json": b"tok"}
+    for name, data in contents.items():
+        (local / name).write_bytes(data)
+    import hashlib
+
+    pack_submission.MODELS["ft"] = {
+        "kind": "faster-whisper", "local_dir": "artifacts/ft/ct2",
+        "files_sha256": {n: hashlib.sha256(d).hexdigest() for n, d in contents.items()},
+        "beam_size": 5, "cpu": {"compute_type": "int8"}, "cuda": {"compute_type": "float16"},
+        "relative_cost": 1.0}
+    pack_submission.VARIANTS["ft"] = {"backends": ["ft"], "selection": "first"}
+    record = pack_submission.pack("ft", allow_dirty=False)
+    assert record["models"]["ft"]["local_dir"] == "artifacts/ft/ct2"
+    assert "models/ft/model.bin" in record["files"]
+    assert "local_dir" not in record["config"]["backends"][0]
+
+    (local / "model.bin").write_bytes(b"retrained")
+    with pytest.raises(pack_submission.PackError, match="model.bin is not the evaluated file"):
+        pack_submission.pack("ft", allow_dirty=False)
+    (local / "extra.bin").write_bytes(b"x")
+    with pytest.raises(pack_submission.PackError, match="differ from the pinned list"):
+        pack_submission.pack("ft", allow_dirty=False)
