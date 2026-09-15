@@ -1,0 +1,23 @@
+$ date -u; shasum -a 256 artifacts/submission-ft-s2-prompt-breaks.zip
+Tue Sep 15 20:55:33 UTC 2026
+7322a531abf3d6928abe8cc57d30cccdb8e19f48d7f3cde9db55df4b8b6a6196  artifacts/submission-ft-s2-prompt-breaks.zip
+$ (zip members vs build record; validated extraction vs build record; validation report fields)
+build record: zip 7322a531abf3d6928abe8cc57d30cccdb8e19f48d7f3cde9db55df4b8b6a6196 | commit fe676707cd424718a7326ffe2d7f58f0253cbc6e | dirty False | postprocess sentence-breaks-keep-ellipsis | selection first
+zip members 8 equal to record: True | extracted mismatches: 0
+model files equal to the scored ft-s2 pins: True
+validation: {'validated_at': '2026-09-15T20:54:35+00:00', 'zip': 'submission-ft-s2-prompt-breaks.zip', 'limit': None, 'device': 'cpu'} 0 0.105527 {'run': 'r3c-M9b', 'clips': 155, 'identical_transcripts': 155}
+exit=0
+$ cat data/interim/runtime_dev/7322a531abf3d692/log.txt
+[lit] variant=ft-s2-prompt-breaks device=cpu backends=ft-s2
+[lit] ft-s2: loaded
+[lit] ft-s2: 25%
+[lit] ft-s2: 50%
+[lit] ft-s2: 75%
+[lit] ft-s2: 100%
+[lit] ft-s2: done
+[lit] wrote submission.csv
+[lit] finished
+$ git diff --stat 3fe261d fe67670 -- submission_src
+ submission_src/main.py      | 101 +++++++++++++++++++++++++++++++++++++-------
+ submission_src/selection.py |  70 ++++++++++++++++++++++++++++++
+ 2 files changed, 156 insertions(+), 15 deletions(-)

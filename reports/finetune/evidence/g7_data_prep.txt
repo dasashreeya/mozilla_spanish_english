@@ -1,0 +1,40 @@
+{
+ "name": "g7",
+ "config": {
+  "min_seconds": 3.0,
+  "max_seconds": 30.0,
+  "target_range": [
+   8.0,
+   20.0
+  ],
+  "max_gap_seconds": 3.0,
+  "contamination_tolerance_seconds": 0.3,
+  "pad_seconds": 0.2,
+  "single_speaker": false
+ },
+ "export": {
+  "manifest_rows": 4715,
+  "audio_files_written": 4715,
+  "audio_bytes": 972349857,
+  "audio_hours_written": 17.58,
+  "channel_level_gap_db": {
+   "count": 4715,
+   "sum": -2504.32,
+   "mean": -0.531,
+   "min": -29.66,
+   "max": 37.43,
+   "p01": -21.189,
+   "p05": -14.53,
+   "p25": -5.03,
+   "p50": 0.0,
+   "p75": 2.47,
+   "p95": 13.002,
+   "p99": 34.646
+  }
+ },
+ "language_counts": {
+  "en": 3101,
+  "es": 1614
+ },
+ "manifest_sha256": "d0cd7f47068b324d80811641a56c56fcfa97d375ed86b2fae26e55e3093bac69"
+}

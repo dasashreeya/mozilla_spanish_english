@@ -1,0 +1,91 @@
+{
+  "variant": "ft-s2-prompt-breaks",
+  "built_at": "2026-09-15T20:10:54+00:00",
+  "git": {
+    "commit": "fe676707cd424718a7326ffe2d7f58f0253cbc6e",
+    "dirty": false,
+    "dirty_scope": [
+      "submission_src",
+      "scripts/pack_submission.py"
+    ]
+  },
+  "zip": {
+    "name": "submission-ft-s2-prompt-breaks.zip",
+    "bytes": 1622912901,
+    "sha256": "7322a531abf3d6928abe8cc57d30cccdb8e19f48d7f3cde9db55df4b8b6a6196"
+  },
+  "models": {
+    "ft-s2": {
+      "local_dir": "artifacts/finetune/full-s2/ct2",
+      "files_sha256": {
+        "config.json": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e",
+        "model.bin": "6eb11f4b1191ff260c3363767f70f94bacfa99791edcb7873b3b977239cd82c4",
+        "preprocessor_config.json": "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499",
+        "tokenizer.json": "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b",
+        "vocabulary.json": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+      }
+    }
+  },
+  "config": {
+    "variant": "ft-s2-prompt-breaks",
+    "selection": "first",
+    "postprocess": "sentence-breaks-keep-ellipsis",
+    "budget": {
+      "seconds": 7200,
+      "safety_factor": 1.3,
+      "load_margin_seconds": 300
+    },
+    "backends": [
+      {
+        "id": "ft-s2",
+        "path": "models/ft-s2",
+        "kind": "faster-whisper",
+        "beam_size": 5,
+        "cpu": {
+          "compute_type": "int8",
+          "threads": 8
+        },
+        "cuda": {
+          "compute_type": "float16"
+        },
+        "relative_cost": 1.0,
+        "initial_prompt": "Hola, \u00bfc\u00f3mo est\u00e1s? I'm good, gracias. Vamos a la tienda later, okay?",
+        "prompt_leak_ngram": 4
+      }
+    ]
+  },
+  "files": {
+    "main.py": {
+      "bytes": 13524,
+      "sha256": "4f300ec9f5e34671a3f02d6add62ba45e8cfc12429f0c1ac32b94c8bb97b5b91"
+    },
+    "selection.py": {
+      "bytes": 11452,
+      "sha256": "b25b04fce7f46c116ad1404397bc73b052ebaabcd7d5c41a46138031cf1ab07a"
+    },
+    "config.json": {
+      "bytes": 651,
+      "sha256": "466ab4ab4684d1d734594f21a7bf788876993ce10bbc8505aed3859be005461c"
+    },
+    "models/ft-s2/config.json": {
+      "bytes": 2263,
+      "sha256": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e"
+    },
+    "models/ft-s2/model.bin": {
+      "bytes": 1617884929,
+      "sha256": "6eb11f4b1191ff260c3363767f70f94bacfa99791edcb7873b3b977239cd82c4"
+    },
+    "models/ft-s2/preprocessor_config.json": {
+      "bytes": 357,
+      "sha256": "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499"
+    },
+    "models/ft-s2/tokenizer.json": {
+      "bytes": 3930645,
+      "sha256": "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b"
+    },
+    "models/ft-s2/vocabulary.json": {
+      "bytes": 1068114,
+      "sha256": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+    }
+  }
+}

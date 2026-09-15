@@ -1,0 +1,126 @@
+{
+  "generated_at": "2026-09-15T20:15:43+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "name": "g7",
+  "seed": 20260913,
+  "config": {
+    "min_seconds": 3.0,
+    "max_seconds": 30.0,
+    "target_range": [
+      8.0,
+      20.0
+    ],
+    "max_gap_seconds": 3.0,
+    "contamination_tolerance_seconds": 0.3,
+    "pad_seconds": 0.2,
+    "single_speaker": false
+  },
+  "segments": {
+    "segments": 4715,
+    "hours": 17.58,
+    "speech_hours": 17.31,
+    "duration_seconds": {
+      "count": 4715,
+      "sum": 63277.081,
+      "mean": 13.42,
+      "min": 3.007,
+      "max": 30.0,
+      "p01": 3.136,
+      "p05": 3.546,
+      "p25": 6.557,
+      "p50": 12.855,
+      "p75": 18.794,
+      "p95": 27.513,
+      "p99": 29.825
+    },
+    "duration_buckets_seconds": {
+      "<1": 0,
+      "1-2": 0,
+      "2-5": 788,
+      "5-10": 1011,
+      "10-20": 1951,
+      "20-30": 943,
+      "30-60": 22,
+      "60-240": 0,
+      ">=240": 0
+    },
+    "utterances_per_segment": {
+      "count": 4715,
+      "sum": 32696.0,
+      "mean": 6.934,
+      "min": 1.0,
+      "max": 34.0,
+      "p01": 1.0,
+      "p05": 1.0,
+      "p25": 3.0,
+      "p50": 6.0,
+      "p75": 10.0,
+      "p95": 15.0,
+      "p99": 20.86
+    },
+    "words": 194281,
+    "speakers_per_segment": {
+      "1": 1728,
+      "2": 2941,
+      "3": 45,
+      "4": 1
+    },
+    "language": {
+      "eng": 1854,
+      "enspa": 2183,
+      "spa": 672,
+      "other": 6
+    },
+    "language_hours": {
+      "eng": 6.06,
+      "enspa": 9.4,
+      "spa": 2.1,
+      "other": 0.01
+    },
+    "contamination_seconds": {
+      "count": 4715,
+      "sum": 105.851,
+      "mean": 0.022,
+      "min": 0.0,
+      "max": 0.3,
+      "p01": 0.0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 0.02,
+      "p95": 0.139,
+      "p99": 0.256
+    },
+    "dropped_windows": {
+      "overlaps_speech_outside_transcript": 1050,
+      "too_short": 3330,
+      "no_words": 171
+    }
+  },
+  "export": {
+    "manifest_rows": 4715,
+    "audio_files_written": 4715,
+    "audio_bytes": 972349857,
+    "audio_hours_written": 17.58,
+    "channel_level_gap_db": {
+      "count": 4715,
+      "sum": -2504.32,
+      "mean": -0.531,
+      "min": -29.66,
+      "max": 37.43,
+      "p01": -21.189,
+      "p05": -14.53,
+      "p25": -5.03,
+      "p50": 0.0,
+      "p75": 2.47,
+      "p95": 13.002,
+      "p99": 34.646
+    }
+  },
+  "language_counts": {
+    "en": 3101,
+    "es": 1614
+  },
+  "manifest_sha256": "d0cd7f47068b324d80811641a56c56fcfa97d375ed86b2fae26e55e3093bac69",
+  "segment_languages_sha256": "af207c39e983f6c31eac1a4c8a70c69ee4aa346c0285aa46d9eee6d86c859390"
+}

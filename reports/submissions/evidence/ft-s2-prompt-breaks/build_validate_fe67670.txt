@@ -1,0 +1,61 @@
+$ date -u; git rev-parse HEAD; git status --porcelain -- submission_src scripts/pack_submission.py
+Tue Sep 15 20:10:48 UTC 2026
+fe676707cd424718a7326ffe2d7f58f0253cbc6e
+(empty status above = package inputs match HEAD)
+$ uv run --no-sync python scripts/pack_submission.py ft-s2-prompt-breaks
+{
+  "zip": {
+    "name": "submission-ft-s2-prompt-breaks.zip",
+    "bytes": 1622912901,
+    "sha256": "7322a531abf3d6928abe8cc57d30cccdb8e19f48d7f3cde9db55df4b8b6a6196"
+  },
+  "git": {
+    "commit": "fe676707cd424718a7326ffe2d7f58f0253cbc6e",
+    "dirty": false,
+    "dirty_scope": [
+      "submission_src",
+      "scripts/pack_submission.py"
+    ]
+  },
+  "models": {
+    "ft-s2": {
+      "local_dir": "artifacts/finetune/full-s2/ct2",
+      "files_sha256": {
+        "config.json": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e",
+        "model.bin": "6eb11f4b1191ff260c3363767f70f94bacfa99791edcb7873b3b977239cd82c4",
+        "preprocessor_config.json": "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499",
+        "tokenizer.json": "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b",
+        "vocabulary.json": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+      }
+    }
+  },
+  "files": 8
+}
+pack exit=0
+$ date -u; shasum -a 256 artifacts/submission-ft-s2-prompt-breaks.zip
+Tue Sep 15 20:10:55 UTC 2026
+7322a531abf3d6928abe8cc57d30cccdb8e19f48d7f3cde9db55df4b8b6a6196  artifacts/submission-ft-s2-prompt-breaks.zip
+$ uv run --no-sync python -u scripts/validate_submission.py ft-s2-prompt-breaks --parity-run r3c-M9b
+{
+  "checks": {
+    "exit_code": 0,
+    "wall_seconds": 2605.3,
+    "log_lines": 9,
+    "log_lines_within_limit": true,
+    "longest_log_line": 59,
+    "log_line_length_within_limit": true,
+    "header_ok": true,
+    "rows": 155,
+    "rows_match_manifest": true,
+    "duplicate_rows": 0,
+    "empty_transcripts": 0
+  },
+  "official_cli_wer": 0.105527,
+  "parity": {
+    "run": "r3c-M9b",
+    "clips": 155,
+    "identical_transcripts": 155
+  }
+}
+validate exit=0
+Tue Sep 15 20:54:36 UTC 2026

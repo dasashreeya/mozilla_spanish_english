@@ -148,4 +148,13 @@ the fine-tuned output (12 such words to 1).
 
 Outputs: `reports/finetune/evidence/round3c_results.txt`, `reports/baselines/r3c-*.json`.
 
-(decoding variants M5–M8 below when they finish)
+### Round 3 decoding variants
+
+Outputs: `reports/finetune/evidence/round3_decodes.txt` (commands, exit codes),
+`reports/finetune/evidence/round3_decodes_scored.txt`, `reports/baselines/ft-s2-turbo-auto-int8-b5-prompt-*.json`.
+
+| Method | Dev WER | Paired diff vs fine-tuned [95% CI] | Result | Why |
+|---|---:|---|---|---|
+| M5 no temperature fallback | 0.1107 | 0.0 [0.0, 0.0] | fail (identical) | same S/D/I (331/97/125): fallback sampling never triggered on dev, so it is not the source of the extra words |
+
+(M6–M8 below when they finish)
