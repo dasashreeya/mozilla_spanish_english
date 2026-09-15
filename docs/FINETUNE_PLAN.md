@@ -91,9 +91,14 @@ timeouts apply per attempt (/guide/timeouts):
 2. **Wall-clock deadline across all attempts.** `scripts/modal_watchdog.py` launches the
    stage, reads the app ID and stops the app at `--max-minutes` from launch, then waits
    for `stopped`. It also stops an app left with no running tasks after the job, so no
-   idle app remains. S1 runs with `--max-minutes 30`: at most 30 min × $3.387/h = $1.69
-   of container time at the configured CPU and memory maxima, whatever Modal restarts
-   (DERIVED). It only works while this machine is awake; the function timeouts remain.
+   idle app remains. Every Modal CLI call has a timeout, "stopped" means listed as stopped
+   with 0 tasks, and each poll prints a cost upper bound. S1 runs with `--max-minutes 30`;
+   the stop is sent at the deadline and re-sent for up to 5 minutes until confirmed, so
+   container time is at most about 35 min × $3.387/h = $1.98 at the configured CPU and
+   memory maxima, whatever Modal restarts (DERIVED; image-build charges UNKNOWN). It only
+   works while this machine is awake; the function timeouts remain.
+5. **No data in logs.** Training failures print `FAILED <run>: <exception type>` and raise
+   a message-free `RuntimeError`; monitoring reads the job log through an allowlist.
 3. **No weights from the trial.** `trial` sets `save_final=False`; only `full` saves and
    converts.
 4. **Non-finite losses are visible.** `logging_nan_inf_filter=False`, so a nan or inf

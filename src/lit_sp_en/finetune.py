@@ -116,7 +116,8 @@ class SegmentDataset:
         item = self.items[index]
         audio, rate = sf.read(item["audio"], dtype="float32")
         if rate != 16000:
-            raise ValueError(f"{item['id']}: sample rate {rate}, expected 16000")
+            # No segment id in the message: training logs are read off-machine.
+            raise ValueError(f"sample rate {rate}, expected 16000")
         if audio.ndim > 1:
             audio = audio.mean(axis=1)
         features = self.processor.feature_extractor(

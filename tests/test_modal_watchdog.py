@@ -51,7 +51,7 @@ def setup(monkeypatch, tmp_path: Path, rows, exit_at, stop_result=True):
         return process
 
     monkeypatch.setattr(modal_watchdog.subprocess, "Popen", popen)
-    monkeypatch.setattr(modal_watchdog, "app_row", lambda app_id: rows(clock.now))
+    monkeypatch.setattr(modal_watchdog, "app_row", lambda app_id, timeout=60: rows(clock.now))
     monkeypatch.setattr(modal_watchdog, "stop_and_confirm",
                         lambda app_id: stops.append((app_id, clock.now)) or stop_result)
     return clock, process, stops
@@ -95,3 +95,46 @@ def test_refuses_to_reuse_a_run_log(monkeypatch, tmp_path) -> None:
     (tmp_path / "runs" / "trial-s1.log").write_text("old")
     assert modal_watchdog.watch("trial", "s1", max_minutes=5, poll_seconds=30) == 1
     assert (tmp_path / "runs" / "trial-s1.log").read_text() == "old"
+
+
+def test_client_exit_with_app_missing_from_listing_is_a_failure(monkeypatch, tmp_path) -> None:
+    _, _, stops = setup(monkeypatch, tmp_path, lambda t: None, exit_at=60)
+    assert modal_watchdog.watch("trial", "s1", max_minutes=30, poll_seconds=30) == 1
+    assert len(stops) == 1  # six unconfirmed polls after the client exits, then a stop attempt
+
+
+def test_each_poll_prints_a_cost_bound(monkeypatch, tmp_path, capsys) -> None:
+    setup(monkeypatch, tmp_path, lambda t: running(), exit_at=None)
+    modal_watchdog.watch("trial", "s1", max_minutes=1, poll_seconds=30)
+    polls = [line for line in capsys.readouterr().out.splitlines() if "cost<=$" in line]
+    assert len(polls) == 2 and polls[-1].endswith("cost<=$0.03")  # t+30s x 0.00094088/s
+
+
+def test_confirmed_stopped_needs_stopped_state_and_zero_tasks() -> None:
+    assert modal_watchdog.confirmed_stopped({"State": "stopped", "Tasks": "0"})
+    assert not modal_watchdog.confirmed_stopped({"State": "stopped", "Tasks": "1"})
+    assert not modal_watchdog.confirmed_stopped({"State": "stopping...", "Tasks": "0"})
+    assert not modal_watchdog.confirmed_stopped(None)
+    assert not modal_watchdog.confirmed_stopped("error")
+
+
+def test_stop_and_confirm_resends_stop_and_fails_without_confirmation(monkeypatch) -> None:
+    clock = FakeClock()
+    monkeypatch.setattr(modal_watchdog.time, "monotonic", clock.monotonic)
+    monkeypatch.setattr(modal_watchdog.time, "sleep", clock.sleep)
+    calls = []
+    monkeypatch.setattr(modal_watchdog, "modal_cli",
+                        lambda args, timeout: calls.append((args[1], clock.now)) or None)
+    assert modal_watchdog.stop_and_confirm("ap-X", confirm_seconds=35, poll_seconds=10) is False
+    # stop and list at t=0, 10, 20, 30; t=30 + 10 reaches the 35 s window, so it gives up
+    assert [(c, t) for c, t in calls if c == "stop"] == [("stop", s) for s in (0, 10, 20, 30)]
+    assert [c for c, _ in calls].count("list") == 4
+
+
+def test_cli_timeouts_become_errors(monkeypatch) -> None:
+    def hang(*args, **kwargs):
+        raise modal_watchdog.subprocess.TimeoutExpired(cmd="modal", timeout=kwargs["timeout"])
+
+    monkeypatch.setattr(modal_watchdog.subprocess, "run", hang)
+    assert modal_watchdog.modal_cli(["app", "list"], timeout=5) is None
+    assert modal_watchdog.app_row("ap-X", timeout=5) == "error"

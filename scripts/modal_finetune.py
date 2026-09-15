@@ -35,13 +35,7 @@ VOLUME = "/vol"
 
 
 def _run(stage: str, run_id: str, **overrides) -> dict:
-    from lit_sp_en.finetune import (
-        FinetuneConfig,
-        claim_attempt,
-        convert_to_ctranslate2,
-        run_directory,
-        train,
-    )
+    from lit_sp_en.finetune import claim_attempt, run_directory
 
     out = run_directory(Path(VOLUME) / "runs", stage, run_id)
     volume.reload()
@@ -49,6 +43,18 @@ def _run(stage: str, run_id: str, **overrides) -> dict:
         print(f"GUARD {out.name}: an earlier attempt exists; not training", flush=True)
         return {"guard": "refused", "run": out.name}
     volume.commit()
+    try:
+        return _train_and_report(stage, out, **overrides)
+    except Exception as exc:
+        # Messages and tracebacks from data loading can name a segment; the log is read
+        # off-machine, so only the exception type is printed and the chain is dropped.
+        print(f"FAILED {out.name}: {type(exc).__name__}", flush=True)
+        raise RuntimeError(f"{stage} failed: {type(exc).__name__}") from None
+
+
+def _train_and_report(stage: str, out: Path, **overrides) -> dict:
+    from lit_sp_en.finetune import FinetuneConfig, convert_to_ctranslate2, train
+
     cfg = FinetuneConfig(data_dir=f"{VOLUME}/bangor",
                          languages_file=f"{VOLUME}/bangor/segment_languages.json",
                          output_dir=str(out), **overrides)

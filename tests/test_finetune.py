@@ -138,3 +138,24 @@ def test_modal_run_trains_once_per_run_id(monkeypatch, tmp_path: Path) -> None:
 
     again = modal_finetune._run("trial", "s1", save_final=False, expected_items=7200)
     assert again == {"guard": "refused", "run": "trial-s1"} and len(trained) == 1
+
+
+def test_modal_run_failure_prints_the_exception_type_only(monkeypatch, tmp_path: Path,
+                                                          capsys) -> None:
+    import pytest
+
+    pytest.importorskip("modal")
+    import lit_sp_en.finetune as finetune
+    from scripts import modal_finetune
+
+    def failing_train(cfg):
+        raise ValueError("segment secret_recording_0042 is unreadable")
+
+    monkeypatch.setattr(modal_finetune, "VOLUME", str(tmp_path))
+    monkeypatch.setattr(modal_finetune, "volume", _FakeVolume())
+    monkeypatch.setattr(finetune, "train", failing_train)
+    with pytest.raises(RuntimeError) as raised:
+        modal_finetune._run("trial", "s9", save_final=False)
+    assert str(raised.value) == "trial failed: ValueError"
+    assert raised.value.__cause__ is None and raised.value.__suppress_context__
+    assert capsys.readouterr().out == "FAILED trial-s9: ValueError\n"
