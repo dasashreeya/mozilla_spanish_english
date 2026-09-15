@@ -1,0 +1,10 @@
+$ date -u; git rev-parse HEAD; git diff --stat 3212e56 HEAD -- submission_src tests/test_submission_main.py tests/test_submission_selection.py
+Tue Sep 15 22:43:23 UTC 2026
+3212e562ee190d28f0443696a84ceeb90d087143
+(empty diff above = package code and its tests unchanged since the build commit)
+$ uv run --no-sync python -m pytest -v -p no:cacheprovider tests/test_submission_main.py tests/test_submission_selection.py
+tests/test_submission_main.py::test_quiet_libraries_silences_library_logging_after_a_basicconfig PASSED [ 13%]
+tests/test_submission_main.py::test_entrypoint_on_a_malformed_manifest_prints_no_data PASSED [ 19%]
+tests/test_submission_main.py::test_entrypoint_silences_native_stdout_and_stderr PASSED [ 27%]
+============================== 51 passed in 0.82s ==============================
+exit=0

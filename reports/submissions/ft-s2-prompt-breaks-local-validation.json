@@ -1,13 +1,13 @@
 {
   "variant": "ft-s2-prompt-breaks",
-  "validated_at": "2026-09-15T20:54:35+00:00",
+  "validated_at": "2026-09-15T22:42:38+00:00",
   "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
   "zip": "submission-ft-s2-prompt-breaks.zip",
   "limit": null,
   "device": "cpu",
   "checks": {
     "exit_code": 0,
-    "wall_seconds": 2605.3,
+    "wall_seconds": 1497.2,
     "log_lines": 9,
     "log_lines_within_limit": true,
     "longest_log_line": 59,

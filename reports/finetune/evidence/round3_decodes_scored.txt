@@ -8,3 +8,7 @@ $ uv run --no-sync python scripts/compare_runs.py ft-s2-turbo-auto-int8-b5-promp
       "level": 0.95,
 exit=0
 M5 WER 0.1107 S/D/I 331 97 125
+$ uv run --no-sync python scripts/compare_runs.py ft-s2-turbo-auto-int8-b5-prompt ft-s2-turbo-auto-int8-b5-prompt-vad --output r3-M6-comparison.json
+ft-s2-turbo-auto-int8-b5-prompt-vad minus ft-s2-turbo-auto-int8-b5-prompt {'difference_b_minus_a': 0.0012, 'low': -0.0027, 'high': 0.0055, 'share_of_resamples_b_worse': 0.7045, 'level': 0.95, 'reps': 2000}
+exit=0
+M6 WER 0.1119 S/D/I 328 109 122

@@ -1,0 +1,9 @@
+Tue Sep 15 19:59:07 UTC 2026
+4bb6439f70bdb72fc571ff66c67a068b271e67ad
+$ .venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/full-s2/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --no-temperature-fallback --run-name ft-s2-turbo-auto-int8-b5-prompt-t0
+ft-s2-turbo-auto-int8-b5-prompt-t0 exit=0
+Tue Sep 15 20:35:03 UTC 2026
+$ .venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/full-s2/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --vad-filter --run-name ft-s2-turbo-auto-int8-b5-prompt-vad
+ft-s2-turbo-auto-int8-b5-prompt-vad exit=0
+Tue Sep 15 21:17:51 UTC 2026
+$ .venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/full-s2/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --repetition-penalty 1.1 --run-name ft-s2-turbo-auto-int8-b5-prompt-rp11

@@ -156,5 +156,25 @@ Outputs: `reports/finetune/evidence/round3_decodes.txt` (commands, exit codes),
 | Method | Dev WER | Paired diff vs fine-tuned [95% CI] | Result | Why |
 |---|---:|---|---|---|
 | M5 no temperature fallback | 0.1107 | 0.0 [0.0, 0.0] | fail (identical) | same S/D/I (331/97/125): fallback sampling never triggered on dev, so it is not the source of the extra words |
+| M6 VAD filter | 0.1119 | +0.0012 [−0.0027, +0.0055] | fail | S/D/I 328/109/122: removes only 3 insertions but adds 12 deletions — the extra words are not in silent stretches, and VAD trims real speech |
 
-(M6–M8 below when they finish)
+M7 (repetition penalty 1.1) and M8 (no prompt) did not finish: the decode job was killed by the
+machine running out of memory at about 22:15 UTC while two package validations ran at the same
+time (see Process notes). They are re-run one job at a time.
+
+## Packages built from round 3
+
+| Package | Contents | Status |
+|---|---|---|
+| `ft-s2-prompt-breaks` P1 (`7322a531…`, commit `fe67670`) | fine-tuned model + M9b | validated (155/155 identical to `r3c-M9b`, official 0.105527); **superseded**: the pre-submit review blocked it because native stdout could still reach the log (E6) |
+| `ft-s2-prompt-breaks` P1 (`81b5bc88…`, commit `3212e56`) | same, with fds 1 and 2 silenced and a private log stream | built; validation re-running alone after a low-memory kill |
+| `rover3-breaks` P2 (`33ca2755…`, commit `fe67670`, 7,947,637,332 bytes) | fine-tuned + turbo + Qwen 1.7B, M11b | built with the old logging; validation killed by low memory; needs a rebuild at `3212e56` |
+
+## Process notes
+
+- Running three model jobs at once (a decode, a one-model and a three-model package validation)
+  exhausted memory and swap; all three were killed. Heavy jobs now run one at a time.
+- The pre-submit and decision reviews found: native stdout not silenced (fixed in `3212e56`), an
+  incomplete dev-selection disclosure (the prompt-leak guard was also designed from a dev
+  observation, `docs/SELECTOR.md`), a missing "spend no submission" alternative, and two false
+  statements of mine ("P2 not built", "only a text rule differs").

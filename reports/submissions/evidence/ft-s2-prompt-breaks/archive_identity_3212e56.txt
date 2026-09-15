@@ -1,0 +1,24 @@
+$ date -u; shasum -a 256 artifacts/submission-ft-s2-prompt-breaks.zip artifacts/submission-ft-s2-prompt.zip; stat -f "%N %z bytes" artifacts/submission-ft-s2-prompt-breaks.zip artifacts/submission-ft-s2-prompt.zip
+Tue Sep 15 22:43:12 UTC 2026
+81b5bc88670d7c4368f1c5fde4783dd5336fd8f07ad93f0e66166f8aea81d155  artifacts/submission-ft-s2-prompt-breaks.zip
+0a4ab892e655d95023170e3fde9a245ff1f5d95026dd355a205207c3804c4099  artifacts/submission-ft-s2-prompt.zip
+artifacts/submission-ft-s2-prompt-breaks.zip 1622913445 bytes
+artifacts/submission-ft-s2-prompt.zip 1622908259 bytes
+$ (zip members vs build record; validated extraction; model pins vs the scored archive; validation report)
+build record: zip 81b5bc88670d7c4368f1c5fde4783dd5336fd8f07ad93f0e66166f8aea81d155 1622913445 bytes | commit 3212e562ee190d28f0443696a84ceeb90d087143 | dirty False | postprocess sentence-breaks-keep-ellipsis | selection first
+members 8 match record: True | extracted mismatches: 0
+model files equal to the submitted id-1831 archive: True
+backend config equal to id-1831: True | top-level config keys differing: ['postprocess', 'variant']
+size difference vs id-1831 archive: 5186 bytes
+validation: {'validated_at': '2026-09-15T22:42:38+00:00', 'zip': 'submission-ft-s2-prompt-breaks.zip', 'limit': None, 'device': 'cpu'} exit 0 | official 0.105527 | {'run': 'r3c-M9b', 'clips': 155, 'identical_transcripts': 155}
+exit=0
+$ cat data/interim/runtime_dev/81b5bc88670d7c43/log.txt
+[lit] variant=ft-s2-prompt-breaks device=cpu backends=ft-s2
+[lit] ft-s2: loaded
+[lit] ft-s2: 25%
+[lit] ft-s2: 50%
+[lit] ft-s2: 75%
+[lit] ft-s2: 100%
+[lit] ft-s2: done
+[lit] wrote submission.csv
+[lit] finished
