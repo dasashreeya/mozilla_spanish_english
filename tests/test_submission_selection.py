@@ -129,3 +129,23 @@ def test_prompt_leaked(output: str, leaked: bool) -> None:
 def test_mbr_rejects_fewer_than_three_systems() -> None:
     with pytest.raises(ValueError):
         selection.mbr_select({"a": ["x"], "b": ["y"]})
+
+
+def test_case_vote_takes_unanimous_voter_casing_only() -> None:
+    from submission_src.selection import case_vote
+
+    primary = "we went to miami, and then Pues nada."
+    voters = ["We went to Miami and then pues nada", "we went to Miami, and then pues nada"]
+    # "Miami" is unanimous; "We"/"we" disagree; "pues" is unanimous lowercase.
+    assert case_vote(primary, voters) == "we went to Miami, and then pues nada."
+    assert case_vote(primary, ["we went to Miami"]) == "we went to Miami, and then Pues nada."
+    assert case_vote("hola", []) == "hola"
+
+
+def test_collapse_repeats_drops_immediate_duplicates_only() -> None:
+    from submission_src.selection import collapse_repeats
+
+    assert collapse_repeats("I I think, think that that's it it.") == "I think, that that's it"
+    assert collapse_repeats("no no no") == "no"
+    assert collapse_repeats("sí, Sí claro") == "sí, claro"
+    assert collapse_repeats("") == ""

@@ -41,8 +41,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("runs", nargs="+", help="candidate runs; the first is the incumbent "
                                                 "and wins ties")
     parser.add_argument("--name", required=True, help="output run name")
-    parser.add_argument("--method", choices=("mbr", "rover-backbone", "rover-order"),
-                        default="mbr", help="design: docs/SELECTOR.md (mbr), docs/ROVER.md")
+    parser.add_argument("--method", choices=("mbr", "rover-backbone", "rover-order",
+                                             "case-vote", "collapse-repeats"),
+                        default="mbr", help="design: docs/SELECTOR.md (mbr), docs/ROVER.md, "
+                                            "docs/METHODS.md (case-vote, collapse-repeats)")
     parser.add_argument("--compare-to", action="append", default=[], metavar="RUN",
                         help="also report a paired comparison with this run")
     args = parser.parse_args(argv)
@@ -69,6 +71,21 @@ def main(argv: list[str] | None = None) -> int:
                       "official normalizer; ties to the earliest candidate",
             "chosen_counts": {run: chosen.count(run) for run in args.runs},
         }
+    elif args.method == "case-vote":
+        primary, voters = args.runs[0], args.runs[1:]
+        selected = [selection.case_vote(candidates[primary][i],
+                                        [candidates[v][i] for v in voters])
+                    for i in range(len(names))]
+        selection_info = {"method": "letter case of the primary's words from unanimous aligned "
+                                    "voters (docs/METHODS.md M3)",
+                          "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
+                                                                      strict=True))}
+    elif args.method == "collapse-repeats":
+        primary = args.runs[0]
+        selected = [selection.collapse_repeats(text) for text in candidates[primary]]
+        selection_info = {"method": "drop a word equal to the previous word (docs/METHODS.md M4)",
+                          "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
+                                                                      strict=True))}
     else:
         backbone = "mbr" if args.method == "rover-backbone" else "order"
         selected, stats = selection.rover(candidates, backbone=backbone)
@@ -104,7 +121,8 @@ def main(argv: list[str] | None = None) -> int:
         "backend": "mbr-selection" if args.method == "mbr" else args.method,
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
-        "design": "docs/SELECTOR.md" if args.method == "mbr" else "docs/ROVER.md",
+        "design": {"mbr": "docs/SELECTOR.md", "rover-backbone": "docs/ROVER.md",
+                   "rover-order": "docs/ROVER.md"}.get(args.method, "docs/METHODS.md"),
         "candidates_in_tie_break_order": args.runs,
         "selection": selection_info,
         "dataset": {"split": "dev", "rows": len(names)},

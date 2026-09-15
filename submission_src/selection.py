@@ -8,6 +8,7 @@ jiwer is not in the competition runtime, so word edit distance is implemented he
 from __future__ import annotations
 
 import re
+from difflib import SequenceMatcher
 
 
 def _lowercase_sentence_initial(match):
@@ -214,3 +215,48 @@ def rover(candidates: dict[str, list[str]], backbone: str = "mbr") -> tuple[list
         outputs.append(combined)
         changed += combined.split() != normalize_text(candidates[lead][i]).split()
     return outputs, {"clips_changed_from_backbone": changed}
+
+
+_EDGE_PUNCTUATION = re.compile(r"^([^\w']*)(.*?)([^\w']*)$", re.UNICODE)
+
+
+def _split_edges(token: str) -> tuple[str, str, str]:
+    lead, core, trail = _EDGE_PUNCTUATION.match(token).groups()
+    return lead, core, trail
+
+
+def case_vote(primary: str, voters: list[str]) -> str:
+    """Take a word's letter case from the voters when every voter has that word aligned at
+    the same place with one shared casing that differs from the primary's (round-3 M3).
+    Only letter case changes; words, order and punctuation stay the primary's."""
+
+    tokens = primary.split()
+    parts = [_split_edges(t) for t in tokens]
+    votes: list[list[str]] = [[] for _ in tokens]
+    for voter in voters:
+        voter_cores = [_split_edges(t)[1] for t in voter.split()]
+        matcher = SequenceMatcher(a=[c.lower() for _, c, _ in parts],
+                                  b=[c.lower() for c in voter_cores], autojunk=False)
+        for block in matcher.get_matching_blocks():
+            for k in range(block.size):
+                votes[block.a + k].append(voter_cores[block.b + k])
+    out = []
+    for (lead, core, trail), seen in zip(parts, votes, strict=True):
+        if core and len(seen) == len(voters) and len(set(seen)) == 1 and seen[0] != core:
+            core = seen[0]
+        out.append(lead + core + trail)
+    return " ".join(out)
+
+
+def collapse_repeats(text: str) -> str:
+    """Drop a word identical (ignoring case and edge punctuation) to the word before it (M4)."""
+
+    out: list[str] = []
+    previous = None
+    for token in text.split():
+        core = _split_edges(token)[1].lower()
+        if core and core == previous:
+            continue
+        out.append(token)
+        previous = core or previous
+    return " ".join(out)

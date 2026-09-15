@@ -1,0 +1,26 @@
+$ date -u; git rev-parse HEAD
+Tue Sep 15 19:59:24 UTC 2026
+4bb6439f70bdb72fc571ff66c67a068b271e67ad
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt large-v3-turbo-auto-int8-b5-prompt-guard Qwen3-ASR-1.7B-auto-cpu-float32-ctx --name r3-M1a-mbr3 --method mbr
+r3-M1a-mbr3: WER=0.1087 [0.0972, 0.1214] cli=0.10873 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: -0.002 [-0.0093, +0.0056] | selection={'chosen_counts': {'ft-s2-turbo-auto-int8-b5-prompt': 97, 'large-v3-turbo-auto-int8-b5-prompt-guard': 39, 'Qwen3-ASR-1.7B-auto-cpu-float32-ctx': 19}}
+M1a exit=0
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt large-v3-turbo-en-int8-b5 large-v3-turbo-es-int8-b5 Qwen3-ASR-1.7B-auto-cpu-float32 Qwen3-ASR-1.7B-en-cpu-float32 Qwen3-ASR-1.7B-es-cpu-float32 Qwen3-ASR-0.6B-auto-cpu-float32 Qwen3-ASR-0.6B-en-cpu-float32 Qwen3-ASR-0.6B-es-cpu-float32 large-v3-auto-int8-b5 large-v3-turbo-auto-int8-b5-prompt Qwen3-ASR-1.7B-auto-cpu-float32-ctx --name r3-M1b-mbr12 --method mbr
+r3-M1b-mbr12: WER=0.1167 [0.1041, 0.1309] cli=0.11674 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: +0.006 [-0.0052, +0.0183] | selection={'chosen_counts': {'ft-s2-turbo-auto-int8-b5-prompt': 39, 'large-v3-turbo-en-int8-b5': 25, 'large-v3-turbo-es-int8-b5': 9, 'Qwen3-ASR-1.7B-auto-cpu-float32': 36, 'Qwen3-ASR-1.7B-en-cpu-float32': 2, 'Qwen3-ASR-1.7B-es-cpu-float32': 16, 'Qwen3-ASR-0.6B-auto-cpu-float32': 8, 'Qwen3-ASR-0.6B-en-cpu-float32': 2, 'Qwen3-ASR-0.6B-es-cpu-float32': 0, 'large-v3-auto-int8-b5': 7, 'large-v3-turbo-auto-int8-b5-prompt': 7, 'Qwen3-ASR-1.7B-auto-cpu-float32-ctx': 4}}
+M1b exit=0
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt large-v3-turbo-auto-int8-b5-prompt-guard Qwen3-ASR-1.7B-auto-cpu-float32-ctx --name r3-M2-rover-ftbackbone --method rover-backbone
+r3-M2-rover-ftbackbone: WER=0.1057 [0.094, 0.1178] cli=0.105727 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: -0.005 [-0.0128, +0.0032] | selection={'clips_changed_from_backbone': 48, 'backbone_counts': {'ft-s2-turbo-auto-int8-b5-prompt': 97, 'large-v3-turbo-auto-int8-b5-prompt-guard': 39, 'Qwen3-ASR-1.7B-auto-cpu-float32-ctx': 19}}
+M2 exit=0
+$ date -u; git rev-parse HEAD; git status --porcelain -- submission_src scripts
+Tue Sep 15 20:00:55 UTC 2026
+4bb6439f70bdb72fc571ff66c67a068b271e67ad
+ M scripts/combine_runs.py
+ M submission_src/selection.py
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt large-v3-turbo-auto-int8-b5-prompt-guard Qwen3-ASR-1.7B-auto-cpu-float32-ctx --name r3-M2-rover-ftorder --method rover-order
+r3-M2-rover-ftorder: WER=0.1037 [0.0926, 0.1153] cli=0.103724 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: -0.007 [-0.0144, +0.0006] | selection={'clips_changed_from_backbone': 90}
+r3-M2-rover-ftorder exit=0
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt large-v3-turbo-auto-int8-b5-prompt-guard Qwen3-ASR-1.7B-auto-cpu-float32-ctx --name r3-M3-casevote --method case-vote
+r3-M3-casevote: WER=0.1117 [0.1001, 0.1233] cli=0.111734 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: +0.001 [-0.0009, +0.0028] | selection={'clips_changed': 66}
+r3-M3-casevote exit=0
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt --name r3-M4-collapse --method collapse-repeats
+r3-M4-collapse: WER=0.1167 [0.1057, 0.1282] cli=0.11674 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: +0.006 [+0.0025, +0.0097] | selection={'clips_changed': 45}
+r3-M4-collapse exit=0
