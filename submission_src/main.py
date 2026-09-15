@@ -40,9 +40,26 @@ def sanitized_thread_excepthook(args) -> None:
     print(f"[lit] FAILED in thread {args.exc_type.__name__}", flush=True)
 
 
+def sanitized_unraisablehook(unraisable) -> None:
+    print(f"[lit] FAILED unraisable {type(unraisable.exc_value).__name__}", flush=True)
+
+
+def silence_native_stderr() -> None:
+    """Point file descriptor 2 at /dev/null so native libraries (CTranslate2's C++ logger,
+    FFmpeg) cannot print to the log. Our own messages go to stdout."""
+
+    devnull = os.open(os.devnull, os.O_WRONLY)
+    os.dup2(devnull, 2)
+    os.close(devnull)
+    sys.stderr = open(os.devnull, "w", encoding="utf-8")  # noqa: SIM115
+
+
 # Installed before any other import so that even an import failure prints its type only.
 sys.excepthook = sanitized_excepthook
 threading.excepthook = sanitized_thread_excepthook
+sys.unraisablehook = sanitized_unraisablehook
+if __name__ == "__main__":
+    silence_native_stderr()
 
 SRC = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC))

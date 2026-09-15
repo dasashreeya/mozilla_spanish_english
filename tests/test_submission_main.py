@@ -19,6 +19,7 @@ def _restore_process_logging(monkeypatch):
 
     monkeypatch.setattr(sys, "excepthook", sys.excepthook)
     monkeypatch.setattr(threading, "excepthook", threading.excepthook)
+    monkeypatch.setattr(sys, "unraisablehook", sys.unraisablehook)
     yield
     logging.disable(logging.NOTSET)
 
@@ -231,3 +232,28 @@ def test_log_does_not_depend_on_the_test_set(monkeypatch, tmp_path, capsys) -> N
         assert not any(name in out for name in names) and "cannot load" not in out
         logs.append(out)
     assert logs[0] == logs[1]
+
+
+def test_entrypoint_silences_native_stderr(tmp_path) -> None:
+    """Native code writing straight to file descriptor 2 must not reach the log."""
+
+    script = tmp_path / "probe.py"
+    script.write_text(
+        "import os, runpy, sys\n"
+        f"sys.argv = [{str(ROOT / 'submission_src' / 'main.py')!r}]\n"
+        "import builtins\n"
+        "real_main = None\n"
+        f"ns = runpy.run_path({str(ROOT / 'submission_src' / 'main.py')!r}, run_name='probe')\n"
+        "ns['silence_native_stderr']()\n"
+        "os.write(2, b'native secret_clip_0042.mp3\\n')\n"
+        "print('[lit] ok', flush=True)\n")
+    result = subprocess.run([sys.executable, str(script)], capture_output=True, check=False)
+    assert result.returncode == 0
+    assert result.stdout == b"[lit] ok\n" and result.stderr == b""
+
+
+def test_unraisable_hook_prints_the_type_only(monkeypatch, tmp_path, capsys) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+    unraisable = type("U", (), {"exc_value": ValueError("secret_clip_name.mp3")})()
+    main.sanitized_unraisablehook(unraisable)
+    assert capsys.readouterr().out == "[lit] FAILED unraisable ValueError\n"
