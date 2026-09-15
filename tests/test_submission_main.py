@@ -1,13 +1,26 @@
 import csv
 import importlib
 import json
+import logging
+import subprocess
 import sys
+import threading
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = {"seconds": 7200, "safety_factor": 1.3, "load_margin_seconds": 120}
+
+
+@pytest.fixture(autouse=True)
+def _restore_process_logging(monkeypatch):
+    """main.py disables logging and installs exception hooks process-wide; undo both."""
+
+    monkeypatch.setattr(sys, "excepthook", sys.excepthook)
+    monkeypatch.setattr(threading, "excepthook", threading.excepthook)
+    yield
+    logging.disable(logging.NOTSET)
 
 
 def load_main(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, config: dict,
@@ -112,14 +125,12 @@ def test_limit_truncates_clips(monkeypatch, tmp_path) -> None:
     assert [r["audio_filename"] for r in read_output(tmp_path)] == names[:2]
 
 
-def test_quiet_libraries_undoes_a_library_basicconfig(monkeypatch, tmp_path, capsys) -> None:
-    import logging
-
+def test_quiet_libraries_silences_library_logging_after_a_basicconfig(
+        monkeypatch, tmp_path, capsys) -> None:
     main, _ = load_main(monkeypatch, tmp_path, config("a"))
     root = logging.getLogger()
     previous_level, previous_handlers = root.level, list(root.handlers)
     handler = logging.StreamHandler(sys.stdout)
-    # Logger levels are process-global; earlier tests ran quiet_libraries() already.
     logging.getLogger("faster_whisper").setLevel(logging.NOTSET)
     try:
         root.addHandler(handler)
@@ -128,14 +139,46 @@ def test_quiet_libraries_undoes_a_library_basicconfig(monkeypatch, tmp_path, cap
         assert "Processing audio" in capsys.readouterr().out
         main.quiet_libraries()
         logging.getLogger("faster_whisper").info("Processing audio with duration 00:01.000")
-        logging.getLogger("faster_whisper").warning("real problem")
-        out = capsys.readouterr().out
-        assert "Processing audio" not in out and "real problem" in out
+        logging.getLogger("faster_whisper").warning("warning naming clip_7.mp3")
+        logging.getLogger("anything.else").error("error naming clip_7.mp3")
+        assert capsys.readouterr().out == ""
     finally:
         root.removeHandler(handler)
         root.setLevel(previous_level)
         root.handlers[:] = previous_handlers
         logging.getLogger("faster_whisper").setLevel(logging.NOTSET)
+
+
+def test_run_reports_only_the_exception_type(monkeypatch, tmp_path, capsys) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+
+    def broken_manifest():
+        raise ValueError("secret_clip_name.mp3 is malformed")
+
+    monkeypatch.setattr(main, "read_manifest", broken_manifest)
+    assert main.run() == 1
+    captured = capsys.readouterr()
+    assert captured.out == "[lit] FAILED ValueError\n" and captured.err == ""
+
+
+def test_uncaught_exception_hooks_print_the_type_only(monkeypatch, tmp_path, capsys) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+    main.sanitized_excepthook(KeyError, KeyError("secret_clip_name.mp3"), None)
+    main.sanitized_thread_excepthook(type("Args", (), {"exc_type": OSError})())
+    assert capsys.readouterr().out == "[lit] FAILED KeyError\n[lit] FAILED in thread OSError\n"
+
+
+def test_entrypoint_on_a_malformed_manifest_prints_no_data(tmp_path) -> None:
+    data = tmp_path / "data"
+    (data / "clips").mkdir(parents=True)
+    (data / "test_metadata.csv").write_bytes(b"audio_filename\nsecret_clip_\xff\xfe.mp3\n")
+    env = {"LIT_DATA_DIR": str(data), "LIT_OUTPUT_PATH": str(tmp_path / "out.csv"),
+           "LIT_CONFIG_PATH": str(tmp_path / "config.json"), "LIT_DEVICE": "cpu", "PATH": ""}
+    (tmp_path / "config.json").write_text(json.dumps(config("a")))
+    result = subprocess.run([sys.executable, str(ROOT / "submission_src" / "main.py")],
+                            env=env, capture_output=True, check=False)
+    assert result.returncode == 1
+    assert result.stdout == b"[lit] FAILED UnicodeDecodeError\n" and result.stderr == b""
 
 
 def test_prompted_backend_falls_back_when_prompt_leaks(monkeypatch, tmp_path) -> None:

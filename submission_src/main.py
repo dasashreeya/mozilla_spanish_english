@@ -19,6 +19,7 @@ import logging
 import os
 import subprocess
 import sys
+import threading
 import time
 import warnings
 from pathlib import Path
@@ -27,6 +28,21 @@ os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 warnings.filterwarnings("ignore")
+
+
+def sanitized_excepthook(exc_type, exc, tb) -> None:
+    """Uncaught exceptions print their type only: messages and tracebacks can carry data."""
+
+    print(f"[lit] FAILED {exc_type.__name__}", flush=True)
+
+
+def sanitized_thread_excepthook(args) -> None:
+    print(f"[lit] FAILED in thread {args.exc_type.__name__}", flush=True)
+
+
+# Installed before any other import so that even an import failure prints its type only.
+sys.excepthook = sanitized_excepthook
+threading.excepthook = sanitized_thread_excepthook
 
 SRC = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC))
@@ -48,16 +64,25 @@ def log(message: str) -> None:
 
 
 def quiet_libraries() -> None:
-    """Keep library output out of the 500-line runtime log.
+    """Keep all library output out of the runtime log.
 
-    nagisa, imported by qwen-asr, calls logging.basicConfig(level=INFO); after that,
-    faster-whisper prints two lines per clip. transformers draws a progress bar per
-    checkpoint shard. Call after every import that can reconfigure logging.
+    Library messages can describe the test data (warnings about a file, per-clip lines:
+    nagisa, imported by qwen-asr, calls logging.basicConfig(level=INFO), after which
+    faster-whisper prints two lines per clip), so every Python logging call is disabled,
+    CTranslate2's native logger is set to critical, and transformers progress bars are
+    off. PyAV ignores FFmpeg logs by default. Call after every import that can
+    reconfigure logging.
     """
 
-    logging.getLogger().setLevel(logging.WARNING)
+    logging.disable(logging.CRITICAL)
     for name in ("faster_whisper", "transformers", "nagisa", "qwen_asr", "accelerate"):
-        logging.getLogger(name).setLevel(logging.WARNING)
+        logging.getLogger(name).setLevel(logging.CRITICAL + 1)
+    try:
+        import ctranslate2
+
+        ctranslate2.set_log_level(logging.CRITICAL)
+    except Exception:
+        pass
     try:
         import transformers
 
@@ -275,5 +300,13 @@ def main() -> int:
     return 0
 
 
+def run() -> int:
+    try:
+        return main()
+    except Exception as exc:  # anything outside the per-backend handler, e.g. the manifest
+        log(f"FAILED {type(exc).__name__}")
+        return 1
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run())
