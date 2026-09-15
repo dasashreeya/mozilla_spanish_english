@@ -86,6 +86,13 @@ scored locally on dev with the S4 protocol plus the round-3 text rule (M9b).
   minimum length and larger gaps so the distribution resembles dev (local, the segmenter ran
   in 72 s), re-upload, retrain turbo with the S2 recipe. Hypothesis: fewer scattered
   insertions on long clips. Cost: about the S2 run (watchdog bound $1.01 there).
+  Configuration fixed 2026-09-15 from duration distributions only (no WER): dry runs of the
+  segmenter (seed 20260913) gave, against dev's median 12.8 s / 5% under 5 s / 57% 10–20 s:
+  current S2 data 6.9 s / 42% / 26%; target 10–25 s 6.0 s / 46% / 21%; plus 4 s gaps
+  6.8 s / 44% / 22%; plus 4 s minimum 15.7 s / 7% / 36% (16.79 h); **target 8–20 s, gaps ≤3 s,
+  minimum 3 s: 12.9 s / 17% / 41%, 4,715 segments, 17.58 h, 194,281 words (93% of S2's)** —
+  chosen. Built locally with `scripts/prepare_bangor_variant.py g7 …`; the Modal upload waits
+  for the user's go.
 - **G3 — Fine-tune Whisper large-v3 instead of turbo** (32 decoder layers instead of 4), same
   data and recipe. Hypothesis: stronger decoder for code-switching. Cost: training time is
   UNKNOWN until a trial; bound it with a 60-minute watchdog (60 min × $3.39/h = $3.39).
