@@ -149,3 +149,13 @@ def test_collapse_repeats_drops_immediate_duplicates_only() -> None:
     assert collapse_repeats("no no no") == "no"
     assert collapse_repeats("sí, Sí claro") == "sí, claro"
     assert collapse_repeats("") == ""
+
+
+def test_remove_sentence_breaks_keeps_i_forms_and_acronyms() -> None:
+    from submission_src.selection import remove_sentence_breaks
+
+    text = "Yo fui. I'm tired. Pero bueno? NASA called! Okay."
+    assert remove_sentence_breaks(text) == "Yo fui I'm tired pero bueno NASA called okay."
+    assert remove_sentence_breaks("Hola.") == "Hola."
+    assert remove_sentence_breaks("") == ""
+    assert remove_sentence_breaks("Well... Maybe") == "Well maybe"

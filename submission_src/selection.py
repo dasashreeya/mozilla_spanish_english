@@ -260,3 +260,25 @@ def collapse_repeats(text: str) -> str:
         out.append(token)
         previous = core or previous
     return " ".join(out)
+
+
+_I_FORMS = {"I", "I'm", "I've", "I'll", "I'd"}
+_SENTENCE_END = re.compile(r"[.!?]+$")
+
+
+def remove_sentence_breaks(text: str) -> str:
+    """Delete sentence-ending . ! ? before a clip's last word and lowercase the next word's
+    first letter unless it is an I-form or an acronym (round-3b M9). The official normalizer
+    lowercases letters after such breaks, so breaks the reference lacks cost case errors."""
+
+    tokens = text.split()
+    for i in range(len(tokens) - 1):
+        lead, core, trail = _split_edges(tokens[i])
+        if not _SENTENCE_END.search(tokens[i]):
+            continue
+        tokens[i] = _SENTENCE_END.sub("", tokens[i])
+        n_lead, n_core, n_trail = _split_edges(tokens[i + 1])
+        keep = n_core in _I_FORMS or (len(n_core) > 1 and n_core[1].isupper())
+        if n_core and not keep:
+            tokens[i + 1] = n_lead + n_core[0].lower() + n_core[1:] + n_trail
+    return " ".join(t for t in tokens if t)

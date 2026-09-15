@@ -42,9 +42,12 @@ def main(argv: list[str] | None = None) -> int:
                                                 "and wins ties")
     parser.add_argument("--name", required=True, help="output run name")
     parser.add_argument("--method", choices=("mbr", "rover-backbone", "rover-order",
-                                             "case-vote", "collapse-repeats"),
+                                             "case-vote", "collapse-repeats",
+                                             "sentence-breaks"),
                         default="mbr", help="design: docs/SELECTOR.md (mbr), docs/ROVER.md, "
                                             "docs/METHODS.md (case-vote, collapse-repeats)")
+    parser.add_argument("--preprocess", choices=("none", "sentence-breaks"), default="none",
+                        help="apply to every candidate before combining (docs/METHODS.md M11)")
     parser.add_argument("--compare-to", action="append", default=[], metavar="RUN",
                         help="also report a paired comparison with this run")
     args = parser.parse_args(argv)
@@ -63,6 +66,10 @@ def main(argv: list[str] | None = None) -> int:
         if ref_names != names or hyp_names != names or ref_texts != references:
             raise SystemExit(f"{run}: clips or references differ from {args.runs[0]}")
         candidates[run] = hyp_texts
+    raw_candidates = dict(candidates)
+    if args.preprocess == "sentence-breaks":
+        candidates = {run: [selection.remove_sentence_breaks(h) for h in texts]
+                      for run, texts in candidates.items()}
 
     if args.method == "mbr":
         selected, chosen = mbr_select(candidates)
@@ -78,6 +85,13 @@ def main(argv: list[str] | None = None) -> int:
                     for i in range(len(names))]
         selection_info = {"method": "letter case of the primary's words from unanimous aligned "
                                     "voters (docs/METHODS.md M3)",
+                          "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
+                                                                      strict=True))}
+    elif args.method == "sentence-breaks":
+        primary = args.runs[0]
+        selected = [selection.remove_sentence_breaks(text) for text in candidates[primary]]
+        selection_info = {"method": "remove internal sentence breaks, lowercase the next word "
+                                    "(docs/METHODS.md M9)",
                           "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
                                                                       strict=True))}
     elif args.method == "collapse-repeats":
@@ -106,7 +120,8 @@ def main(argv: list[str] | None = None) -> int:
     })
     cli_wer = whisper_baseline.official_cli_wer(names, references, selected, args.name)
     parity_ok = cli_wer is not None and abs(round(cli_wer, 4) - scores["official"]["wer"]) < 1e-9
-    incumbent = per_clip_counts(references, candidates[args.runs[0]])
+    # The incumbent is the first run as it was scored, before any --preprocess.
+    incumbent = per_clip_counts(references, raw_candidates[args.runs[0]])
     selected_counts = per_clip_counts(references, selected)
     comparisons = {}
     for run in args.compare_to:
@@ -124,6 +139,7 @@ def main(argv: list[str] | None = None) -> int:
         "design": {"mbr": "docs/SELECTOR.md", "rover-backbone": "docs/ROVER.md",
                    "rover-order": "docs/ROVER.md"}.get(args.method, "docs/METHODS.md"),
         "candidates_in_tie_break_order": args.runs,
+        "preprocess": args.preprocess,
         "selection": selection_info,
         "dataset": {"split": "dev", "rows": len(names)},
         "scores": scores,
@@ -134,8 +150,12 @@ def main(argv: list[str] | None = None) -> int:
         },
         "comparisons": comparisons,
     }
+    if args.preprocess != "none":
+        report["versus_preprocessed_incumbent"] = paired_bootstrap(
+            per_clip_counts(references, candidates[args.runs[0]]), selected_counts)
     assert_no_transcript_leak(report, references + selected
-                              + [h for hs in candidates.values() for h in hs])
+                              + [h for hs in candidates.values() for h in hs]
+                              + [h for hs in raw_candidates.values() for h in hs])
     whisper_baseline.REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     (whisper_baseline.REPORTS_DIR / f"{args.name}.json").write_text(
         json.dumps(report, indent=2) + "\n", encoding="utf-8")
