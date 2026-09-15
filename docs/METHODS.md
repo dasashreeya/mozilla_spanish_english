@@ -72,11 +72,30 @@ lowercase "i"-forms per 100 words; the references 2.52 and 0.46).
 - **M11 — M9 then ROVER (M2 design):** apply M9 to all three M2 inputs, then ROVER with the
   fine-tuned output as backbone.
 
-## GPU candidates (need the user's go; not run in round 3)
+## GPU candidates (need the user's go; none run yet)
 
-- **G1** — retrain with Bangor transcripts normalized towards the competition conventions.
-- **G2** — shorter fine-tuning (1 epoch) to keep more of turbo's zero-shot behaviour.
-- **G3** — fine-tune Whisper large-v3 instead of turbo.
+Budget: the user's $15 for all training; watchdog upper bounds so far are $1.13 (S1) and
+$1.01 (S2), leaving about $12.86 before image-build charges, which are UNKNOWN
+(`reports/finetune/runs/*.watchdog.txt`, `reports/finetune/approvals.md`). Every run goes
+through `scripts/modal_watchdog.py` with a new run id, a pre-gpu claim and review, and is
+scored locally on dev with the S4 protocol plus the round-3 text rule (M9b).
+
+- **G7 — Duration-matched training segments.** Bangor segments (median 6.9 s, 42% under 5 s,
+  38% 10–30 s; `reports/bangor_segments_summary.json`) are much shorter than dev clips (median
+  12.8 s, 5% under 5 s, 68% 10–30 s; `reports/data_audit.json`). Re-cut Bangor with a higher
+  minimum length and larger gaps so the distribution resembles dev (local, the segmenter ran
+  in 72 s), re-upload, retrain turbo with the S2 recipe. Hypothesis: fewer scattered
+  insertions on long clips. Cost: about the S2 run (watchdog bound $1.01 there).
+- **G3 — Fine-tune Whisper large-v3 instead of turbo** (32 decoder layers instead of 4), same
+  data and recipe. Hypothesis: stronger decoder for code-switching. Cost: training time is
+  UNKNOWN until a trial; bound it with a 60-minute watchdog (60 min × $3.39/h = $3.39).
+  Runtime package about 3.1 GB and roughly twice turbo's decode time (GUESS).
+- **G1 — Convention-matched labels.** Apply the M9 rule (and drop sentence breaks) to the
+  training transcripts so the model stops producing them; retrain turbo. Lower priority: M9
+  already removes breaks at inference.
+- **G6 — Also train on dev (in-domain).** Would put dev audio on Modal (currently excluded,
+  `docs/FINETUNE_PLAN.md` decision 3) and leave no local evaluation set; listed only as a user
+  decision.
 
 ## Results
 
