@@ -1,0 +1,36 @@
+$ date -u; shasum -a 256 artifacts/submission-rover3-breaks.zip; stat -f "%N %z bytes" artifacts/submission-rover3-breaks.zip
+Wed Sep 16 14:23:47 UTC 2026
+62f2f7a306c82bda18b8810130dcb00edb7725fc09ee6579dd5aab86f5d4059e  artifacts/submission-rover3-breaks.zip
+artifacts/submission-rover3-breaks.zip 7947637876 bytes
+$ (members vs build record; validated extraction; model pins; validation report)
+build record: zip 62f2f7a306c82bda18b8810130dcb00edb7725fc09ee6579dd5aab86f5d4059e 7947637876 bytes | commit 0e04d0b767871114082b90d70e21224a6e52194b | dirty False
+config: selection rover-order | postprocess sentence-breaks-keep-ellipsis | backends ['ft-s2', 'turbo', 'q17']
+members 23 match record: True | extracted mismatches: 0
+ft-s2 model files equal to the scored id-1831 archive: True
+models: {'ft-s2': 'artifacts/finetune/full-s2/ct2', 'turbo': '0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf', 'q17': '7278e1e70fe206f11671096ffdd38061171dd6e5'}
+validation: {'validated_at': '2026-09-16T03:46:58+00:00', 'zip': 'submission-rover3-breaks.zip', 'limit': None, 'device': 'cpu'} exit 0 | wall 2570.1 | log lines 23 | official 0.098919 | {'run': 'r3c-M11b', 'clips': 155, 'identical_transcripts': 155}
+exit=0
+$ cat data/interim/runtime_dev/62f2f7a306c82bda/log.txt
+[lit] variant=rover3-breaks device=cpu backends=ft-s2,turbo,q17
+[lit] ft-s2: loaded
+[lit] ft-s2: 25%
+[lit] ft-s2: 50%
+[lit] ft-s2: 75%
+[lit] ft-s2: 100%
+[lit] ft-s2: done
+[lit] wrote submission.csv
+[lit] turbo: loaded
+[lit] turbo: 25%
+[lit] turbo: 50%
+[lit] turbo: 75%
+[lit] turbo: 100%
+[lit] turbo: done
+[lit] wrote submission.csv
+[lit] q17: loaded
+[lit] q17: 25%
+[lit] q17: 50%
+[lit] q17: 75%
+[lit] q17: 100%
+[lit] q17: done
+[lit] wrote submission.csv
+[lit] finished
