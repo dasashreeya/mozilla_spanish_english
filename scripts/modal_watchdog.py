@@ -2,7 +2,10 @@
 
     uv run --extra train python scripts/modal_watchdog.py trial s1 --max-minutes 30
     uv run --extra train python scripts/modal_watchdog.py full g7a --max-minutes 35 \
-        --stage-arg --dataset=g7 --stage-arg --expected-items=4715
+        --stage-arg=--dataset=g7 --stage-arg=--expected-items=4715
+
+(`--stage-arg` values start with "--", so they must be attached with "=": argparse otherwise
+reads the next token as a missing option value and exits 2.)
 
 Starts `modal run --detach scripts/modal_finetune.py::<stage> --run-id <run id>`, writes
 its output to reports/finetune/runs/<stage>-<run id>.log, reads the app ID from that output,
@@ -16,8 +19,14 @@ included).
 At the deadline, or when the app has 0 running tasks for IDLE_POLLS_BEFORE_STOP polls after
 the job's client exits, it sends `modal app stop` and re-sends it until the app is listed as
 `stopped` with 0 tasks, for up to CONFIRM_SECONDS. An app missing from the listing is not
-treated as stopped. The deadline holds only while this machine stays awake; the function's
-own execution and startup timeouts remain as the backstop.
+treated as stopped.
+
+Cost bounds this can and cannot give: while it runs and the machine stays awake, it stops the
+app at the deadline, so the expected container time is the deadline plus the seconds the stop
+takes to land. It cannot guarantee that: if `modal app stop` keeps failing or the listing never
+shows `stopped` with 0 tasks, it gives up after CONFIRM_SECONDS, says so and exits 1 with the
+app possibly still billing. The function's own `timeout` and `startup_timeout` are the only
+provider-enforced limits, and they apply per attempt.
 
 Exit codes: 0 job finished and app confirmed stopped; 3 deadline reached and app confirmed
 stopped; 1 anything else (launch failure, job failure, stop not confirmed).
@@ -166,8 +175,9 @@ def main() -> int:
     parser.add_argument("--max-minutes", type=float, required=True)
     parser.add_argument("--poll-seconds", type=float, default=30)
     parser.add_argument("--stage-arg", action="append", default=[], metavar="ARG",
-                        help="extra argument for the Modal function, e.g. --stage-arg "
-                             "--dataset=g7 (repeatable)")
+                        help="extra argument for the Modal function, attached with '=' because "
+                             "the value itself starts with '--', e.g. --stage-arg=--dataset=g7 "
+                             "(repeatable)")
     args = parser.parse_args()
     return watch(args.stage, args.run_id, args.max_minutes, args.poll_seconds, args.stage_arg)
 

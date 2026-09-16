@@ -179,3 +179,22 @@ def test_modal_run_selects_the_dataset_directory(monkeypatch, tmp_path: Path) ->
     assert seen[0].expected_items == 4715
     with pytest.raises(ValueError, match="unknown dataset"):
         modal_finetune._run("trial", "g7b", dataset="nope")
+
+
+def test_samples_seen_does_not_overcount_short_accumulation_groups() -> None:
+    import pytest
+
+    pytest.importorskip("transformers")
+    from lit_sp_en.finetune import make_callback
+
+    # G7: 4,715 items, batch 16 x accum 2 = 32 per step, 148 steps/epoch -> 296 steps for 2
+    # epochs; 296 x 32 = 9,472 would overcount the 9,430 samples actually seen.
+    callback = make_callback(0.0, 32, 4715)
+    callback.steps, callback.started = 296, None
+    assert callback.summary()["samples_seen"] == 9430
+    callback.steps = 148
+    assert callback.summary()["samples_seen"] == 4715
+    # A partial run (S1 stopped at 280 of 450 steps on 7,200 items) keeps the step estimate.
+    partial = make_callback(0.0, 32, 7200)
+    partial.steps, partial.started = 280, None
+    assert partial.summary()["samples_seen"] == 8960

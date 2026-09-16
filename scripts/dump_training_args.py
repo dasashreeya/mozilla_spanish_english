@@ -1,6 +1,8 @@
 """Print the fully resolved training configuration of a Modal stage, with each parameter's meaning.
 
     .venv-qwen/bin/python scripts/dump_training_args.py trial
+    .venv-qwen/bin/python scripts/dump_training_args.py full --dataset g7 --run-id g7a \
+        --expected-items 4715
 
 Builds FinetuneConfig exactly as scripts/modal_finetune.py does for the stage, calls
 build_training_arguments(cfg, cuda=True) (the call train() makes on the GPU) and prints
@@ -39,13 +41,19 @@ from lit_sp_en.finetune import (  # noqa: E402
     build_training_arguments,
 )
 
-STAGE_OVERRIDES = {"trial": {"epochs": 2.0, "max_train_seconds": 600.0, "expected_items": 7200,
-                             "save_final": False},
-                   "full": {"epochs": 2.0, "expected_items": 7200}}
+# Keyword arguments each stage passes to _run(), other than the ones taken from the CLI
+# (dataset, expected_items). Checked against the source by modal_stage_overrides().
+STAGE_OVERRIDES = {"trial": {"epochs": 2.0, "max_train_seconds": 600.0, "save_final": False},
+                   "full": {"epochs": 2.0}}
+CLI_DRIVEN = {"dataset", "expected_items"}
 
 
 def modal_stage_overrides() -> dict:
-    """Check STAGE_OVERRIDES against the literal keyword arguments in modal_finetune.py."""
+    """The literal keyword arguments each stage passes to _run(), from the source.
+
+    Names (dataset=dataset, expected_items=expected_items) come from the function's own
+    parameters, so they are supplied on this script's command line instead.
+    """
 
     tree = ast.parse((ROOT / "scripts" / "modal_finetune.py").read_text(encoding="utf-8"))
     found = {}
@@ -53,10 +61,24 @@ def modal_stage_overrides() -> dict:
         if isinstance(node, ast.FunctionDef) and node.name in STAGE_OVERRIDES:
             call = node.body[-1].value
             found[node.name] = {kw.arg: ast.literal_eval(kw.value) for kw in call.keywords
-                                if not isinstance(kw.value, ast.Name)}
-            found[node.name] |= {kw.arg: {"EXPECTED_ITEMS": 7200}[kw.value.id]
-                                 for kw in call.keywords if isinstance(kw.value, ast.Name)}
+                                if kw.arg not in CLI_DRIVEN and not isinstance(kw.value, ast.Name)}
+            passed_through = {kw.arg for kw in call.keywords if isinstance(kw.value, ast.Name)}
+            if passed_through - CLI_DRIVEN:
+                raise SystemExit(f"{node.name}: unexpected pass-through {passed_through}")
     return found
+
+
+def modal_datasets() -> dict:
+    """The DATASETS map from the wrapper's source (it cannot be imported here: the Modal
+    client lives in .venv, this script runs in .venv-qwen with torch and transformers)."""
+
+    tree = ast.parse((ROOT / "scripts" / "modal_finetune.py").read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        names = getattr(node, "targets", [])
+        if isinstance(node, ast.Assign) and any(
+                isinstance(n, ast.Name) and n.id == "DATASETS" for n in names):
+            return ast.literal_eval(node.value)
+    raise SystemExit("DATASETS not found in scripts/modal_finetune.py")
 
 
 def field_lines(path: Path) -> dict[str, int]:
@@ -68,7 +90,11 @@ def field_lines(path: Path) -> dict[str, int]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("stage", choices=sorted(STAGE_OVERRIDES))
-    stage = parser.parse_args().stage
+    parser.add_argument("--dataset", default="bangor")
+    parser.add_argument("--run-id", default="<run id>")
+    parser.add_argument("--expected-items", type=int, default=7200)
+    args = parser.parse_args()
+    stage = args.stage
 
     import transformers
     import transformers.training_args as training_args
@@ -83,10 +109,13 @@ def main() -> int:
     training_args.is_torch_bf16_gpu_available = lambda: True
     print("bypass: transformers.training_args.is_torch_bf16_gpu_available -> True (only patch)")
 
-    volume = "/vol"
-    cfg = FinetuneConfig(data_dir=f"{volume}/bangor",
-                         languages_file=f"{volume}/bangor/segment_languages.json",
-                         output_dir=f"{volume}/runs/{stage}-<run id>", **STAGE_OVERRIDES[stage])
+    volume, datasets = "/vol", modal_datasets()
+    print(f"datasets parsed from scripts/modal_finetune.py: {datasets}")
+    data_dir = datasets[args.dataset]
+    cfg = FinetuneConfig(data_dir=f"{volume}/{data_dir}",
+                         languages_file=f"{volume}/{data_dir}/segment_languages.json",
+                         output_dir=f"{volume}/runs/{stage}-{args.run_id}",
+                         expected_items=args.expected_items, **STAGE_OVERRIDES[stage])
     print("FinetuneConfig:", json.dumps(dataclasses.asdict(cfg)))
     print("model config overrides:", MODEL_OVERRIDES, "| spec augment overrides:",
           SPEC_AUGMENT_OVERRIDES, "| generation_config.forced_decoder_ids = None")

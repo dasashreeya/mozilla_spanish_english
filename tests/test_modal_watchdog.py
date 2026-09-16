@@ -1,4 +1,7 @@
+import sys
 from pathlib import Path
+
+import pytest
 
 from scripts import modal_watchdog
 
@@ -149,3 +152,22 @@ def test_stage_args_are_appended_to_the_modal_command(monkeypatch, tmp_path) -> 
     command = setup.commands[0]
     assert command[-5:] == ["scripts/modal_finetune.py::full", "--run-id", "g7a",
                             "--dataset=g7", "--expected-items=4715"]
+
+
+def test_cli_forwards_stage_args_through_main(monkeypatch, tmp_path) -> None:
+    """The documented command line must reach watch(); argparse rejects a detached '--value'."""
+
+    calls = []
+    monkeypatch.setattr(modal_watchdog, "watch",
+                        lambda *args: calls.append(args) or 0)
+    monkeypatch.setattr(sys, "argv", ["modal_watchdog.py", "full", "g7a", "--max-minutes", "35",
+                                      "--stage-arg=--dataset=g7",
+                                      "--stage-arg=--expected-items=4715"])
+    assert modal_watchdog.main() == 0
+    assert calls == [("full", "g7a", 35.0, 30, ["--dataset=g7", "--expected-items=4715"])]
+
+    monkeypatch.setattr(sys, "argv", ["modal_watchdog.py", "full", "g7a", "--max-minutes", "35",
+                                      "--stage-arg", "--dataset=g7"])
+    with pytest.raises(SystemExit) as exit_info:
+        modal_watchdog.main()
+    assert exit_info.value.code == 2

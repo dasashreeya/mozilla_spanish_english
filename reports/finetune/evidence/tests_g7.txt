@@ -1,0 +1,29 @@
+$ date -u; git rev-parse HEAD; git status --porcelain -- scripts src tests
+Wed Sep 16 03:50:59 UTC 2026
+8abdb244b2f72a34efdda755b22a4598ff79cb52
+ M scripts/dump_training_args.py
+ M scripts/modal_watchdog.py
+ M src/lit_sp_en/finetune.py
+ M tests/test_finetune.py
+ M tests/test_modal_watchdog.py
+$ uv run --no-sync python -m pytest -q -p no:cacheprovider   (full suite, .venv)
+198 passed, 2 skipped in 4.00s
+exit=0
+$ .venv-qwen/bin/python -m pytest -q -p no:cacheprovider tests/test_finetune.py   (torch/transformers tests)
+9 passed, 3 skipped in 1.03s
+exit=0
+$ uv run --no-sync python -m pytest -v -p no:cacheprovider tests/test_modal_watchdog.py
+tests/test_modal_watchdog.py::test_deadline_stops_the_app PASSED         [  8%]
+tests/test_modal_watchdog.py::test_client_exit_with_running_tasks_keeps_watching_then_stops_idle_app PASSED [ 16%]
+tests/test_modal_watchdog.py::test_finished_job_with_stopped_app_needs_no_stop PASSED [ 25%]
+tests/test_modal_watchdog.py::test_list_errors_do_not_end_the_watch PASSED [ 33%]
+tests/test_modal_watchdog.py::test_refuses_to_reuse_a_run_log PASSED     [ 41%]
+tests/test_modal_watchdog.py::test_client_exit_with_app_missing_from_listing_is_a_failure PASSED [ 50%]
+tests/test_modal_watchdog.py::test_each_poll_prints_a_cost_bound PASSED  [ 58%]
+tests/test_modal_watchdog.py::test_confirmed_stopped_needs_stopped_state_and_zero_tasks PASSED [ 66%]
+tests/test_modal_watchdog.py::test_stop_and_confirm_resends_stop_and_fails_without_confirmation PASSED [ 75%]
+tests/test_modal_watchdog.py::test_cli_timeouts_become_errors PASSED     [ 83%]
+tests/test_modal_watchdog.py::test_stage_args_are_appended_to_the_modal_command PASSED [ 91%]
+tests/test_modal_watchdog.py::test_cli_forwards_stage_args_through_main PASSED [100%]
+============================== 12 passed in 0.05s ==============================
+exit=0

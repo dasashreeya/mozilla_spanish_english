@@ -8,6 +8,7 @@ inside functions so the Modal wrapper can import this module without them.
 from __future__ import annotations
 
 import json
+import math
 import re
 import subprocess
 import time
@@ -96,8 +97,6 @@ def claim_attempt(run_dir: Path) -> bool:
 def check_finite_loss(training_loss: float, logged: list[tuple[int, float]]) -> None:
     """Fail before saving if the mean loss or any logged loss is not finite."""
 
-    import math
-
     bad = [step for step, loss in logged if not math.isfinite(loss)]
     if not math.isfinite(training_loss) or bad:
         raise ValueError(f"non-finite loss: mean={training_loss}, at logged steps {bad}")
@@ -146,7 +145,7 @@ class Collator:
         return batch
 
 
-def make_callback(max_train_seconds: float, samples_per_step: int):
+def make_callback(max_train_seconds: float, samples_per_step: int, dataset_items: int = 0):
     from transformers import TrainerCallback
 
     class TimeCap(TrainerCallback):
@@ -171,7 +170,13 @@ def make_callback(max_train_seconds: float, samples_per_step: int):
 
         def summary(self) -> dict:
             elapsed = time.monotonic() - self.started if self.started else 0.0
+            # The last accumulation group of an epoch can be short, so steps x batch x accum
+            # overcounts: count whole passes over the dataset, then the steps since.
             samples = self.steps * samples_per_step
+            if dataset_items:
+                steps_per_epoch = math.ceil(dataset_items / samples_per_step)
+                epochs, leftover = divmod(self.steps, steps_per_epoch)
+                samples = epochs * dataset_items + min(leftover * samples_per_step, dataset_items)
             return {"optimizer_steps": self.steps, "train_seconds": round(elapsed, 1),
                     "samples_seen": samples,
                     "samples_per_second": round(samples / elapsed, 3) if elapsed else None,
@@ -226,7 +231,7 @@ def train(cfg: FinetuneConfig) -> dict:
     items = load_items(cfg)
     check_item_count(items, cfg.expected_items)
     samples_per_step = cfg.per_device_batch * cfg.grad_accum
-    callback = make_callback(cfg.max_train_seconds, samples_per_step)
+    callback = make_callback(cfg.max_train_seconds, samples_per_step, len(items))
     args = build_training_arguments(cfg, cuda)
     trainer = Seq2SeqTrainer(
         model=model, args=args,
