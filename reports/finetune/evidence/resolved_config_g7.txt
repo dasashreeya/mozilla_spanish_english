@@ -1,9 +1,12 @@
-$ date -u; git rev-parse HEAD; git status --porcelain -- scripts src
-Wed Sep 16 03:49:00 UTC 2026
-8abdb244b2f72a34efdda755b22a4598ff79cb52
- M scripts/dump_training_args.py
- M scripts/modal_watchdog.py
-(modal_watchdog.py and dump_training_args.py are the fixes under review below; they are committed before launch)
+$ date -u; git rev-parse HEAD; git status --porcelain
+Wed Sep 16 03:51:16 UTC 2026
+f41aefb636735f7d7202cbb3ead24ddd7a9b657f
+ M reports/finetune/evidence/resolved_config_g7.txt
+ M reports/submissions/turbo-prompt.json
+?? log_english_spanish_1.txt
+?? reports/baselines/comparison-ft-s2-primary.json
+?? reports/baselines/ft-s2-turbo-auto-float32-b5-prompt-limit20.json
+$ (regenerated at HEAD after the fixes)
 $ HF_HUB_DISABLE_PROGRESS_BARS=1 .venv-qwen/bin/python scripts/dump_training_args.py full --dataset g7 --run-id g7a --expected-items 4715
 transformers 4.57.6 | torch 2.11.0
 stage overrides parsed from scripts/modal_finetune.py: {'trial': {'epochs': 2.0, 'max_train_seconds': 600.0, 'save_final': False}, 'full': {'epochs': 2.0}}
@@ -101,7 +104,7 @@ Seq2SeqTrainingArguments.to_dict() (cuda=True), 137 keys:
  "log_level": "passive",
  "log_level_replica": "warning",
  "log_on_each_node": true,
- "logging_dir": "/vol/runs/full-g7a/runs/Sep15_23-49-01_Shreeyas-MacBook-Pro-3.local",
+ "logging_dir": "/vol/runs/full-g7a/runs/Sep15_23-51-17_Shreeyas-MacBook-Pro-3.local",
  "logging_first_step": false,
  "logging_nan_inf_filter": false,
  "logging_steps": 5,
@@ -241,7 +244,7 @@ local_rank = 0 | default 0 | - | training_args.py:1119 | For distributed trainin
 log_level = "passive" | default "passive" | - | training_args.py:944 | Logger log level to use on the main node. Possible choices are the log levels as strings: 'debug', 'info', 'warning', 'error' and 'critical', plus a 'passive' level which doesn't set anything and lets the application set the level. Defaults to 'passive'.
 log_level_replica = "warning" | default "warning" | - | training_args.py:955 | Logger log level to use on replica nodes. Same choices and defaults as ``log_level``
 log_on_each_node = true | default true | - | training_args.py:962 | When doing a multinode distributed training, whether to log once per node or just once on the main node.
-logging_dir = "/vol/runs/full-g7a/runs/Sep15_23-49-01_Shreeyas-MacBook-Pro-3.local" | default "/vol/runs/full-g7a/runs/Sep15_23-49-01_Shreeyas-MacBook-Pro-3.local" | - | training_args.py:971 | Tensorboard log dir.
+logging_dir = "/vol/runs/full-g7a/runs/Sep15_23-51-17_Shreeyas-MacBook-Pro-3.local" | default "/vol/runs/full-g7a/runs/Sep15_23-51-17_Shreeyas-MacBook-Pro-3.local" | - | training_args.py:971 | Tensorboard log dir.
 logging_first_step = false | default false | - | training_args.py:976 | Log the first global_step
 logging_nan_inf_filter = false | default true | SET | training_args.py:986 | Filter nan and inf losses for logging.
 logging_steps = 5 | default 500 | SET | training_args.py:977 | Log every X updates steps. Should be an integer or a float in range `[0,1)`. If smaller than 1, will be interpreted as ratio of total training steps.
@@ -307,47 +310,47 @@ weight_decay = 0.0 | default 0.0 | - | training_args.py:916 | Weight decay for A
 
 FinetuneConfig fields and the lines that read them:
 base_model = 'openai/whisper-large-v3-turbo'
-    src/lit_sp_en/finetune.py:218: processor = WhisperProcessor.from_pretrained(cfg.base_model)
-    src/lit_sp_en/finetune.py:219: model = WhisperForConditionalGeneration.from_pretrained(cfg.base_model)
+    src/lit_sp_en/finetune.py:223: processor = WhisperProcessor.from_pretrained(cfg.base_model)
+    src/lit_sp_en/finetune.py:224: model = WhisperForConditionalGeneration.from_pretrained(cfg.base_model)
 data_dir = '/vol/bangor_g7'
-    src/lit_sp_en/finetune.py:46: data_dir = Path(cfg.data_dir)
+    src/lit_sp_en/finetune.py:47: data_dir = Path(cfg.data_dir)
 languages_file = '/vol/bangor_g7/segment_languages.json'
-    src/lit_sp_en/finetune.py:47: languages = json.loads(Path(cfg.languages_file).read_text(encoding="utf-8"))
+    src/lit_sp_en/finetune.py:48: languages = json.loads(Path(cfg.languages_file).read_text(encoding="utf-8"))
 output_dir = '/vol/runs/full-g7a'
-    src/lit_sp_en/finetune.py:191: output_dir=cfg.output_dir, per_device_train_batch_size=cfg.per_device_batch,
-    src/lit_sp_en/finetune.py:239: final_dir = Path(cfg.output_dir) / "final" if cfg.save_final else None
+    src/lit_sp_en/finetune.py:196: output_dir=cfg.output_dir, per_device_train_batch_size=cfg.per_device_batch,
+    src/lit_sp_en/finetune.py:244: final_dir = Path(cfg.output_dir) / "final" if cfg.save_final else None
 epochs = 2.0
-    src/lit_sp_en/finetune.py:193: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
+    src/lit_sp_en/finetune.py:198: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
 max_steps = -1
-    src/lit_sp_en/finetune.py:193: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
+    src/lit_sp_en/finetune.py:198: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
 max_train_seconds = 0.0
-    src/lit_sp_en/finetune.py:229: callback = make_callback(cfg.max_train_seconds, samples_per_step)
+    src/lit_sp_en/finetune.py:234: callback = make_callback(cfg.max_train_seconds, samples_per_step, len(items))
 limit_segments = 0
-    src/lit_sp_en/finetune.py:59: return items[: cfg.limit_segments] if cfg.limit_segments else items
+    src/lit_sp_en/finetune.py:60: return items[: cfg.limit_segments] if cfg.limit_segments else items
 per_device_batch = 16
-    src/lit_sp_en/finetune.py:191: output_dir=cfg.output_dir, per_device_train_batch_size=cfg.per_device_batch,
-    src/lit_sp_en/finetune.py:228: samples_per_step = cfg.per_device_batch * cfg.grad_accum
+    src/lit_sp_en/finetune.py:196: output_dir=cfg.output_dir, per_device_train_batch_size=cfg.per_device_batch,
+    src/lit_sp_en/finetune.py:233: samples_per_step = cfg.per_device_batch * cfg.grad_accum
 grad_accum = 2
-    src/lit_sp_en/finetune.py:192: gradient_accumulation_steps=cfg.grad_accum, learning_rate=cfg.learning_rate,
-    src/lit_sp_en/finetune.py:228: samples_per_step = cfg.per_device_batch * cfg.grad_accum
+    src/lit_sp_en/finetune.py:197: gradient_accumulation_steps=cfg.grad_accum, learning_rate=cfg.learning_rate,
+    src/lit_sp_en/finetune.py:233: samples_per_step = cfg.per_device_batch * cfg.grad_accum
 learning_rate = 1e-05
-    src/lit_sp_en/finetune.py:192: gradient_accumulation_steps=cfg.grad_accum, learning_rate=cfg.learning_rate,
+    src/lit_sp_en/finetune.py:197: gradient_accumulation_steps=cfg.grad_accum, learning_rate=cfg.learning_rate,
 warmup_steps = 50
-    src/lit_sp_en/finetune.py:193: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
+    src/lit_sp_en/finetune.py:198: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
 weight_decay = 0.0
-    src/lit_sp_en/finetune.py:194: weight_decay=cfg.weight_decay, lr_scheduler_type="linear", bf16=cuda,
+    src/lit_sp_en/finetune.py:199: weight_decay=cfg.weight_decay, lr_scheduler_type="linear", bf16=cuda,
 seed = 20260914
-    src/lit_sp_en/finetune.py:204: remove_unused_columns=False, seed=cfg.seed,
+    src/lit_sp_en/finetune.py:209: remove_unused_columns=False, seed=cfg.seed,
 gradient_checkpointing = True
-    src/lit_sp_en/finetune.py:195: gradient_checkpointing=cfg.gradient_checkpointing,
+    src/lit_sp_en/finetune.py:200: gradient_checkpointing=cfg.gradient_checkpointing,
 spec_augment = True
-    src/lit_sp_en/finetune.py:223: if cfg.spec_augment:
+    src/lit_sp_en/finetune.py:228: if cfg.spec_augment:
 num_workers = 8
-    src/lit_sp_en/finetune.py:203: eval_strategy="no", report_to=[], dataloader_num_workers=cfg.num_workers if cuda else 0,
+    src/lit_sp_en/finetune.py:208: eval_strategy="no", report_to=[], dataloader_num_workers=cfg.num_workers if cuda else 0,
 max_label_tokens = 448
-    src/lit_sp_en/finetune.py:233: train_dataset=SegmentDataset(items, processor, cfg.max_label_tokens),
+    src/lit_sp_en/finetune.py:238: train_dataset=SegmentDataset(items, processor, cfg.max_label_tokens),
 expected_items = 4715
-    src/lit_sp_en/finetune.py:227: check_item_count(items, cfg.expected_items)
+    src/lit_sp_en/finetune.py:232: check_item_count(items, cfg.expected_items)
 save_final = True
-    src/lit_sp_en/finetune.py:239: final_dir = Path(cfg.output_dir) / "final" if cfg.save_final else None
+    src/lit_sp_en/finetune.py:244: final_dir = Path(cfg.output_dir) / "final" if cfg.save_final else None
 exit=0
