@@ -1,0 +1,26 @@
+{
+  "runs": [
+    "ft-s2-turbo-auto-int8-b5-prompt",
+    "ft-s2-turbo-auto-int8-b5"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "ft-s2-turbo-auto-int8-b5 minus ft-s2-turbo-auto-int8-b5-prompt": {
+      "difference_b_minus_a": 0.0012,
+      "low": -0.0026,
+      "high": 0.0051,
+      "share_of_resamples_b_worse": 0.713,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.1059,
+    "clips_won": {
+      "tie": 118,
+      "ft-s2-turbo-auto-int8-b5-prompt": 20,
+      "ft-s2-turbo-auto-int8-b5": 17
+    }
+  }
+}

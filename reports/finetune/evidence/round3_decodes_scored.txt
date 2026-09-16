@@ -12,3 +12,10 @@ $ uv run --no-sync python scripts/compare_runs.py ft-s2-turbo-auto-int8-b5-promp
 ft-s2-turbo-auto-int8-b5-prompt-vad minus ft-s2-turbo-auto-int8-b5-prompt {'difference_b_minus_a': 0.0012, 'low': -0.0027, 'high': 0.0055, 'share_of_resamples_b_worse': 0.7045, 'level': 0.95, 'reps': 2000}
 exit=0
 M6 WER 0.1119 S/D/I 328 109 122
+$ uv run --no-sync python scripts/compare_runs.py ft-s2-turbo-auto-int8-b5-prompt ft-s2-turbo-auto-int8-b5-prompt-rp11 --output r3-M7-comparison.json
+ft-s2-turbo-auto-int8-b5-prompt-rp11 minus ft-s2-turbo-auto-int8-b5-prompt {'difference_b_minus_a': 0.0002, 'low': -0.0027, 'high': 0.0029, 'share_of_resamples_b_worse': 0.515, 'level': 0.95, 'reps': 2000}
+exit=0
+M7 WER 0.1109 S/D/I 329 103 122
+$ uv run --no-sync python scripts/compare_runs.py ft-s2-turbo-auto-int8-b5-prompt ft-s2-turbo-auto-int8-b5 --output r3-M8-comparison.json
+ft-s2-turbo-auto-int8-b5 minus ft-s2-turbo-auto-int8-b5-prompt {'difference_b_minus_a': 0.0012, 'low': -0.0026, 'high': 0.0051, 'share_of_resamples_b_worse': 0.713, 'level': 0.95, 'reps': 2000}
+exit=0

@@ -157,10 +157,12 @@ Outputs: `reports/finetune/evidence/round3_decodes.txt` (commands, exit codes),
 |---|---:|---|---|---|
 | M5 no temperature fallback | 0.1107 | 0.0 [0.0, 0.0] | fail (identical) | same S/D/I (331/97/125): fallback sampling never triggered on dev, so it is not the source of the extra words |
 | M6 VAD filter | 0.1119 | +0.0012 [−0.0027, +0.0055] | fail | S/D/I 328/109/122: removes only 3 insertions but adds 12 deletions — the extra words are not in silent stretches, and VAD trims real speech |
+| M7 repetition penalty 1.1 | 0.1109 | +0.0002 [−0.0027, +0.0029] | fail | S/D/I 329/103/122: three fewer insertions, six more deletions. The extra words are not token-level repetition loops (only 13 of 125 insertions repeat a neighbour) |
+| M8 no prompt | 0.1119 | +0.0012 [−0.0026, +0.0051] | fail | S/D/I 335/95/129: without the prompt the model substitutes and inserts more; the code-switching prompt still helps after fine-tuning |
 
-M7 (repetition penalty 1.1) and M8 (no prompt) did not finish: the decode job was killed by the
-machine running out of memory at about 22:15 UTC while two package validations ran at the same
-time (see Process notes). They are re-run one job at a time.
+The first attempt at M7/M8 was killed by the machine running out of memory while two package
+validations ran at the same time; both were re-run alone (`round3_decodes.txt`). M8's process spent
+3h47m wall-clock for 26 minutes of decoding because the machine was swapping.
 
 ## Packages built from round 3
 
