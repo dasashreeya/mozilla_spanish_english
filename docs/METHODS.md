@@ -276,6 +276,21 @@ pre-submit PASS, G7's data and launch path are ready and its claim rewritten aft
 review, and `scripts/evaluate_finetuned.py` runs the whole post-training dev evaluation in one
 command.
 
+## Platform results (user-reported, `reports/submissions/platform_results.json`)
+
+| Upload | Kind | Score | Dev WER of the same build | First 5 dev clips (local) |
+|---|---|---:|---:|---:|
+| `turbo-prompt` `40d7dcc2…` | smoke | 0.0971 | 0.139567 | 0.0857 |
+| `ft-s2-prompt` `0a4ab892…` | smoke | 0.1429 | 0.110733 | 0.1429 |
+| `ft-s2-prompt` id-1831 | **scored** | **0.1371** | 0.110733 | — |
+| `rover3-breaks` `62f2f7a3…` id-1876 | smoke | 0.0857 | 0.098919 | 0.0800 |
+
+Each smoke score is close to that build's WER on the first five dev clips, and one matched it
+exactly (0.1429), so the smoke set behaves like a handful of the easiest dev clips. Smoke scores
+therefore say nothing about the hidden test (E2), but id-1876 settles three things that had blocked
+the ROVER package: **a 7.4 GB zip is accepted** (the largest previously known to work was 1.6 GB),
+**the Qwen CUDA path runs**, and **three model loads plus decoding fit the 1-minute smoke limit**.
+
 ## Process notes
 
 - Running three model jobs at once (a decode, a one-model and a three-model package validation)
