@@ -159,3 +159,23 @@ def test_modal_run_failure_prints_the_exception_type_only(monkeypatch, tmp_path:
     assert str(raised.value) == "trial failed: ValueError"
     assert raised.value.__cause__ is None and raised.value.__suppress_context__
     assert capsys.readouterr().out == "FAILED trial-s9: ValueError\n"
+
+
+def test_modal_run_selects_the_dataset_directory(monkeypatch, tmp_path: Path) -> None:
+    import pytest
+
+    pytest.importorskip("modal")
+    import lit_sp_en.finetune as finetune
+    from scripts import modal_finetune
+
+    seen = []
+    monkeypatch.setattr(modal_finetune, "VOLUME", str(tmp_path))
+    monkeypatch.setattr(modal_finetune, "volume", _FakeVolume())
+    monkeypatch.setattr(finetune, "train", lambda cfg: seen.append(cfg) or
+                        {"config": {}, "loss_curve": [(5, 1.0)], "final_dir": None})
+    modal_finetune._run("trial", "g7a", dataset="g7", save_final=False, expected_items=4715)
+    assert seen[0].data_dir == str(tmp_path / "bangor_g7")
+    assert seen[0].languages_file == str(tmp_path / "bangor_g7" / "segment_languages.json")
+    assert seen[0].expected_items == 4715
+    with pytest.raises(ValueError, match="unknown dataset"):
+        modal_finetune._run("trial", "g7b", dataset="nope")

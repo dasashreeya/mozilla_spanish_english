@@ -34,9 +34,14 @@ GPU = "A100-80GB"
 VOLUME = "/vol"
 
 
-def _run(stage: str, run_id: str, **overrides) -> dict:
+DATASETS = {"bangor": "bangor", "g7": "bangor_g7"}  # volume directory per dataset name
+
+
+def _run(stage: str, run_id: str, dataset: str = "bangor", **overrides) -> dict:
     from lit_sp_en.finetune import claim_attempt, run_directory
 
+    if dataset not in DATASETS:
+        raise ValueError(f"unknown dataset {dataset!r}; expected one of {sorted(DATASETS)}")
     out = run_directory(Path(VOLUME) / "runs", stage, run_id)
     volume.reload()
     if not claim_attempt(out):
@@ -44,7 +49,7 @@ def _run(stage: str, run_id: str, **overrides) -> dict:
         return {"guard": "refused", "run": out.name}
     volume.commit()
     try:
-        return _train_and_report(stage, out, **overrides)
+        return _train_and_report(stage, out, DATASETS[dataset], **overrides)
     except Exception as exc:
         # Messages and tracebacks from data loading can name a segment; the log is read
         # off-machine, so only the exception type is printed and the chain is dropped.
@@ -52,11 +57,11 @@ def _run(stage: str, run_id: str, **overrides) -> dict:
         raise RuntimeError(f"{stage} failed: {type(exc).__name__}") from None
 
 
-def _train_and_report(stage: str, out: Path, **overrides) -> dict:
+def _train_and_report(stage: str, out: Path, data_dir: str, **overrides) -> dict:
     from lit_sp_en.finetune import FinetuneConfig, convert_to_ctranslate2, train
 
-    cfg = FinetuneConfig(data_dir=f"{VOLUME}/bangor",
-                         languages_file=f"{VOLUME}/bangor/segment_languages.json",
+    cfg = FinetuneConfig(data_dir=f"{VOLUME}/{data_dir}",
+                         languages_file=f"{VOLUME}/{data_dir}/segment_languages.json",
                          output_dir=str(out), **overrides)
     report = train(cfg)
     if stage == "full":
@@ -81,13 +86,13 @@ EXPECTED_ITEMS = 7200
 # S1: 10 minutes of training (plus load) under a 20-minute execution timeout; no weights kept.
 @app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=20 * 60,
               startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
-def trial(run_id: str) -> dict:
-    return _run("trial", run_id, epochs=2.0, max_train_seconds=600.0,
-                expected_items=EXPECTED_ITEMS, save_final=False)
+def trial(run_id: str, dataset: str = "bangor", expected_items: int = EXPECTED_ITEMS) -> dict:
+    return _run("trial", run_id, dataset=dataset, epochs=2.0, max_train_seconds=600.0,
+                expected_items=expected_items, save_final=False)
 
 
 # S2: the full 2-epoch run, only after S1's throughput projects it under the cap.
 @app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=75 * 60,
               startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
-def full(run_id: str) -> dict:
-    return _run("full", run_id, epochs=2.0, expected_items=EXPECTED_ITEMS)
+def full(run_id: str, dataset: str = "bangor", expected_items: int = EXPECTED_ITEMS) -> dict:
+    return _run("full", run_id, dataset=dataset, epochs=2.0, expected_items=expected_items)
