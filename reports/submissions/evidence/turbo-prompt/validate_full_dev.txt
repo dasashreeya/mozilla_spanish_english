@@ -1,0 +1,26 @@
+$ date -u; shasum -a 256 artifacts/submission-turbo-prompt.zip
+2026-09-14T23:06:35Z
+7c67c374c9aa46b66fa048891009d8bc19b8cf430a51670d08c09b7919d0e336  artifacts/submission-turbo-prompt.zip
+$ uv run --no-sync python scripts/validate_submission.py turbo-prompt --parity-run large-v3-turbo-auto-int8-b5-prompt-guard
+{
+  "checks": {
+    "exit_code": 0,
+    "wall_seconds": 1551.4,
+    "log_lines": 8,
+    "log_lines_within_limit": true,
+    "longest_log_line": 105,
+    "log_line_length_within_limit": true,
+    "header_ok": true,
+    "rows": 155,
+    "rows_match_manifest": true,
+    "duplicate_rows": 0,
+    "empty_transcripts": 0
+  },
+  "official_cli_wer": 0.139567,
+  "parity": {
+    "run": "large-v3-turbo-auto-int8-b5-prompt-guard",
+    "clips": 155,
+    "identical_transcripts": 155
+  }
+}
+exit=0

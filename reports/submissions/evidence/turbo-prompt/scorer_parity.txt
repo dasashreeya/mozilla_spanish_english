@@ -1,0 +1,11 @@
+$ date -u
+2026-09-14T23:12:26Z
+$ shasum -a 256 data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.csv data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.reference.csv
+9a4a91fc9b70a889b9eaaa65b5aee3c81c6a1ae0e25768451719f7da915b6107  data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.csv
+b023d630fa4cec4d907d84d15705c6aa69f846786852918a995259f6bfc45201  data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.reference.csv
+$ (project scorer: vendored normalizer + per-clip alignment counts)
+rows: 155 | empty hypotheses: 0
+project WER: 0.13956748097717261
+$ uv run python vendor/runtime_score.py data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.reference.csv --predicted-path data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.csv
+WER: 0.139567
+exit=0

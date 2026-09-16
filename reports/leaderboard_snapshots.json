@@ -1,0 +1,28 @@
+[
+  {
+    "recorded": "2026-09-15",
+    "source": "user-pasted public leaderboard (chat)",
+    "metric": "best public WER, lower is better",
+    "rows": [
+      {
+        "rank": 1,
+        "participant": "Jugular",
+        "submissions": 4,
+        "wer": 0.1058
+      },
+      {
+        "rank": 2,
+        "participant": "mohammadagwan7860",
+        "submissions": 3,
+        "wer": 0.1074
+      },
+      {
+        "rank": 3,
+        "participant": "jackyehoshua",
+        "submissions": 3,
+        "wer": 0.1169
+      }
+    ],
+    "previous_leader_reported": 0.1104
+  }
+]

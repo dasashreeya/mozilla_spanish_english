@@ -1,0 +1,47 @@
+$ git diff --stat 9c6d177 3fe261d -- submission_src scripts/pack_submission.py
+ submission_src/main.py | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
+$ git diff -U0 9c6d177 3fe261d -- submission_src scripts/pack_submission.py
+diff --git a/submission_src/main.py b/submission_src/main.py
+index 8b28488..c8f5d9a 100644
+--- a/submission_src/main.py
++++ b/submission_src/main.py
+@@ -44,0 +45,2 @@ def log(message: str) -> None:
++    # The runtime forbids logging any information about the test dataset, so messages
++    # carry fixed events only: no clip names or counts, timings, or exception text.
+@@ -105 +107 @@ class Progress:
+-            log(f"{self.backend_id}: {self.next_quarter * 25}% ({done}/{self.total})")
++            log(f"{self.backend_id}: {self.next_quarter * 25}%")
+@@ -232 +234 @@ def main() -> int:
+-    names, manifest = read_manifest()
++    names, _ = read_manifest()
+@@ -238,2 +240 @@ def main() -> int:
+-    log(f"variant={config['variant']} clips={len(names)} manifest={manifest} device={device} "
+-        f"missing_audio={sum(not p.is_file() for p in paths)} backends={','.join(order)}")
++    log(f"variant={config['variant']} device={device} backends={','.join(order)}")
+@@ -246 +247 @@ def main() -> int:
+-            log(f"{spec['id']}: skipped, estimated time exceeds budget (elapsed {elapsed:.0f}s)")
++            log(f"{spec['id']}: skipped, estimated time exceeds budget")
+@@ -253,2 +254,2 @@ def main() -> int:
+-            t1 = time.monotonic()
+-            hypotheses, failures = backend.transcribe_all(paths, Progress(spec["id"], len(paths)))
++            log(f"{spec['id']}: loaded")
++            hypotheses, _ = backend.transcribe_all(paths, Progress(spec["id"], len(paths)))
+@@ -259,3 +260 @@ def main() -> int:
+-            log(f"{spec['id']}: done load={t1 - t0:.0f}s decode={t2 - t1:.0f}s "
+-                f"failures={failures} empty={sum(not h for h in hypotheses)} "
+-                f"prompt_fallbacks={getattr(backend, 'fallbacks', 0)}")
++            log(f"{spec['id']}: done")
+@@ -263 +262 @@ def main() -> int:
+-            log(f"{spec['id']}: FAILED {type(exc).__name__}: {exc}")
++            log(f"{spec['id']}: FAILED {type(exc).__name__}")
+@@ -268 +267 @@ def main() -> int:
+-            transcripts, chosen = select(outputs, order, config["selection"])
++            transcripts, _ = select(outputs, order, config["selection"])
+@@ -270 +269 @@ def main() -> int:
+-            log(f"wrote {OUTPUT_PATH.name}: rows={len(names)} chosen={chosen}")
++            log(f"wrote {OUTPUT_PATH.name}")
+@@ -275 +274 @@ def main() -> int:
+-    log(f"finished in {time.monotonic() - started:.0f}s")
++    log("finished")
+exit=0

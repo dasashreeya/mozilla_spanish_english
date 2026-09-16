@@ -1,0 +1,41 @@
+$ date -u; git rev-parse HEAD; git status --porcelain -- src scripts tests
+Tue Sep 15 03:38:13 UTC 2026
+f5b8a4a6a11c067143540148d393211ef48c89f1
+(empty status above = code matches HEAD)
+$ uv run --no-sync python -m pytest -v tests/test_finetune.py tests/test_modal_watchdog.py
+tests/test_finetune.py::test_load_items_skips_unusable_rows PASSED       [  7%]
+tests/test_finetune.py::test_load_items_limit PASSED                     [ 14%]
+tests/test_finetune.py::test_item_count_guard PASSED                     [ 21%]
+tests/test_finetune.py::test_finite_loss_guard PASSED                    [ 28%]
+tests/test_finetune.py::test_majority_language_ties_go_to_english PASSED [ 35%]
+tests/test_finetune.py::test_run_directory_rejects_unsafe_run_ids PASSED [ 42%]
+tests/test_finetune.py::test_claim_attempt_succeeds_once PASSED          [ 50%]
+tests/test_finetune.py::test_training_arguments_keep_nan_losses_visible SKIPPED [ 57%]
+tests/test_finetune.py::test_modal_run_trains_once_per_run_id PASSED     [ 64%]
+tests/test_modal_watchdog.py::test_deadline_stops_the_app PASSED         [ 71%]
+tests/test_modal_watchdog.py::test_client_exit_with_running_tasks_keeps_watching_then_stops_idle_app PASSED [ 78%]
+tests/test_modal_watchdog.py::test_finished_job_with_stopped_app_needs_no_stop PASSED [ 85%]
+tests/test_modal_watchdog.py::test_list_errors_do_not_end_the_watch PASSED [ 92%]
+tests/test_modal_watchdog.py::test_refuses_to_reuse_a_run_log PASSED     [100%]
+======================== 13 passed, 1 skipped in 0.36s =========================
+exit=0
+$ .venv-qwen/bin/python -m pytest -v tests/test_finetune.py::test_training_arguments_keep_nan_losses_visible
+tests/test_finetune.py::test_training_arguments_keep_nan_losses_visible PASSED [100%]
+============================== 1 passed in 1.10s ===============================
+exit=0
+$ uv run --no-sync python -m pytest -q   (full suite)
+173 passed, 1 skipped in 3.80s
+exit=0
+$ uv run --extra train modal volume ls --json lit-sp-en-train /; modal volume ls lit-sp-en-train /runs (expected absent); modal app list --json
+[
+  {
+    "Filename": "bangor",
+    "Type": "dir",
+    "Created/Modified": "2026-09-14 18:38 EDT",
+    "Size": "4.0 KiB"
+  }
+]
+│ No such file or directory                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[]
+exit=0

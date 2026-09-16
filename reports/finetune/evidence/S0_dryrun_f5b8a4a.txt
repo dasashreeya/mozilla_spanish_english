@@ -1,0 +1,84 @@
+$ date -u; git rev-parse HEAD; git status --porcelain -- src scripts tests
+Tue Sep 15 03:36:43 UTC 2026
+f5b8a4a6a11c067143540148d393211ef48c89f1
+(empty status above = code matches HEAD)
+$ HF_HUB_DISABLE_PROGRESS_BARS=1 .venv-qwen/bin/python scripts/finetune_dry_run.py
+  super().__init__(loader)
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+ 50%|█████     | 1/2 [00:00<00:00,  1.75it/s]100%|██████████| 2/2 [00:00<00:00,  3.01it/s]                                             100%|██████████| 2/2 [00:00<00:00,  3.01it/s]100%|██████████| 2/2 [00:00<00:00,  2.12it/s]
+{'train_runtime': 0.9556, 'train_samples_per_second': 4.186, 'train_steps_per_second': 2.093, 'train_loss': 1.909355640411377, 'epoch': 0.5}
+  0%|          | 0/2 [00:00<?, ?it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+100%|██████████| 2/2 [00:00<00:00,  7.45it/s]                                             100%|██████████| 2/2 [00:00<00:00,  7.45it/s]100%|██████████| 2/2 [00:00<00:00,  5.22it/s]
+{'train_runtime': 0.3841, 'train_samples_per_second': 10.414, 'train_steps_per_second': 5.207, 'train_loss': 1.9093554019927979, 'epoch': 0.5}
+{"items": 8, "optimizer_steps": 2, "training_loss": 1.9094, "ct2_files": ["config.json", "model.bin", "preprocessor_config.json", "tokenizer.json", "vocabulary.json"], "decode": {"detected_language": "en", "output_characters": 232}, "no_save_check": {"final_dir": null, "final_exists": false, "files_written": [], "training_loss": 1.9094}, "result": "pass"}
+exit=0
+$ python3 -c (selected keys of reports/finetune/S0-dryrun.json)
+{
+ "ran_at": "2026-09-15T03:36:53+00:00",
+ "config": {
+  "base_model": "openai/whisper-tiny",
+  "data_dir": "data/processed/bangor_segments",
+  "languages_file": "data/processed/bangor_train/segment_languages.json",
+  "output_dir": "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/dryrun-20260915T033643Z",
+  "epochs": 1,
+  "max_steps": 2,
+  "max_train_seconds": 0.0,
+  "limit_segments": 8,
+  "per_device_batch": 2,
+  "grad_accum": 1,
+  "learning_rate": 1e-05,
+  "warmup_steps": 0,
+  "weight_decay": 0.0,
+  "seed": 20260914,
+  "gradient_checkpointing": true,
+  "spec_augment": true,
+  "num_workers": 0,
+  "max_label_tokens": 448,
+  "expected_items": 8,
+  "save_final": true
+ },
+ "items": 8,
+ "optimizer_steps": 2,
+ "training_loss": 1.9094,
+ "loss_curve": [],
+ "saved_files": [
+  "added_tokens.json",
+  "config.json",
+  "generation_config.json",
+  "merges.txt",
+  "model.safetensors",
+  "normalizer.json",
+  "preprocessor_config.json",
+  "special_tokens_map.json",
+  "tokenizer.json",
+  "tokenizer_config.json",
+  "training_args.bin",
+  "vocab.json"
+ ],
+ "ct2_files": [
+  "config.json",
+  "model.bin",
+  "preprocessor_config.json",
+  "tokenizer.json",
+  "vocabulary.json"
+ ],
+ "decode": {
+  "detected_language": "en",
+  "output_characters": 232
+ },
+ "no_save_check": {
+  "final_dir": null,
+  "final_exists": false,
+  "files_written": [],
+  "training_loss": 1.9094
+ },
+ "software": {
+  "torch": "2.11.0",
+  "transformers": "4.57.6",
+  "accelerate": "1.12.0",
+  "ctranslate2": "4.8.2",
+  "faster-whisper": "1.2.1",
+  "python": "3.12.13"
+ },
+ "result": "pass"
+}

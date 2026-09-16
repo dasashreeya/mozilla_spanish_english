@@ -1,0 +1,38 @@
+WATCHDOG 04:55:20Z launch: uv run --extra train modal run --detach scripts/modal_finetune.py::full --run-id s2 | deadline 40 min | log reports/finetune/runs/full-s2.log
+WATCHDOG 04:55:20Z t+0s app=None state=None tasks=None client=running cost<=$0.00
+WATCHDOG 04:55:51Z t+31s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.03
+WATCHDOG 04:56:21Z t+61s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.06
+WATCHDOG 04:56:52Z t+92s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.09
+WATCHDOG 04:57:22Z t+122s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.12
+WATCHDOG 04:57:53Z t+153s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.14
+WATCHDOG 04:58:24Z t+184s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.17
+WATCHDOG 04:58:54Z t+214s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.20
+WATCHDOG 04:59:25Z t+245s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.23
+WATCHDOG 04:59:56Z t+276s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.26
+WATCHDOG 05:00:26Z t+306s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.29
+WATCHDOG 05:00:57Z t+337s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.32
+WATCHDOG 05:01:27Z t+367s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.35
+WATCHDOG 05:01:58Z t+398s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.37
+WATCHDOG 05:02:29Z t+429s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.40
+WATCHDOG 05:02:59Z t+459s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.43
+WATCHDOG 05:03:30Z t+490s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.46
+WATCHDOG 05:04:01Z t+521s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.49
+WATCHDOG 05:04:31Z t+551s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.52
+WATCHDOG 05:05:02Z t+582s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.55
+WATCHDOG 05:05:33Z t+613s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.58
+WATCHDOG 05:06:03Z t+643s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.61
+WATCHDOG 05:06:35Z t+675s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.64
+WATCHDOG 05:07:08Z t+708s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.67
+WATCHDOG 05:07:39Z t+739s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.69
+WATCHDOG 05:08:09Z t+769s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.72
+WATCHDOG 05:08:40Z t+800s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.75
+WATCHDOG 05:09:11Z t+831s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.78
+WATCHDOG 05:09:41Z t+861s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.81
+WATCHDOG 05:10:12Z t+892s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.84
+WATCHDOG 05:10:43Z t+923s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.87
+WATCHDOG 05:11:13Z t+953s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.90
+WATCHDOG 05:11:44Z t+984s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=running cost<=$0.93
+WATCHDOG 05:12:15Z t+1015s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=exited 0 cost<=$0.95
+WATCHDOG 05:12:45Z t+1045s app=ap-xliw9xOIuqFYIVT31qdtOV state=ephemeral (detached) tasks=1 client=exited 0 cost<=$0.98
+WATCHDOG 05:13:16Z t+1076s app=ap-xliw9xOIuqFYIVT31qdtOV state=stopped tasks=0 client=exited 0 cost<=$1.01
+watchdog exit=0

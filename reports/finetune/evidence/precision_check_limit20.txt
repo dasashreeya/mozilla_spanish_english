@@ -1,0 +1,24 @@
+precision check: first 20 dev clips, float32 vs the existing int8 predictions, both models, same prompt and beam 5
+Tue Sep 15 15:40:32 UTC 2026
+7baea68a3067572a5b0f601527a1c910cf3eefbd
+$ .venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/full-s2/ct2 --compute-type float32 --initial-prompt "$P" --limit 20 --run-name ft-s2-turbo-auto-float32-b5-prompt-limit20
+ft float32 exit=0
+Tue Sep 15 15:41:43 UTC 2026
+$ .venv-qwen/bin/python scripts/whisper_baseline.py --model large-v3-turbo --compute-type float32 --initial-prompt "$P" --limit 20 --run-name large-v3-turbo-auto-float32-b5-prompt-limit20
+turbo float32 exit=0
+Tue Sep 15 15:42:54 UTC 2026
+$ (compare float32 with int8 on the same 20 clips; aggregates only)
+fine-tuned: clips 20 | identical transcripts int8 vs float32 14 | WER int8 0.1469 float32 0.1406 | insertions int8 25 float32 20 | clips with more errors in float32 1, fewer 2
+turbo: clips 20 | identical transcripts int8 vs float32 8 | WER int8 0.1313 float32 0.1406 | insertions int8 10 float32 9 | clips with more errors in float32 6, fewer 2
+compare exit=0
+$ (both models on the first k dev clips in manifest order, int8 CPU predictions; aggregates only)
+first  3: turbo-prompt 0.0783 | fine-tuned 0.1304
+first  4: turbo-prompt 0.0828 | fine-tuned 0.1448
+first  5: turbo-prompt 0.0857 | fine-tuned 0.1429
+first  6: turbo-prompt 0.0917 | fine-tuned 0.1330
+first  8: turbo-prompt 0.1034 | fine-tuned 0.1456
+first 10: turbo-prompt 0.0986 | fine-tuned 0.1391
+first 15: turbo-prompt 0.1326 | fine-tuned 0.1481
+first 20: turbo-prompt 0.1313 | fine-tuned 0.1469
+exit=0
+platform smoke scores (user-reported): turbo-prompt 0.0971, fine-tuned 0.1429

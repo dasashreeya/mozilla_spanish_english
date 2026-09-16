@@ -1,0 +1,51 @@
+$ date -u
+2026-09-14T23:11:50Z
+$ git rev-parse HEAD; git status --porcelain -- src scripts/finetune_dry_run.py
+2baed907191b06c7d4bc1d8a507263275f566318
+(empty status above = code matches HEAD)
+$ HF_HUB_DISABLE_PROGRESS_BARS=1 .venv-qwen/bin/python scripts/finetune_dry_run.py
+{'train_runtime': 1.6173, 'train_samples_per_second': 2.473, 'train_steps_per_second': 1.237, 'train_loss': 1.909355640411377, 'epoch': 0.5}
+{"items": 8, "optimizer_steps": 2, "training_loss": 1.9094, "ct2_files": ["config.json", "model.bin", "preprocessor_config.json", "tokenizer.json", "vocabulary.json"], "decode": {"detected_language": "en", "output_characters": 232}, "result": "pass"}
+exit=0
+$ cat reports/finetune/S0-dryrun.json (selected keys)
+{
+ "ran_at": "2026-09-14T23:12:07+00:00",
+ "items": 8,
+ "optimizer_steps": 2,
+ "training_loss": 1.9094,
+ "loss_curve": [],
+ "saved_files": [
+  "added_tokens.json",
+  "config.json",
+  "generation_config.json",
+  "merges.txt",
+  "model.safetensors",
+  "normalizer.json",
+  "preprocessor_config.json",
+  "special_tokens_map.json",
+  "tokenizer.json",
+  "tokenizer_config.json",
+  "training_args.bin",
+  "vocab.json"
+ ],
+ "ct2_files": [
+  "config.json",
+  "model.bin",
+  "preprocessor_config.json",
+  "tokenizer.json",
+  "vocabulary.json"
+ ],
+ "decode": {
+  "detected_language": "en",
+  "output_characters": 232
+ },
+ "software": {
+  "torch": "2.11.0",
+  "transformers": "4.57.6",
+  "accelerate": "1.12.0",
+  "ctranslate2": "4.8.2",
+  "faster-whisper": "1.2.1",
+  "python": "3.12.13"
+ },
+ "result": "pass"
+}

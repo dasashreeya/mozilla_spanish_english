@@ -1,0 +1,21 @@
+$ date -u; shasum -a 256 artifacts/submission-turbo-prompt.zip; ls -l artifacts/submission-turbo-prompt.zip
+Tue Sep 15 03:32:58 UTC 2026
+7da5f4acacca71071d256f1fdb32425af7b264a0733d15bb2ef1ea0ef3714d2f  artifacts/submission-turbo-prompt.zip
+1621686883 Sep 14 19:23 artifacts/submission-turbo-prompt.zip
+$ (validated extraction directory, zip members vs build record, extracted files vs build record)
+build record zip sha256: 7da5f4acacca71071d256f1fdb32425af7b264a0733d15bb2ef1ea0ef3714d2f | commit 3fe261def19ecc958ab243278945f30bd717b983 | dirty False
+runtime_dev directories: ['65b0281d893b57dd', '6d5f3268a8cb0764', '709a8679f2f424b7', '7a4349d1cb0d1ef4', '7c67c374c9aa46b6', '7da5f4acacca7107', '822f57bd24339312', '991dacd4f4a05146', 'd401ba79444e201a', 'data']
+zip members: 8 | equal to build record file list: True
+validated directory 7da5f4acacca7107 | files checked 8 | sha256 mismatches vs build record: 0
+validation report: {'variant': 'turbo-prompt', 'validated_at': '2026-09-15T00:03:14+00:00', 'zip': 'submission-turbo-prompt.zip', 'limit': None, 'device': 'cpu'}
+exit=0
+$ cat data/interim/runtime_dev/7da5f4acacca7107/log.txt   (the full runtime log of the validated run; fixed events only)
+[lit] variant=turbo-prompt device=cpu backends=turbo
+[lit] turbo: loaded
+[lit] turbo: 25%
+[lit] turbo: 50%
+[lit] turbo: 75%
+[lit] turbo: 100%
+[lit] turbo: done
+[lit] wrote submission.csv
+[lit] finished

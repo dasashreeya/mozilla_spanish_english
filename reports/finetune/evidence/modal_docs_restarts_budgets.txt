@@ -1,0 +1,26 @@
+$ date -u
+Tue Sep 15 03:37:44 UTC 2026
+$ curl -sL https://modal.com/docs/guide/{preemption,retries,timeouts,budgets} and https://modal.com/pricing; sha256; matching sentences
+https://modal.com/docs/guide/preemption bytes 51645 sha256 060f1cf808f1cde31ed95a271664cb4671cfb777a4d29f088000b2a1773b4029
+https://modal.com/docs/guide/retries bytes 52250 sha256 c23556b0c02ddfca162a6015139749a7d9b7273ac427407a02dbcd630c444f04
+https://modal.com/docs/guide/timeouts bytes 52672 sha256 d5254e542e74abbbaa4a688faa23c3cbaf45c2d9b6a1448021fc50261f4da80d
+https://modal.com/docs/guide/budgets bytes 55305 sha256 1310066217984fa6379240958e906feac2f55560057c94fc2b0780f256aa0def
+https://modal.com/pricing bytes 139420 sha256 8ab1e0344edbd237cee691a3f6d5c32024cafb2b8e2277dc17a853ae1e4cc244
+[docs_guide_preemption] All Modal Functions are subject to preem… -> 1 match(es)
+    All Modal Functions are subject to preemption by default. If a preemption event interrupts a running Function, Modal will gracefully terminate the Function and restart it on the same input.
+[docs_guide_preemption] Note: The nonpreemptible parameter is no… -> 1 match(es)
+    Note: The nonpreemptible parameter is not supported for GPU Functions.
+[docs_guide_retries] If a modal\.Function container crashes.*… -> 1 match(es)
+    If a modal.Function container crashes (either on start-up, e.g. while handling imports in global scope, or during execution, e.g. an out-of-memory error), Modal will reschedule the container and any work it was currently assigned. For ephemeral Apps , container crashes will be retried until a failure rate is exceeded, after which all pending inputs will be failed and the exception will be propagat
+[docs_guide_timeouts] This duration is also per execution atte… -> 1 match(es)
+    This duration is also per execution attempt, meaning Functions configured with modal.
+[docs_guide_timeouts] It does not include scheduling time[^.]*… -> 1 match(es)
+    It does not include scheduling time or any other period besides the time your code is executing in Modal.
+[docs_guide_timeouts] Functions will run for at least as long … -> 1 match(es)
+    Functions will run for at least as long as their timeout allows, but they may run a handful of seconds longer.
+[docs_guide_budgets] The Workspace budget is the hard outer c… -> 1 match(es)
+    The Workspace budget is the hard outer cap for the entire Workspace.
+[docs_guide_budgets] When the spend limit is reached, Modal s… -> 1 match(es)
+    When the spend limit is reached, Modal stops workloads that would incur additional out-of-pocket charges.
+[pricing] [^.]{0,120}\b[Bb]uild[^.]{0,160}… -> 0 match(es)
+exit=0

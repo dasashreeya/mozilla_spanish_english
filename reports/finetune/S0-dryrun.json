@@ -1,0 +1,75 @@
+{
+  "stage": "S0",
+  "ran_at": "2026-09-15T03:36:53+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "config": {
+    "base_model": "openai/whisper-tiny",
+    "data_dir": "data/processed/bangor_segments",
+    "languages_file": "data/processed/bangor_train/segment_languages.json",
+    "output_dir": "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/dryrun-20260915T033643Z",
+    "epochs": 1,
+    "max_steps": 2,
+    "max_train_seconds": 0.0,
+    "limit_segments": 8,
+    "per_device_batch": 2,
+    "grad_accum": 1,
+    "learning_rate": 1e-05,
+    "warmup_steps": 0,
+    "weight_decay": 0.0,
+    "seed": 20260914,
+    "gradient_checkpointing": true,
+    "spec_augment": true,
+    "num_workers": 0,
+    "max_label_tokens": 448,
+    "expected_items": 8,
+    "save_final": true
+  },
+  "items": 8,
+  "language_counts": {
+    "en": 8
+  },
+  "optimizer_steps": 2,
+  "training_loss": 1.9094,
+  "loss_curve": [],
+  "saved_files": [
+    "added_tokens.json",
+    "config.json",
+    "generation_config.json",
+    "merges.txt",
+    "model.safetensors",
+    "normalizer.json",
+    "preprocessor_config.json",
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "training_args.bin",
+    "vocab.json"
+  ],
+  "ct2_files": [
+    "config.json",
+    "model.bin",
+    "preprocessor_config.json",
+    "tokenizer.json",
+    "vocabulary.json"
+  ],
+  "decode": {
+    "detected_language": "en",
+    "output_characters": 232
+  },
+  "no_save_check": {
+    "final_dir": null,
+    "final_exists": false,
+    "files_written": [],
+    "training_loss": 1.9094
+  },
+  "software": {
+    "torch": "2.11.0",
+    "transformers": "4.57.6",
+    "accelerate": "1.12.0",
+    "ctranslate2": "4.8.2",
+    "faster-whisper": "1.2.1",
+    "python": "3.12.13"
+  },
+  "wall_seconds": 10.1,
+  "result": "pass"
+}

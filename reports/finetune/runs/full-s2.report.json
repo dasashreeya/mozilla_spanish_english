@@ -1,0 +1,555 @@
+{
+  "config": {
+    "base_model": "openai/whisper-large-v3-turbo",
+    "data_dir": "/vol/bangor",
+    "languages_file": "/vol/bangor/segment_languages.json",
+    "output_dir": "/vol/runs/full-s2",
+    "epochs": 2.0,
+    "max_steps": -1,
+    "max_train_seconds": 0.0,
+    "limit_segments": 0,
+    "per_device_batch": 16,
+    "grad_accum": 2,
+    "learning_rate": 1e-05,
+    "warmup_steps": 50,
+    "weight_decay": 0.0,
+    "seed": 20260914,
+    "gradient_checkpointing": true,
+    "spec_augment": true,
+    "num_workers": 8,
+    "max_label_tokens": 448,
+    "expected_items": 7200,
+    "save_final": true
+  },
+  "device": "cuda",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "items": 7200,
+  "language_counts": {
+    "en": 4683,
+    "es": 2517
+  },
+  "training_loss": 0.5173,
+  "peak_gpu_memory_gib": 19.15,
+  "wall_seconds": 949.9,
+  "final_dir": "/vol/runs/full-s2/final",
+  "training_args": {
+    "output_dir": "/vol/runs/full-s2",
+    "overwrite_output_dir": false,
+    "do_train": false,
+    "do_eval": false,
+    "do_predict": false,
+    "eval_strategy": "no",
+    "prediction_loss_only": false,
+    "per_device_train_batch_size": 16,
+    "per_device_eval_batch_size": 8,
+    "per_gpu_train_batch_size": null,
+    "per_gpu_eval_batch_size": null,
+    "gradient_accumulation_steps": 2,
+    "eval_accumulation_steps": null,
+    "eval_delay": 0,
+    "torch_empty_cache_steps": null,
+    "learning_rate": 1e-05,
+    "weight_decay": 0.0,
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_epsilon": 1e-08,
+    "max_grad_norm": 1.0,
+    "num_train_epochs": 2.0,
+    "max_steps": -1,
+    "lr_scheduler_type": "linear",
+    "lr_scheduler_kwargs": null,
+    "warmup_ratio": 0.0,
+    "warmup_steps": 50,
+    "log_level": "passive",
+    "log_level_replica": "warning",
+    "log_on_each_node": true,
+    "logging_dir": "/vol/runs/full-s2/runs/Sep15_04-55-44_modal",
+    "logging_strategy": "steps",
+    "logging_first_step": false,
+    "logging_steps": 5,
+    "logging_nan_inf_filter": false,
+    "save_strategy": "no",
+    "save_steps": 500,
+    "save_total_limit": null,
+    "save_safetensors": true,
+    "save_on_each_node": false,
+    "save_only_model": false,
+    "restore_callback_states_from_checkpoint": false,
+    "no_cuda": false,
+    "use_cpu": false,
+    "use_mps_device": false,
+    "seed": 20260914,
+    "data_seed": null,
+    "jit_mode_eval": false,
+    "bf16": true,
+    "fp16": false,
+    "fp16_opt_level": "O1",
+    "half_precision_backend": "auto",
+    "bf16_full_eval": false,
+    "fp16_full_eval": false,
+    "tf32": null,
+    "local_rank": 0,
+    "ddp_backend": null,
+    "tpu_num_cores": null,
+    "tpu_metrics_debug": false,
+    "debug": [],
+    "dataloader_drop_last": false,
+    "eval_steps": null,
+    "dataloader_num_workers": 8,
+    "dataloader_prefetch_factor": null,
+    "past_index": -1,
+    "run_name": null,
+    "disable_tqdm": false,
+    "remove_unused_columns": false,
+    "label_names": null,
+    "load_best_model_at_end": false,
+    "metric_for_best_model": null,
+    "greater_is_better": null,
+    "ignore_data_skip": false,
+    "fsdp": [],
+    "fsdp_min_num_params": 0,
+    "fsdp_config": {
+      "min_num_params": 0,
+      "xla": false,
+      "xla_fsdp_v2": false,
+      "xla_fsdp_grad_ckpt": false
+    },
+    "fsdp_transformer_layer_cls_to_wrap": null,
+    "accelerator_config": {
+      "split_batches": false,
+      "dispatch_batches": null,
+      "even_batches": true,
+      "use_seedable_sampler": true,
+      "non_blocking": false,
+      "gradient_accumulation_kwargs": null
+    },
+    "parallelism_config": null,
+    "deepspeed": null,
+    "label_smoothing_factor": 0.0,
+    "optim": "adamw_torch_fused",
+    "optim_args": null,
+    "adafactor": false,
+    "group_by_length": false,
+    "length_column_name": "length",
+    "report_to": [],
+    "project": "huggingface",
+    "trackio_space_id": "trackio",
+    "ddp_find_unused_parameters": null,
+    "ddp_bucket_cap_mb": null,
+    "ddp_broadcast_buffers": null,
+    "dataloader_pin_memory": true,
+    "dataloader_persistent_workers": false,
+    "skip_memory_metrics": true,
+    "use_legacy_prediction_loop": false,
+    "push_to_hub": false,
+    "resume_from_checkpoint": null,
+    "hub_model_id": null,
+    "hub_strategy": "every_save",
+    "hub_token": "<HUB_TOKEN>",
+    "hub_private_repo": null,
+    "hub_always_push": false,
+    "hub_revision": null,
+    "gradient_checkpointing": true,
+    "gradient_checkpointing_kwargs": {
+      "use_reentrant": false
+    },
+    "include_inputs_for_metrics": false,
+    "include_for_metrics": [],
+    "eval_do_concat_batches": true,
+    "fp16_backend": "auto",
+    "push_to_hub_model_id": null,
+    "push_to_hub_organization": null,
+    "push_to_hub_token": "<PUSH_TO_HUB_TOKEN>",
+    "mp_parameters": "",
+    "auto_find_batch_size": false,
+    "full_determinism": false,
+    "torchdynamo": null,
+    "ray_scope": "last",
+    "ddp_timeout": 1800,
+    "torch_compile": false,
+    "torch_compile_backend": null,
+    "torch_compile_mode": null,
+    "include_tokens_per_second": false,
+    "include_num_input_tokens_seen": "no",
+    "neftune_noise_alpha": null,
+    "optim_target_modules": null,
+    "batch_eval_metrics": false,
+    "eval_on_start": false,
+    "use_liger_kernel": false,
+    "liger_kernel_config": null,
+    "eval_use_gather_object": false,
+    "average_tokens_across_devices": true,
+    "sortish_sampler": false,
+    "predict_with_generate": false,
+    "generation_max_length": null,
+    "generation_num_beams": null,
+    "generation_config": null
+  },
+  "optimizer_steps": 450,
+  "train_seconds": 937.9,
+  "samples_seen": 14400,
+  "samples_per_second": 15.354,
+  "loss_curve": [
+    [
+      5,
+      1.263
+    ],
+    [
+      10,
+      1.2924
+    ],
+    [
+      15,
+      1.0338
+    ],
+    [
+      20,
+      0.8055
+    ],
+    [
+      25,
+      0.7435
+    ],
+    [
+      30,
+      0.7546
+    ],
+    [
+      35,
+      0.6626
+    ],
+    [
+      40,
+      0.6335
+    ],
+    [
+      45,
+      0.6086
+    ],
+    [
+      50,
+      0.6763
+    ],
+    [
+      55,
+      0.6235
+    ],
+    [
+      60,
+      0.6478
+    ],
+    [
+      65,
+      0.6362
+    ],
+    [
+      70,
+      0.5851
+    ],
+    [
+      75,
+      0.6693
+    ],
+    [
+      80,
+      0.6091
+    ],
+    [
+      85,
+      0.6838
+    ],
+    [
+      90,
+      0.5937
+    ],
+    [
+      95,
+      0.6176
+    ],
+    [
+      100,
+      0.5569
+    ],
+    [
+      105,
+      0.6539
+    ],
+    [
+      110,
+      0.6255
+    ],
+    [
+      115,
+      0.5909
+    ],
+    [
+      120,
+      0.5581
+    ],
+    [
+      125,
+      0.6118
+    ],
+    [
+      130,
+      0.5489
+    ],
+    [
+      135,
+      0.5581
+    ],
+    [
+      140,
+      0.5641
+    ],
+    [
+      145,
+      0.6583
+    ],
+    [
+      150,
+      0.5719
+    ],
+    [
+      155,
+      0.5339
+    ],
+    [
+      160,
+      0.5981
+    ],
+    [
+      165,
+      0.5226
+    ],
+    [
+      170,
+      0.6113
+    ],
+    [
+      175,
+      0.5014
+    ],
+    [
+      180,
+      0.558
+    ],
+    [
+      185,
+      0.5215
+    ],
+    [
+      190,
+      0.5535
+    ],
+    [
+      195,
+      0.6171
+    ],
+    [
+      200,
+      0.512
+    ],
+    [
+      205,
+      0.561
+    ],
+    [
+      210,
+      0.5268
+    ],
+    [
+      215,
+      0.5604
+    ],
+    [
+      220,
+      0.5758
+    ],
+    [
+      225,
+      0.5384
+    ],
+    [
+      230,
+      0.3998
+    ],
+    [
+      235,
+      0.4325
+    ],
+    [
+      240,
+      0.4182
+    ],
+    [
+      245,
+      0.3874
+    ],
+    [
+      250,
+      0.4044
+    ],
+    [
+      255,
+      0.4389
+    ],
+    [
+      260,
+      0.3816
+    ],
+    [
+      265,
+      0.3856
+    ],
+    [
+      270,
+      0.4273
+    ],
+    [
+      275,
+      0.4207
+    ],
+    [
+      280,
+      0.403
+    ],
+    [
+      285,
+      0.4158
+    ],
+    [
+      290,
+      0.3833
+    ],
+    [
+      295,
+      0.3943
+    ],
+    [
+      300,
+      0.37
+    ],
+    [
+      305,
+      0.4375
+    ],
+    [
+      310,
+      0.3789
+    ],
+    [
+      315,
+      0.3783
+    ],
+    [
+      320,
+      0.418
+    ],
+    [
+      325,
+      0.3918
+    ],
+    [
+      330,
+      0.4216
+    ],
+    [
+      335,
+      0.3377
+    ],
+    [
+      340,
+      0.3715
+    ],
+    [
+      345,
+      0.4087
+    ],
+    [
+      350,
+      0.3806
+    ],
+    [
+      355,
+      0.3845
+    ],
+    [
+      360,
+      0.4107
+    ],
+    [
+      365,
+      0.391
+    ],
+    [
+      370,
+      0.3978
+    ],
+    [
+      375,
+      0.4016
+    ],
+    [
+      380,
+      0.3846
+    ],
+    [
+      385,
+      0.3819
+    ],
+    [
+      390,
+      0.4015
+    ],
+    [
+      395,
+      0.3352
+    ],
+    [
+      400,
+      0.3964
+    ],
+    [
+      405,
+      0.3682
+    ],
+    [
+      410,
+      0.3995
+    ],
+    [
+      415,
+      0.3888
+    ],
+    [
+      420,
+      0.3627
+    ],
+    [
+      425,
+      0.3955
+    ],
+    [
+      430,
+      0.3738
+    ],
+    [
+      435,
+      0.4061
+    ],
+    [
+      440,
+      0.3278
+    ],
+    [
+      445,
+      0.3741
+    ],
+    [
+      450,
+      0.3591
+    ]
+  ],
+  "ct2_dir": "/vol/runs/full-s2/ct2"
+}

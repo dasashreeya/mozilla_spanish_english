@@ -1,0 +1,42 @@
+WATCHDOG 04:19:32Z launch: uv run --extra train modal run --detach scripts/modal_finetune.py::trial --run-id s1 | deadline 30 min | log reports/finetune/runs/trial-s1.log
+WATCHDOG 04:19:32Z t+0s app=None state=None tasks=None client=running cost<=$0.00
+WATCHDOG 04:20:03Z t+31s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.03
+WATCHDOG 04:20:34Z t+61s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.06
+WATCHDOG 04:21:04Z t+92s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.09
+WATCHDOG 04:21:35Z t+123s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.12
+WATCHDOG 04:22:06Z t+154s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.14
+WATCHDOG 04:22:37Z t+185s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.17
+WATCHDOG 04:23:08Z t+216s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.20
+WATCHDOG 04:23:39Z t+246s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.23
+WATCHDOG 04:24:09Z t+277s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.26
+WATCHDOG 04:24:40Z t+308s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.29
+WATCHDOG 04:25:11Z t+339s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.32
+WATCHDOG 04:25:42Z t+369s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.35
+WATCHDOG 04:26:12Z t+400s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.38
+WATCHDOG 04:26:43Z t+431s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.41
+WATCHDOG 04:27:14Z t+462s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=0 client=running cost<=$0.43
+WATCHDOG 04:27:45Z t+493s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.46
+WATCHDOG 04:28:18Z t+525s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.49
+WATCHDOG 04:28:48Z t+556s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.52
+WATCHDOG 04:29:19Z t+587s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.55
+WATCHDOG 04:29:50Z t+618s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.58
+WATCHDOG 04:30:21Z t+648s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.61
+WATCHDOG 04:30:51Z t+679s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.64
+WATCHDOG 04:31:22Z t+710s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.67
+WATCHDOG 04:31:53Z t+741s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.70
+WATCHDOG 04:32:24Z t+771s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.73
+WATCHDOG 04:32:54Z t+802s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.75
+WATCHDOG 04:33:25Z t+833s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.78
+WATCHDOG 04:33:56Z t+864s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.81
+WATCHDOG 04:34:26Z t+894s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.84
+WATCHDOG 04:34:57Z t+925s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.87
+WATCHDOG 04:35:28Z t+956s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.90
+WATCHDOG 04:35:59Z t+987s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.93
+WATCHDOG 04:36:30Z t+1017s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.96
+WATCHDOG 04:37:00Z t+1048s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$0.99
+WATCHDOG 04:37:31Z t+1079s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$1.02
+WATCHDOG 04:38:02Z t+1110s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=running cost<=$1.04
+WATCHDOG 04:38:33Z t+1140s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=exited 0 cost<=$1.07
+WATCHDOG 04:39:03Z t+1171s app=ap-FEQdLgeDnGooB7dKMYhyiD state=ephemeral (detached) tasks=1 client=exited 0 cost<=$1.10
+WATCHDOG 04:39:34Z t+1202s app=ap-FEQdLgeDnGooB7dKMYhyiD state=stopped tasks=0 client=exited 0 cost<=$1.13
+watchdog exit=0

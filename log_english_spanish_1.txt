@@ -1,0 +1,102 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 13.0.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
++ main
++ tee /code_execution/submission/log.txt
++ '[' -n 10 ']'
++ log INFO 'Sleeping 10 seconds before running submission...'
++ set +x
+2026-09-15 15:58:22.192 | INFO | Sleeping 10 seconds before running submission...
++ sleep 10
++ expected_filename=main.py
++ cd /code_execution
++ '[' 0 -eq 1 ']'
+++ zip -sf ./submission/submission.zip
++ submission_files='Archive contains:
+main.py
+selection.py
+config.json
+models/ft-s2/config.json
+models/ft-s2/model.bin
+models/ft-s2/preprocessor_config.json
+models/ft-s2/tokenizer.json
+models/ft-s2/vocabulary.json
+Total 8 entries (1622907293 bytes)'
++ grep -F -q -- main.py
++ log INFO 'Unpacking submission into src/...'
++ set +x
+2026-09-15 15:58:34.273 | INFO | Unpacking submission into src/...
++ unzip ./submission/submission.zip -d ./src
+Archive:  ./submission/submission.zip
+extracting: ./src/main.py
+extracting: ./src/selection.py
+extracting: ./src/config.json
+extracting: ./src/models/ft-s2/config.json
+extracting: ./src/models/ft-s2/model.bin
+extracting: ./src/models/ft-s2/preprocessor_config.json
+extracting: ./src/models/ft-s2/tokenizer.json
+extracting: ./src/models/ft-s2/vocabulary.json
++ log INFO 'Showing current working directory contents:'
++ set +x
+2026-09-15 15:58:43.546 | INFO | Showing current working directory contents:
++ ls -alh
+total 260K
+drwxr-xr-x 1 runtimeuser runtimeuser 4.0K Sep 15 15:58 .
+drwxr-xr-x 1 root        root        4.0K Sep 15 15:58 ..
+-rw-r--r-- 1 runtimeuser runtimeuser    5 Sep  9 20:29 .python-version
+drwxr-xr-x 5 runtimeuser runtimeuser 4.0K Sep  9 20:32 .venv
+drwxrwxrwx 2 root        root        4.0K Sep 15 15:58 data
+-rw-r--r-- 1 runtimeuser runtimeuser 1.3K Sep  9 20:29 pyproject.toml
+drwxr-xr-x 3 runtimeuser runtimeuser 4.0K Sep 15 15:58 src
+drwxrwxrwx 2 root        root        4.0K Sep 15 15:58 submission
+-rw-r--r-- 1 runtimeuser runtimeuser 236K Sep  9 20:29 uv.lock
++ log INFO 'Showing src/ directory contents:'
++ set +x
+2026-09-15 15:58:43.551 | INFO | Showing src/ directory contents:
++ find src/
+src/
+src/models
+src/models/ft-s2
+src/models/ft-s2/tokenizer.json
+src/models/ft-s2/vocabulary.json
+src/models/ft-s2/model.bin
+src/models/ft-s2/preprocessor_config.json
+src/models/ft-s2/config.json
+src/main.py
+src/selection.py
+src/config.json
++ log INFO 'Running submission...'
++ set +x
+2026-09-15 15:58:43.555 | INFO | Running submission...
++ uv run src/main.py
+[lit] variant=ft-s2-prompt device=cuda backends=ft-s2
+[lit] ft-s2: loaded
+[lit] ft-s2: 25%
+[lit] ft-s2: 50%
+[lit] ft-s2: 75%
+[lit] ft-s2: 100%
+[lit] ft-s2: done
+[lit] wrote submission.csv
+[lit] finished
++ '[' -f ./submission/submission.csv ']'
++ log INFO 'Found submission.csv in submission/.'
++ set +x
+2026-09-15 16:02:18.760 | INFO | Found submission.csv in submission/.
++ exit_code=0
++ cp /code_execution/submission/log.txt /tmp/log
++ log INFO 'Submission run completed with exit code: 0'
++ set +x
+2026-09-15 16:02:18.777 | INFO | Submission run completed with exit code: 0
++ exit 0

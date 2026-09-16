@@ -1,0 +1,8 @@
+$ date -u; shasum -a 256 <guard predictions> <guard references>
+Tue Sep 15 03:33:15 UTC 2026
+9a4a91fc9b70a889b9eaaa65b5aee3c81c6a1ae0e25768451719f7da915b6107  data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.csv
+b023d630fa4cec4d907d84d15705c6aa69f846786852918a995259f6bfc45201  data/interim/predictions/large-v3-turbo-auto-int8-b5-prompt-guard.reference.csv
+$ (same two files: project per_clip_counts vs the vendored official _word_error_rate with normalize_text, aligned by audio_filename as score.py does)
+rows 155 | missing predictions 0 | empty hypotheses 0
+project WER 0.13956748097717261 | official in-process WER 0.13956748097717261 | gap 0.0
+exit=0

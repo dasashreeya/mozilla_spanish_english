@@ -1,0 +1,35 @@
+$ date -u; git rev-parse HEAD
+Tue Sep 15 08:33:18 UTC 2026
+34ed4cb68a6b97e90bb7802dd549239d82749b30
+$ (guard trigger count on ft-s2-turbo-auto-int8-b5-prompt, window 4: 0 of 155, so run 3 equals run 1 clip for clip)
+$ uv run --no-sync python scripts/compare_runs.py large-v3-turbo-auto-int8-b5-prompt-guard ft-s2-turbo-auto-int8-b5-prompt --output comparison-ft-s2-primary.json
+{
+  "runs": [
+    "large-v3-turbo-auto-int8-b5-prompt-guard",
+    "ft-s2-turbo-auto-int8-b5-prompt"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "ft-s2-turbo-auto-int8-b5-prompt minus large-v3-turbo-auto-int8-b5-prompt-guard": {
+      "difference_b_minus_a": -0.0288,
+      "low": -0.0466,
+      "high": -0.0119,
+      "share_of_resamples_b_worse": 0.0005,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.0889,
+    "clips_won": {
+      "large-v3-turbo-auto-int8-b5-prompt-guard": 53,
+      "ft-s2-turbo-auto-int8-b5-prompt": 64,
+      "tie": 38
+    }
+  }
+}
+compare exit=0
+$ uv run --no-sync python - (guard triggers on the prompted fine-tuned predictions, submission_src.selection.prompt_leaked, window 4; count only)
+predictions sha256 6afb892f7418b57056edeaa0b7d728ec7191ebb152778939852d312ba34b675e | rows 155 | triggered 0
+exit=0
