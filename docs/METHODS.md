@@ -232,6 +232,36 @@ the errors in P2. No method tested here moves dev that far: the largest single g
 fine-tune itself (−0.0288 on dev) and the largest post-processing gain was ROVER plus the
 sentence-break rule (−0.0118). Text post-processing is exhausted (round 4).
 
+### Per-speaker split (`reports/finetune/evidence/speaker_split.txt`, 2026-09-16)
+
+Dev has two speaker labels, 78 and 77 clips. Splitting every result by speaker:
+
+| System | all 155 | speaker_1 (78) | speaker_2 (77) |
+|---|---:|---:|---:|
+| zero-shot turbo + prompt + guard | 0.1396 | 0.1556 | 0.1152 |
+| fine-tuned (submitted, public 0.1371) | 0.1107 | 0.1161 | 0.1025 |
+| P1 M9b | 0.1055 | 0.1135 | 0.0934 |
+| P2 M11b ROVER | 0.0989 | 0.1118 | 0.0793 |
+
+Paired intervals (2,000 resamples), candidate minus incumbent:
+
+| Comparison | all | speaker_1 | speaker_2 |
+|---|---|---|---|
+| fine-tuned − zero-shot | −0.0288 [−0.0466, −0.0119] | −0.0395 [−0.0662, −0.0178] | −0.0126 [−0.0390, **+0.0127**] |
+| P1 − fine-tuned | −0.0052 [−0.0077, −0.0028] | −0.0027 [−0.0057, **+0.0003**] | −0.0091 [−0.0138, −0.0051] |
+| P2 − fine-tuned | −0.0118 [−0.0198, −0.0036] | −0.0043 [−0.0127, **+0.0040**] | −0.0232 [−0.0380, −0.0079] |
+
+**Every gain measured on this track is significant on one speaker and not on the other.** The
+fine-tune's gain is carried by speaker_1; both post-processing gains are carried by speaker_2. With
+two speakers this cannot be untangled further, but it is a concrete reason to expect less on the
+hidden test than dev shows — and it is consistent with the one observed gap (+0.0264): the
+fine-tune's dev gain of −0.0288 came mostly from a single speaker, and the public result gave back
+about that much.
+
+Implication for the goal: a dev improvement that appears on only one of two speakers is weak
+evidence of transfer. Any future candidate, including the GPU ones, should be reported this way,
+and a gain that holds on **both** speakers should be preferred over a larger one that does not.
+
 Two ways to learn more, in increasing cost:
 
 1. **Submit P2** (one of the user's remaining submissions, no GPU). It measures the gap for the
