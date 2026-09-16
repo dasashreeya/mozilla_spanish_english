@@ -169,8 +169,9 @@ validations ran at the same time; both were re-run alone (`round3_decodes.txt`).
 | Package | Contents | Status |
 |---|---|---|
 | `ft-s2-prompt-breaks` P1 (`7322a531…`, commit `fe67670`) | fine-tuned model + M9b | validated (155/155 identical to `r3c-M9b`, official 0.105527); **superseded**: the pre-submit review blocked it because native stdout could still reach the log (E6) |
-| `ft-s2-prompt-breaks` P1 (`81b5bc88…`, commit `3212e56`) | same, with fds 1 and 2 silenced and a private log stream | built; validation re-running alone after a low-memory kill |
-| `rover3-breaks` P2 (`33ca2755…`, commit `fe67670`, 7,947,637,332 bytes) | fine-tuned + turbo + Qwen 1.7B, M11b | built with the old logging; validation killed by low memory; needs a rebuild at `3212e56` |
+| **`ft-s2-prompt-breaks` P1 (`81b5bc88…`, commit `3212e56`, 1,622,913,445 bytes)** | same, with fds 1 and 2 silenced and a private log stream | validated (155/155, official **0.105527**, 9 log lines); **pre-submit PASS** (`reports/reviews/20260916T025548Z_pre-submit_…-v2.md`) |
+| `rover3-breaks` P2 (`33ca2755…`, commit `fe67670`) | fine-tuned + turbo + Qwen 1.7B, M11b | built with the old logging; validation killed by low memory; superseded |
+| **`rover3-breaks` P2 (`62f2f7a3…`, commit `3212e56`, 7.4 GB)** | same three backends, M11b, current logging | validated (155/155 identical to `r3c-M11b`, official **0.098919**, 23 log lines, 2,570 s on CPU); no pre-submit review yet. Zip is 4.6× the largest size known to be accepted; Qwen has never run on the platform's GPU |
 
 ## Process notes
 

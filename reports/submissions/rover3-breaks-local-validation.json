@@ -1,0 +1,50 @@
+{
+  "variant": "rover3-breaks",
+  "validated_at": "2026-09-16T03:46:58+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "zip": "submission-rover3-breaks.zip",
+  "limit": null,
+  "device": "cpu",
+  "checks": {
+    "exit_code": 0,
+    "wall_seconds": 2570.1,
+    "log_lines": 23,
+    "log_lines_within_limit": true,
+    "longest_log_line": 63,
+    "log_line_length_within_limit": true,
+    "header_ok": true,
+    "rows": 155,
+    "rows_match_manifest": true,
+    "duplicate_rows": 0,
+    "empty_transcripts": 0
+  },
+  "official_cli_wer": 0.098919,
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.0989,
+      "substitutions": 277,
+      "deletions": 153,
+      "insertions": 64,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.0877,
+        "high": 0.1106
+      }
+    },
+    "diagnostics": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.0907,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9822,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "parity": {
+    "run": "r3c-M11b",
+    "clips": 155,
+    "identical_transcripts": 155
+  }
+}
