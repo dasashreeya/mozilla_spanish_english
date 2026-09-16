@@ -53,5 +53,17 @@
     "score": 0.0857,
     "source": "user-reported in chat: 'Smoke test with score 0.0857 ... id-1876'",
     "notes": "Three backends (fine-tuned turbo, zero-shot turbo, Qwen 1.7B) with ROVER and the M9b rule. Proves a 7.4 GB zip is accepted, the Qwen CUDA path runs, and three model loads plus decoding fit the 1-minute smoke limit. Smoke clips are a small dev-derived sample: not a leaderboard score. Full-dev WER of this build is 0.098919."
+  },
+  {
+    "date": "2026-09-16",
+    "kind": "scored submission",
+    "public_score": 0.1215,
+    "leaderboard_rank": 5,
+    "zip": "submission-rover3-breaks.zip",
+    "zip_sha256": "62f2f7a306c82bda18b8810130dcb00edb7725fc09ee6579dd5aab86f5d4059e",
+    "commit": "0e04d0b767871114082b90d70e21224a6e52194b",
+    "dev_wer_same_build": 0.098919,
+    "source": "user-pasted leaderboard row: '#5 MiaSanMia 1h 1min ago 2 submissions 0.1215'",
+    "notes": "ASSUMED to be this user's team row (2 submissions matches id-1831 plus this one); not confirmed by the user. Dev-to-public gap +0.0226, close to id-1831's +0.0264."
   }
 ]

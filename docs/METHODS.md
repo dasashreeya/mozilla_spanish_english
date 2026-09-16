@@ -284,6 +284,17 @@ command.
 | `ft-s2-prompt` `0a4ab892…` | smoke | 0.1429 | 0.110733 | 0.1429 |
 | `ft-s2-prompt` id-1831 | **scored** | **0.1371** | 0.110733 | — |
 | `rover3-breaks` `62f2f7a3…` id-1876 | smoke | 0.0857 | 0.098919 | 0.0800 |
+| `rover3-breaks` `62f2f7a3…` | **scored** | **0.1215** (rank 5) | 0.098919 | — |
+
+**The dev-to-public gap is now measured twice and is stable:** +0.0264 (dev 0.110733 → 0.1371) and
++0.0226 (dev 0.098919 → 0.1215), mean **+0.0245**. The dev improvement of the ROVER package over
+the fine-tuned model (−0.0118) did transfer, and slightly more than predicted: public improved by
+0.0156. So dev *ranking* transfers; dev *level* is optimistic by about 0.0245.
+
+What that means for the goal (DERIVED at the mean gap): public < 0.1 needs dev ≈ **0.0755**; beating
+the current leader 0.1058 needs dev ≈ **0.0813**. The best dev result here is 0.0989, so a further
+0.018–0.023 of dev WER must come from somewhere. For scale, the entire fine-tune was worth −0.0288
+on dev and all of round 3's text and combination work was worth −0.0118.
 
 Each smoke score is close to that build's WER on the first five dev clips, and one matched it
 exactly (0.1429), so the smoke set behaves like a handful of the easiest dev clips. Smoke scores
