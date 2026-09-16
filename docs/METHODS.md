@@ -211,6 +211,41 @@ does not stack further. Remaining upside is in the model itself, i.e. the GPU ca
 | `rover3-breaks` P2 (`33ca2755…`, commit `fe67670`) | fine-tuned + turbo + Qwen 1.7B, M11b | built with the old logging; validation killed by low memory; superseded |
 | **`rover3-breaks` P2 (`62f2f7a3…`, commit `3212e56`, 7.4 GB)** | same three backends, M11b, current logging | validated (155/155 identical to `r3c-M11b`, official **0.098919**, 23 log lines, 2,570 s on CPU); no pre-submit review yet. Zip is 4.6× the largest size known to be accepted; Qwen has never run on the platform's GPU |
 
+## Where this leaves the goal (2026-09-16)
+
+Target: public WER below 0.1. Leaderboard #1 is 0.1058
+(`reports/leaderboard_snapshots.json`, user-reported).
+
+| System | Dev WER | Public |
+|---|---:|---:|
+| `ft-s2-prompt` (submitted, id-1831) | 0.110733 | **0.1371** |
+| P1 `ft-s2-prompt-breaks` (M9b) | 0.105527 | not submitted |
+| P2 `rover3-breaks` (M11b) | 0.098919 | not submitted |
+
+The one public data point gives a dev-to-public gap of **+0.0264** (0.1371 − 0.110733, DERIVED).
+Applied to P2 that projects about 0.125, above the leader; applied to P1, about 0.132. Whether the
+gap is a property of the test set (it would then apply to any system) or of fitting choices to
+these 155 dev clips with 2 speakers (it would then differ per system) is UNKNOWN from one point.
+
+For public < 0.1 at that gap, dev would have to reach about **0.074** (DERIVED), a further 25% of
+the errors in P2. No method tested here moves dev that far: the largest single gain was the
+fine-tune itself (−0.0288 on dev) and the largest post-processing gain was ROVER plus the
+sentence-break rule (−0.0118). Text post-processing is exhausted (round 4).
+
+Two ways to learn more, in increasing cost:
+
+1. **Submit P2** (one of the user's remaining submissions, no GPU). It measures the gap for the
+   best local system: a result near 0.125 says the gap is stable and GPU work will not bridge it;
+   a result near 0.105 says most of the gap was dev-fitting that P2 avoids, and the target is live.
+2. **GPU candidates** below (G7 prepared, G3 sketched), roughly $2 and $4–6 under the watchdog.
+   Estimated effect on dev: 0.005–0.015 (GUESS, no measurement), which at the observed gap projects
+   about 0.11–0.12 public. Not enough on its own for the target.
+
+Everything needed to act on either is in place: both packages are built and validated, P1 has a
+pre-submit PASS, G7's data and launch path are ready and its claim rewritten after the first
+review, and `scripts/evaluate_finetuned.py` runs the whole post-training dev evaluation in one
+command.
+
 ## Process notes
 
 - Running three model jobs at once (a decode, a one-model and a three-model package validation)
