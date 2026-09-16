@@ -165,3 +165,29 @@ def test_remove_sentence_breaks_can_keep_ellipses() -> None:
     from submission_src.selection import remove_sentence_breaks
 
     assert remove_sentence_breaks("So... Maybe. Yes", keep_ellipsis=True) == "So... Maybe yes"
+
+
+def test_restore_ellipses_copies_only_trailing_marks() -> None:
+    from submission_src.selection import restore_ellipses
+
+    assert restore_ellipses("pues bueno y ya", "pues bueno... y ya") == "pues bueno... y ya"
+    # already present, or absent in the source: unchanged
+    assert restore_ellipses("bueno...", "bueno...") == "bueno..."
+    assert restore_ellipses("bueno", "bueno") == "bueno"
+    # words the source does not share are untouched
+    assert restore_ellipses("hola amigo", "hola... nada") == "hola... amigo"
+    assert restore_ellipses("", "a... b") == ""
+
+
+def test_restore_ellipsis_words_reinserts_dropped_words() -> None:
+    from submission_src.selection import restore_ellipsis_words
+
+    # voting dropped "este..." between "pues" and "bueno"
+    assert restore_ellipsis_words("pues bueno ya", "pues este... bueno ya") == \
+        "pues este... bueno ya"
+    # a word already present is not duplicated
+    assert restore_ellipsis_words("pues este... bueno", "pues este... bueno") == \
+        "pues este... bueno"
+    # a dropped word at the start goes first
+    assert restore_ellipsis_words("bueno ya", "eh... bueno ya") == "eh... bueno ya"
+    assert restore_ellipsis_words("hola", "hola") == "hola"

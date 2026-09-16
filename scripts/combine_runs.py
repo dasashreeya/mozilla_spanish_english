@@ -43,7 +43,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--name", required=True, help="output run name")
     parser.add_argument("--method", choices=("mbr", "rover-backbone", "rover-order",
                                              "case-vote", "collapse-repeats",
-                                             "sentence-breaks", "sentence-breaks-keep-ellipsis"),
+                                             "sentence-breaks", "sentence-breaks-keep-ellipsis",
+                                             "restore-ellipses", "restore-ellipsis-words"),
                         default="mbr", help="design: docs/SELECTOR.md (mbr), docs/ROVER.md, "
                                             "docs/METHODS.md (case-vote, collapse-repeats)")
     parser.add_argument("--preprocess", choices=("none", "sentence-breaks",
@@ -95,6 +96,21 @@ def main(argv: list[str] | None = None) -> int:
         selected = [selection.remove_sentence_breaks(text, keep) for text in candidates[primary]]
         selection_info = {"method": "remove internal sentence breaks, lowercase the next word "
                                     "(docs/METHODS.md M9)",
+                          "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
+                                                                      strict=True))}
+    elif args.method == "restore-ellipses":
+        primary, source = args.runs[0], args.runs[1]
+        selected = [selection.restore_ellipses(candidates[primary][i], candidates[source][i])
+                    for i in range(len(names))]
+        selection_info = {"method": f"trailing '...' copied from {source} (docs/METHODS.md M12)",
+                          "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
+                                                                      strict=True))}
+    elif args.method == "restore-ellipsis-words":
+        primary, source = args.runs[0], args.runs[1]
+        selected = [selection.restore_ellipsis_words(candidates[primary][i], candidates[source][i])
+                    for i in range(len(names))]
+        selection_info = {"method": f"whole '...' words reinserted from {source} "
+                                    "(docs/METHODS.md M15)",
                           "clips_changed": sum(a != b for a, b in zip(selected, candidates[primary],
                                                                       strict=True))}
     elif args.method == "collapse-repeats":

@@ -284,3 +284,51 @@ def remove_sentence_breaks(text: str, keep_ellipsis: bool = False) -> str:
         if n_core and not keep:
             tokens[i + 1] = n_lead + n_core[0].lower() + n_core[1:] + n_trail
     return " ".join(t for t in tokens if t)
+
+
+def restore_ellipses(text: str, source: str) -> str:
+    """Put back a trailing "..." on words the source spells with one (round-4 M12).
+
+    The official normalizer keeps "..." attached to its word, so `bueno...` and `bueno` are
+    different words. Word voting drops the mark when the other systems lack it; this copies it
+    back from one chosen system, changing nothing else."""
+
+    tokens = text.split()
+    source_tokens = source.split()
+    matcher = SequenceMatcher(a=[_split_edges(t)[1].lower() for t in tokens],
+                              b=[_split_edges(t)[1].lower() for t in source_tokens], autojunk=False)
+    for block in matcher.get_matching_blocks():
+        for k in range(block.size):
+            token, origin = tokens[block.a + k], source_tokens[block.b + k]
+            if origin.endswith("...") and not token.endswith("..."):
+                tokens[block.a + k] = token + "..."
+    return " ".join(tokens)
+
+
+def restore_ellipsis_words(text: str, source: str) -> str:
+    """Put back whole words the source marks with a trailing "..." that voting dropped (M15).
+
+    ROVER removes short hesitation words when the other systems lack them, and the references
+    do transcribe them (with the mark attached). This reinserts the source's word at the
+    aligned position; nothing else changes."""
+
+    tokens, source_tokens = text.split(), source.split()
+    matcher = SequenceMatcher(a=[_split_edges(t)[1].lower() for t in tokens],
+                              b=[_split_edges(t)[1].lower() for t in source_tokens], autojunk=False)
+    aligned = {}
+    for block in matcher.get_matching_blocks():
+        for k in range(block.size):
+            aligned[block.b + k] = block.a + k
+    insertions: dict[int, list[str]] = {}
+    for index, token in enumerate(source_tokens):
+        if not token.endswith("...") or index in aligned:
+            continue
+        # place it after the nearest earlier aligned source word, else at the start
+        before = [aligned[j] for j in range(index) if j in aligned]
+        insertions.setdefault(before[-1] + 1 if before else 0, []).append(token)
+    out: list[str] = []
+    for position in range(len(tokens) + 1):
+        out.extend(insertions.get(position, []))
+        if position < len(tokens):
+            out.append(tokens[position])
+    return " ".join(out)

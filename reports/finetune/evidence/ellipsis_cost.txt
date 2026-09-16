@@ -1,0 +1,7 @@
+$ date -u; .venv-qwen/bin/python scripts/ellipsis_cost.py
+Wed Sep 16 05:37:09 UTC 2026
+reference words carrying '...': 25
+fine-tuned: WER 0.1107 | hypothesis words carrying '...': 12 | reference '...' words mismatched only by the ellipsis or deleted: 15 (= 0.0030 WER)
+M9b: WER 0.1055 | hypothesis words carrying '...': 12 | reference '...' words mismatched only by the ellipsis or deleted: 15 (= 0.0030 WER)
+M11b ROVER: WER 0.0989 | hypothesis words carrying '...': 1 | reference '...' words mismatched only by the ellipsis or deleted: 20 (= 0.0040 WER)
+exit=0

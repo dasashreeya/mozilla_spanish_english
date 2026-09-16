@@ -164,6 +164,44 @@ The first attempt at M7/M8 was killed by the machine running out of memory while
 validations ran at the same time; both were re-run alone (`round3_decodes.txt`). M8's process spent
 3h47m wall-clock for 26 minutes of decoding because the machine was swapping.
 
+## Round 4 — designed 2026-09-16 before scoring (selection on dev disclosed)
+
+Diagnostic that motivates M12 (`reports/finetune/evidence/ellipsis_cost.txt`): the official
+normalizer keeps `...` attached to its word, so `bueno...` and `bueno` are different words. The dev
+references contain 25 such words. Words that differ from the reference **only** by a missing
+ellipsis, or are deleted while carrying one, cost 15 errors for the fine-tuned model and M9b
+(0.0030 WER) and 20 for M11b ROVER (0.0040 WER). ROVER loses them because the other two systems
+outvote the backbone's `bueno...` with `bueno`.
+
+- **M12 — restore ellipses after ROVER.** Align the M11b output to its backbone (the fine-tuned,
+  M9b-processed output) word by word; where the backbone word is the same except for a trailing
+  `...`, take the backbone's form. Nothing else changes.
+- **M13 — ROVER with five voters:** the M11b three (fine-tuned, turbo-prompt-guard, Qwen 1.7B
+  context) plus Whisper large-v3 auto and Qwen 0.6B auto, all M9b-processed, backbone first.
+  More voters can outvote a correct backbone word (M1b showed weak systems doing exactly that), so
+  this may be worse.
+- **M14 — M13 then M12** (only if M13 beats M11b).
+
+Pass rule unchanged: paired 95% interval against `ft-s2-turbo-auto-int8-b5-prompt` (0.1107) entirely
+below zero, and reported against `r3c-M9b` (0.1055) and `r3c-M11b` (0.0989) as well.
+
+### Round 4 results
+
+Outputs: `reports/finetune/evidence/round4_results.txt`, `reports/baselines/r4-*.json`.
+
+| Method | Dev WER | vs M11b (0.0989) | vs fine-tuned (0.1107) | Result | Why |
+|---|---:|---|---|---|---|
+| M12 restore `...` after ROVER | 0.0989 | 0.0 [0.0, 0.0] | −0.0118 | fail (no change) | changed 0 clips: the 12 source words carrying `...` are **not aligned at all** in the ROVER output — voting deleted the whole word, so there is no mark to restore |
+| M13 ROVER with 5 voters | 0.1081 | **+0.0092 [+0.003, +0.0158]** | −0.0026 [−0.0121, +0.0076] | fail (significantly worse than M11b) | 109 clips changed; large-v3 (0.3084) and Qwen 0.6B are weak enough to outvote the backbone, the same failure as M1b |
+| M15 reinsert whole `...` words dropped by voting | 0.0997 | +0.0008 [−0.0004, +0.002] | −0.011 [−0.0189, −0.0031] | fail | changed 10 clips; the reinserted hesitation words are not where the references put them often enough to pay for themselves |
+
+M14 (M13 then M12) was not run: its precondition was M13 beating M11b, and M13 was worse.
+
+**What round 4 establishes:** the remaining dev headroom in text post-processing is small and now
+looks exhausted. The best local system stays M11b/P2 at 0.0989 and the best single-model system
+P1/M9b at 0.1055. Three of four text ideas after M9b produced no gain, and the one that did (ROVER)
+does not stack further. Remaining upside is in the model itself, i.e. the GPU candidates below.
+
 ## Packages built from round 3
 
 | Package | Contents | Status |

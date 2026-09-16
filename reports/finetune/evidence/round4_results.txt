@@ -1,0 +1,18 @@
+$ date -u; git rev-parse HEAD
+Wed Sep 16 05:38:44 UTC 2026
+2665e13b08a93df711ba3ded379973b81fc6b902
+$ uv run --no-sync python scripts/combine_runs.py r3c-M11b r3c-M9b --name r4-M12-ellipses --method restore-ellipses --compare-to ft-s2-turbo-auto-int8-b5-prompt --compare-to r3c-M9b
+r4-M12-ellipses: WER=0.0989 [0.0877, 0.1106] cli=0.098919 parity=True | vs r3c-M11b: +0.0 [+0.0, +0.0] | selection={'clips_changed': 0}
+  r4-M12-ellipses minus ft-s2-turbo-auto-int8-b5-prompt: -0.0118 [-0.0198, -0.0036]
+  r4-M12-ellipses minus r3c-M9b: -0.0066 [-0.0139, +0.0009]
+M12 exit=0
+$ uv run --no-sync python scripts/combine_runs.py ft-s2-turbo-auto-int8-b5-prompt large-v3-turbo-auto-int8-b5-prompt-guard Qwen3-ASR-1.7B-auto-cpu-float32-ctx large-v3-auto-int8-b5 Qwen3-ASR-0.6B-auto-cpu-float32 --name r4-M13-rover5 --method rover-order --preprocess sentence-breaks-keep-ellipsis --compare-to r3c-M11b --compare-to r3c-M9b
+r4-M13-rover5: WER=0.1081 [0.0961, 0.1209] cli=0.10813 parity=True | vs ft-s2-turbo-auto-int8-b5-prompt: -0.0026 [-0.0121, +0.0076] | selection={'clips_changed_from_backbone': 109}
+  r4-M13-rover5 minus r3c-M11b: +0.0092 [+0.003, +0.0158]
+  r4-M13-rover5 minus r3c-M9b: +0.0026 [-0.0064, +0.0122]
+M13 exit=0
+$ uv run --no-sync python scripts/combine_runs.py r3c-M11b r3c-M9b --name r4-M15-ellipsis-words --method restore-ellipsis-words --compare-to ft-s2-turbo-auto-int8-b5-prompt --compare-to r3c-M11b
+r4-M15-ellipsis-words: WER=0.0997 [0.0883, 0.1115] cli=0.09972 parity=True | vs r3c-M11b: +0.0008 [-0.0004, +0.002] | selection={'clips_changed': 10}
+  r4-M15-ellipsis-words minus ft-s2-turbo-auto-int8-b5-prompt: -0.011 [-0.0189, -0.0031]
+  r4-M15-ellipsis-words minus r3c-M11b: +0.0008 [-0.0004, +0.002]
+M15 exit=0
