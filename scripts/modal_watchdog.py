@@ -1,6 +1,8 @@
 """Launch one Modal fine-tuning stage detached and stop its app at a wall-clock deadline.
 
     uv run --extra train python scripts/modal_watchdog.py trial s1 --max-minutes 30
+    uv run --extra train python scripts/modal_watchdog.py full g7a --max-minutes 35 \
+        --stage-arg --dataset=g7 --stage-arg --expected-items=4715
 
 Starts `modal run --detach scripts/modal_finetune.py::<stage> --run-id <run id>`, writes
 its output to reports/finetune/runs/<stage>-<run id>.log, reads the app ID from that output,
@@ -94,14 +96,15 @@ def stop_and_confirm(app_id: str, confirm_seconds: float = CONFIRM_SECONDS,
         time.sleep(poll_seconds)
 
 
-def watch(stage: str, run_id: str, max_minutes: float, poll_seconds: float) -> int:
+def watch(stage: str, run_id: str, max_minutes: float, poll_seconds: float,
+          stage_args: list[str] | None = None) -> int:
     log_path = RUNS / f"{stage}-{run_id}.log"
     if log_path.exists():
         say(f"{log_path.relative_to(ROOT)} exists; use a new run id")
         return 1
     RUNS.mkdir(parents=True, exist_ok=True)
     command = MODAL + ["run", "--detach", f"scripts/modal_finetune.py::{stage}",
-                       "--run-id", run_id]
+                       "--run-id", run_id] + list(stage_args or [])
     say(f"launch: {' '.join(command)} | deadline {max_minutes:g} min "
         f"| log {log_path.relative_to(ROOT)}")
     started = time.monotonic()
@@ -162,8 +165,11 @@ def main() -> int:
     parser.add_argument("run_id")
     parser.add_argument("--max-minutes", type=float, required=True)
     parser.add_argument("--poll-seconds", type=float, default=30)
+    parser.add_argument("--stage-arg", action="append", default=[], metavar="ARG",
+                        help="extra argument for the Modal function, e.g. --stage-arg "
+                             "--dataset=g7 (repeatable)")
     args = parser.parse_args()
-    return watch(args.stage, args.run_id, args.max_minutes, args.poll_seconds)
+    return watch(args.stage, args.run_id, args.max_minutes, args.poll_seconds, args.stage_arg)
 
 
 if __name__ == "__main__":

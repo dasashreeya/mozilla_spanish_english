@@ -39,13 +39,15 @@ def setup(monkeypatch, tmp_path: Path, rows, exit_at, stop_result=True):
 
     clock = FakeClock()
     process = FakeProcess(exit_at, clock)
-    stops = []
+    stops, commands = [], []
+    setup.commands = commands
     monkeypatch.setattr(modal_watchdog, "ROOT", tmp_path)
     monkeypatch.setattr(modal_watchdog, "RUNS", tmp_path / "runs")
     monkeypatch.setattr(modal_watchdog.time, "monotonic", clock.monotonic)
     monkeypatch.setattr(modal_watchdog.time, "sleep", clock.sleep)
 
     def popen(command, cwd, stdout, stderr):
+        commands.append(command)
         stdout.write("✓ Initialized. View run at https://modal.com/apps/ws/main/ap-Abc123\n")
         stdout.flush()
         return process
@@ -138,3 +140,12 @@ def test_cli_timeouts_become_errors(monkeypatch) -> None:
     monkeypatch.setattr(modal_watchdog.subprocess, "run", hang)
     assert modal_watchdog.modal_cli(["app", "list"], timeout=5) is None
     assert modal_watchdog.app_row("ap-X", timeout=5) == "error"
+
+
+def test_stage_args_are_appended_to_the_modal_command(monkeypatch, tmp_path) -> None:
+    setup(monkeypatch, tmp_path, lambda t: running(), exit_at=None)
+    modal_watchdog.watch("full", "g7a", max_minutes=1, poll_seconds=30,
+                         stage_args=["--dataset=g7", "--expected-items=4715"])
+    command = setup.commands[0]
+    assert command[-5:] == ["scripts/modal_finetune.py::full", "--run-id", "g7a",
+                            "--dataset=g7", "--expected-items=4715"]
