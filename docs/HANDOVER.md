@@ -193,6 +193,18 @@ submission. Odds of reaching #1 with it: **maybe 1 in 5 (GUESS)**.
   three jobs killed. Run heavy local jobs one at a time. Keep disk above ~40 GB free; extracted
   validation copies are 1.5–11 GB each and live in `data/interim/runtime_dev/`.
 
+## 7b. Data: what was used and what else exists
+
+`docs/DATA_AUDIT.md` has the full audit (both datasets, integrity, conventions, scoring
+sensitivity, terms) and, as of 2026-09-19, a **training-data inventory** of the whole MDC
+catalogue (1,165 datasets, saved in `reports/inventory/`). Short version: Bangor Miami is the only
+Spanish-English code-switched speech on MDC, so nothing usable was left out. Everything else in
+Spanish or English is monolingual read speech (Common Voice, VoxForge), which Whisper's
+pre-training already covers. Two marginal candidates for *extra* fine-tuning data: Common Voice
+Caribbean Spanish (accent match to Miami) and the Heroes dubbed-movie corpus (paired
+English/Spanish). The real gap — intra-sentential code-switching, where dev has ~7× Bangor's rate
+— has no MDC source; synthesising it from Bangor utterances is the untried idea.
+
 ## 8. Open decisions
 
 1. **Fund G7 (~$2)?** Expected public ~0.108–0.118. Recommendation: only if you want rank, not the

@@ -236,6 +236,40 @@ tokens and 16.46% of dev types are absent from the Bangor vocabulary.
 6. Treat dev WER differences under a few points as noise: 4,994 tokens, one
    conversation.
 
+## Training-data inventory (added 2026-09-19)
+
+What the rules allow (competition page 4, "Note on external data and models", and page 6):
+any dataset in the MDC catalogue may be used for training; external data is allowed if the
+participant holds the rights and it is published to MDC when the competition ends. The
+"three highlighted datasets" are one per track — Bangor Miami is the only highlighted corpus for
+Spanish-English. So no listed corpus was missed, but the catalogue was never searched until now.
+
+The full catalogue (1,165 datasets, `reports/inventory/mdc_catalog_2026-09-19.json`: IDs, names,
+locales, task, licence, size; no content) filtered for Spanish, English, bilingual or code-switched
+speech, free, ASR task:
+
+| Dataset | MDC id | Locale | Licence | Size | Used? | Assessment |
+|---|---|---|---|---:|---|---|
+| **Bangor Miami Spanish-English Corpus** | `cmmfulo4r018bnz07py4q9t09` | es-us, en-us | GPL-3.0 | 1.2 GB | **yes** (S2, G7) | the only code-switched Spanish-English speech in the catalogue |
+| Development Data (Spanish-English) | `cmtj5u8dn006gnz08gjnknbji` | es, en | CC-BY-SA-4.0 | 17 MB | **yes** (evaluation only) | training on it would leave no local evaluation |
+| Heroes English-Spanish Dubbed Movie Speech Corpus | `cmn3fheeo00cjmb078qc8xr62` | eng, spa | CC-BY-SA-4.0 | 1.8 GB | no | 7,000 single-speaker segments, English originals and Spanish dubs of 21 TV episodes, subtitle transcripts. Monolingual per segment (no code-switching); dubbed studio speech, not conversation. Marginal |
+| Common Voice Scripted Speech 26.0 — Caribbean Spanish | `cmr2cf2x202uins07a4pe7m66` | es | CC0-1.0 | 0.34 GB | no | read sentences, accent-labelled (Cuba, Puerto Rico, Dominican Republic, Colombian and Mexican Caribbean). Closest Spanish accent match to Miami speech; monolingual, read, not conversational |
+| Common Voice Scripted Speech 26.0 — Mexican Spanish (M/F) | `cmr3jjevj0041nt07vb3sm35d`, `cmr3zunmk00flnt07p7ai9p43` | es-mx | CC0-1.0 | 3.9 GB | no | read, monolingual |
+| Common Voice Scripted Speech 27.0 — Spanish / English | `cmu5kitx700pemi073feoiqqu`, `cmu5jplf300nwmh07iqvk9leo` | es / en | CC0-1.0 | 52 / 95 GB | no | large, read, monolingual; Whisper was already trained on far more of this kind of data |
+| Common Voice Spontaneous Speech 5.0 — Spanish / English | `cmu5mahm600samh07ev5pfvdb`, `cmu5nqn1h00vwmi07b4dbk085` | es / en | CC0-1.0 | 0.03 / 0.54 GB | no | spontaneous but monolingual and small |
+| VoxForge — Spanish | `cmp2ggvbx00lvmp07i0xqlntr` | es | GPL-3.0 | 13.6 GB | no | 53 h read speech, monolingual |
+| Speech Corpus of English Learners from Mexico | `cmo29suhm00gjo2078rhmqn3p` | en | CC-BY-SA-4.0 | 0.21 GB | no | 8 h read English by 8 Spanish-L1 speakers; accent overlap only |
+| Yoruba-English Code-Switching (YECS) Corpus | `cmo09pqp300gbnx07xcl42los` | yo, en | NOODL-1.0 | 10.4 GB | no | code-switched, wrong language pair; only useful if teaching "switching" generically helped, which is untested |
+
+**Conclusion.** Bangor Miami is the only Spanish-English code-switched speech on MDC; nothing else
+addresses the audit's finding 2 (dev switches language about 7× more often than Bangor). The
+unused datasets are monolingual read speech, which Whisper's pre-training already covers in bulk.
+Two might still be worth a small experiment as *additional* fine-tuning data rather than a
+replacement: Caribbean Spanish (accent match) and Heroes (paired English/Spanish of the same
+lines). Neither is expected to move dev by more than a few thousandths (GUESS). The larger gap —
+intra-sentential code-switching — has no MDC source; the audit's original suggestion of
+synthesising it (concatenating or splicing Bangor utterances across languages) remains untried.
+
 ## Open questions
 
 - Scope of Bangor's "AI large language model" clause for ASR training — ask the
