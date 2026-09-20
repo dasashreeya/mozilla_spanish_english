@@ -27,6 +27,8 @@ class FinetuneConfig:
     max_steps: int = -1
     max_train_seconds: float = 0.0  # 0 disables the wall-clock cap
     limit_segments: int = 0
+    # Non-empty: keep only these manifest ids, in manifest order (docs/METHODS.md G8 folds).
+    include_ids: tuple[str, ...] = ()
     per_device_batch: int = 16
     grad_accum: int = 2
     learning_rate: float = 1e-5
@@ -57,6 +59,12 @@ def load_items(cfg: FinetuneConfig) -> list[dict]:
                 continue
             items.append({"id": row["id"], "audio": str(audio), "text": text,
                           "language": languages[row["id"]]})
+    if cfg.include_ids:
+        wanted = set(cfg.include_ids)
+        missing = wanted - {item["id"] for item in items}
+        if missing:
+            raise ValueError(f"{len(missing)} of {len(wanted)} requested ids are not usable rows")
+        items = [item for item in items if item["id"] in wanted]
     return items[: cfg.limit_segments] if cfg.limit_segments else items
 
 

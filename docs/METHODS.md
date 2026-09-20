@@ -495,3 +495,55 @@ Outputs: `reports/longform/M16b-ft-dev.json`, `reports/longform/M16b-ft-T240.jso
 (speaker_1 +0.0010, speaker_2 −0.0010). Since per-window detection is the option with the known
 tail risk (a noise window detected as an unrelated language, `docs/SELECTOR.md` `lt`), and it buys
 nothing measurable, **M16a is preferred over M16b**. Neither passes the pre-registered T240 rule.
+
+## Round 6 — G8, the dev second-stage fine-tune, designed 2026-09-20 before any GPU run
+
+revision.md §4.1. The MDC record for the dev data says it is "intended to be used for
+post-training, benchmarking, development, and/or tuning ASR models", so training on it is
+sanctioned. The objection recorded as G6 ("leaves no local evaluation set") is answered by
+cross-validation: every reported number comes from clips the model that produced it never saw.
+
+**Data** (`scripts/prepare_dev_folds.py` → `data/processed/dev_folds/`, gitignored;
+aggregates in `reports/dev_folds_summary.json`): the 155 dev clips as 16 kHz mono FLAC, ids
+`dev000`…`dev154` in metadata order, speakers as the usual `speaker_1`/`speaker_2` pseudonyms.
+No clip filename and no speaker code is uploaded; the reference transcripts are, which
+fine-tuning on dev requires. The training language token per clip is the one the production
+model detects for that clip (`WhisperModel.detect_language`, int8 CPU), so training matches
+inference, which decodes with `language=None`.
+
+**Folds** (seed 20260920, `folds.json`): 5 clip-level folds, dealt round-robin after one
+shuffle, 31 eval clips each and a partition of all 155; plus 2 speaker-disjoint folds
+(train on one speaker, evaluate on the other). Clips over 30 s are **excluded from every
+training set** — Whisper's feature extractor truncates at 30 s, so their labels would describe
+audio the model never sees — and kept in every evaluation fold.
+
+**Training** (`scripts/modal_finetune_dev.py::kfold`, one container for all folds): start from
+the S2 checkpoint already on the volume (`/runs/full-s2/final`, the model in the submitted
+package), lr 2e-6, 3 epochs, batch 4 × accum 1, warmup 5, spec-augment and seed as S2. Each
+fold is converted to CTranslate2 float16 and left on the volume for local CPU evaluation.
+Launch: `scripts/modal_watchdog.py kfold <id> --max-minutes 40 --script
+scripts/modal_finetune_dev.py`.
+
+**Evaluation.** Each fold's model decodes only its held-out clips, locally, with the S4 CPU
+settings the incumbents were measured with (int8, beam 5, `language=None`, the code-switched
+prompt, leak guard) plus M9b. The 5 held-out sets concatenate to a 155-clip prediction file
+scored exactly like any other run; the 2 speaker folds give the pessimistic estimate.
+
+**Pass rule.** Against P1 `r3c-M9b` (0.1055), paired bootstrap over the 155 clips, 2,000
+resamples: PASS needs the 95% interval entirely below zero **and** the same on both
+speaker-disjoint folds reported (the handover's rule: prefer a gain that holds on both
+speakers). The k-fold number is the only one reported; an in-fold number would be
+meaningless. If the clip-fold number passes but the speaker-disjoint folds do not, that is
+recorded as "in-domain convention gain, no speaker transfer" and the decision on whether to
+ship goes to the user with both numbers.
+
+**Cost.** DERIVED from S2 (14,400 samples in 938 s = 0.065 s/sample): 5 folds × ~124 clips × 3
+epochs plus 2 speaker folds ≈ 2,600 samples ≈ 170 s of training, so the bill is dominated by
+container startup, checkpoint loads and 7 CT2 conversions. Watchdog deadline 40 min = **≤$2.27**
+at the list rate this repo uses; expected 15–25 min = $0.85–$1.42. Spend to date $2.14 of $15.
+
+**Risks, stated before running.** 36 minutes of audio is small: overfitting shows up directly in
+the fold numbers, which is why no model is packaged before they exist. The second-stage run may
+also undo part of what the Bangor stage learned (catastrophic forgetting); the fold numbers
+measure that too. A fold model that trains on 124 clips of one conversation may simply memorise
+its speakers, which is what the speaker-disjoint folds exist to expose.

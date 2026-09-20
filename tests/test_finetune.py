@@ -32,6 +32,20 @@ def test_load_items_skips_unusable_rows(tmp_path: Path) -> None:
         ("r_0000", "en", "Hola there."), ("r_0005", "es", "Pues sí.")]
 
 
+def test_load_items_include_ids_selects_and_checks(tmp_path: Path) -> None:
+    import dataclasses
+
+    import pytest
+
+    cfg = _write_dataset(tmp_path)
+    everything = [item["id"] for item in load_items(cfg)]
+    one = dataclasses.replace(cfg, include_ids=(everything[0],))
+    assert [item["id"] for item in load_items(one)] == [everything[0]]
+    unusable = dataclasses.replace(cfg, include_ids=(everything[0], "not-a-row"))
+    with pytest.raises(ValueError, match="requested ids are not usable"):
+        load_items(unusable)
+
+
 def test_load_items_limit(tmp_path: Path) -> None:
     cfg = _write_dataset(tmp_path)
     cfg.limit_segments = 1

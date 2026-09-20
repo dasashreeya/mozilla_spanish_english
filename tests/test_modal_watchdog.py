@@ -154,6 +154,17 @@ def test_stage_args_are_appended_to_the_modal_command(monkeypatch, tmp_path) -> 
                             "--dataset=g7", "--expected-items=4715"]
 
 
+def test_cli_forwards_a_custom_script_through_main(monkeypatch, tmp_path) -> None:
+    """--script selects the Modal file holding the stage (docs/METHODS.md G8 uses kfold)."""
+
+    calls = []
+    monkeypatch.setattr(modal_watchdog, "watch", lambda *args: calls.append(args) or 0)
+    monkeypatch.setattr(sys, "argv", ["modal_watchdog.py", "kfold", "d1", "--max-minutes", "40",
+                                      "--script", "scripts/modal_finetune_dev.py"])
+    assert modal_watchdog.main() == 0
+    assert calls == [("kfold", "d1", 40.0, 30, [], "scripts/modal_finetune_dev.py")]
+
+
 def test_cli_forwards_stage_args_through_main(monkeypatch, tmp_path) -> None:
     """The documented command line must reach watch(); argparse rejects a detached '--value'."""
 
@@ -164,7 +175,8 @@ def test_cli_forwards_stage_args_through_main(monkeypatch, tmp_path) -> None:
                                       "--stage-arg=--dataset=g7",
                                       "--stage-arg=--expected-items=4715"])
     assert modal_watchdog.main() == 0
-    assert calls == [("full", "g7a", 35.0, 30, ["--dataset=g7", "--expected-items=4715"])]
+    assert calls == [("full", "g7a", 35.0, 30, ["--dataset=g7", "--expected-items=4715"],
+                      "scripts/modal_finetune.py")]
 
     monkeypatch.setattr(sys, "argv", ["modal_watchdog.py", "full", "g7a", "--max-minutes", "35",
                                       "--stage-arg", "--dataset=g7"])

@@ -3,11 +3,14 @@
     uv run --extra train python scripts/modal_watchdog.py trial s1 --max-minutes 30
     uv run --extra train python scripts/modal_watchdog.py full g7a --max-minutes 35 \
         --stage-arg=--dataset=g7 --stage-arg=--expected-items=4715
+    uv run --extra train python scripts/modal_watchdog.py kfold d1 --max-minutes 40 \
+        --script scripts/modal_finetune_dev.py
 
 (`--stage-arg` values start with "--", so they must be attached with "=": argparse otherwise
 reads the next token as a missing option value and exits 2.)
 
-Starts `modal run --detach scripts/modal_finetune.py::<stage> --run-id <run id>`, writes
+Starts `modal run --detach <script>::<stage> --run-id <run id>` (the script defaults to
+scripts/modal_finetune.py), writes
 its output to reports/finetune/runs/<stage>-<run id>.log, reads the app ID from that output,
 and polls `modal app list --json`. Every Modal CLI call has a timeout (LIST_TIMEOUT,
 STOP_TIMEOUT) and a listing never runs past the deadline, which counts from launch and so
@@ -52,6 +55,7 @@ STOP_TIMEOUT = 120.0
 CONFIRM_SECONDS = 300.0
 IDLE_POLLS_BEFORE_STOP = 2
 UNCONFIRMED_POLLS_BEFORE_STOP = 6
+DEFAULT_SCRIPT = "scripts/modal_finetune.py"
 
 
 def say(message: str) -> None:
@@ -106,13 +110,13 @@ def stop_and_confirm(app_id: str, confirm_seconds: float = CONFIRM_SECONDS,
 
 
 def watch(stage: str, run_id: str, max_minutes: float, poll_seconds: float,
-          stage_args: list[str] | None = None) -> int:
+          stage_args: list[str] | None = None, script: str = DEFAULT_SCRIPT) -> int:
     log_path = RUNS / f"{stage}-{run_id}.log"
     if log_path.exists():
         say(f"{log_path.relative_to(ROOT)} exists; use a new run id")
         return 1
     RUNS.mkdir(parents=True, exist_ok=True)
-    command = MODAL + ["run", "--detach", f"scripts/modal_finetune.py::{stage}",
+    command = MODAL + ["run", "--detach", f"{script}::{stage}",
                        "--run-id", run_id] + list(stage_args or [])
     say(f"launch: {' '.join(command)} | deadline {max_minutes:g} min "
         f"| log {log_path.relative_to(ROOT)}")
@@ -170,16 +174,19 @@ def watch(stage: str, run_id: str, max_minutes: float, poll_seconds: float,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("stage", choices=["trial", "full"])
+    parser.add_argument("stage", choices=["trial", "full", "kfold"])
     parser.add_argument("run_id")
     parser.add_argument("--max-minutes", type=float, required=True)
+    parser.add_argument("--script", default=DEFAULT_SCRIPT,
+                        help=f"Modal script holding the stage function (default {DEFAULT_SCRIPT})")
     parser.add_argument("--poll-seconds", type=float, default=30)
     parser.add_argument("--stage-arg", action="append", default=[], metavar="ARG",
                         help="extra argument for the Modal function, attached with '=' because "
                              "the value itself starts with '--', e.g. --stage-arg=--dataset=g7 "
                              "(repeatable)")
     args = parser.parse_args()
-    return watch(args.stage, args.run_id, args.max_minutes, args.poll_seconds, args.stage_arg)
+    return watch(args.stage, args.run_id, args.max_minutes, args.poll_seconds, args.stage_arg,
+                 args.script)
 
 
 if __name__ == "__main__":
