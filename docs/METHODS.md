@@ -477,3 +477,21 @@ relative, and the package stops being long-form fragile) but the 95% interval re
 one-speaker pattern every gain on this track has shown). Recorded as a fail under the rule as
 written; whether 11 groups is enough resolution for this rule is a limitation of the harness, not
 evidence of no effect.
+
+### Round 5b results — M16b (M16a plus per-window language detection)
+
+Outputs: `reports/longform/M16b-ft-dev.json`, `reports/longform/M16b-ft-T240.json`.
+
+| Check | Incumbent P1 | M16a | M16b | Rule |
+|---|---:|---:|---:|---|
+| Per-clip dev (155) | 0.1055 | 0.1057 | 0.1057 | met (153/155 identical; **M16b = M16a on all 155 clips**) |
+| T240 long-form | 0.1179 | 0.1143 | 0.1145 | **not met** for either |
+| T240 vs incumbent | — | −0.0036 [−0.0089, +0.0009] | −0.0034 [−0.0087, +0.0016] | — |
+| T240 own fragility | +0.0082 | +0.0044 [−0.0008, +0.0092] | +0.0046 [−0.0006, +0.0095] | both no longer fragile |
+
+**`multilingual=True` changes nothing measurable here.** Identical to M16a on all 155 dev clips
+(expected: one window per clip) and on 5 of 11 long-form groups; where it differs, M16b − M16a is
++0.0002 [−0.0016, +0.0019], i.e. noise. Per speaker at T240 it moves the split the wrong way
+(speaker_1 +0.0010, speaker_2 −0.0010). Since per-window detection is the option with the known
+tail risk (a noise window detected as an unrelated language, `docs/SELECTOR.md` `lt`), and it buys
+nothing measurable, **M16a is preferred over M16b**. Neither passes the pre-registered T240 rule.
