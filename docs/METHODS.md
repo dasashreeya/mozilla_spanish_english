@@ -377,3 +377,41 @@ word ratio 1.011 vs 1.006. **Attribution:** the single faster-whisper backend de
 as much as the three-backend ROVER, so the long-form loss sits in faster-whisper's sequential
 decode (previous-text conditioning, first-window language, first-window prompt), not in ROVER
 or Qwen.
+
+### Round 5b — M16, designed 2026-09-20 after the H1 T240 results, before any decode
+
+Mechanism, VERIFIED in the installed faster-whisper 1.2.1 (`faster_whisper/transcribe.py`):
+`initial_prompt` is encoded as `" " + text.strip()` and appended to the token history (lines
+1143-1149); each window's prompt is `<|startofprev|>` + hotwords (if any) + the last 223 history
+tokens (1538-1561); with `condition_on_previous_text=True` the history is never reset unless the
+fallback temperature exceeds 0.5 (1372-1382), so the prime is pushed out after roughly one window
+of output and every later window conditions on the model's own text; `hotwords` are encoded the
+same way and re-injected on every window; `multilingual=True` re-runs language detection on each
+window's encoder output (1192-1198) instead of fixing the first window's language for the clip.
+Consequence for a single-window clip (≤ 30 s): `hotwords=P` with no `initial_prompt` yields the
+same prompt tokens as `initial_prompt=P`, and per-window detection on window 1 sees the same
+encoder output as the initial detection — so the decode should be byte-identical on the 150 dev
+clips of 30 s or less, and only the 5 longer clips can change. That identity is a checkable
+prediction, not an assumption.
+
+- **M16a — hotwords + no previous-text conditioning**, faster-whisper backends only (ft-s2 and
+  turbo; Qwen unchanged): `hotwords` = the round-2 code-switch prime (same string), no
+  `initial_prompt`, `condition_on_previous_text=False`. The leak guard stays: if the prime leaks
+  (4 consecutive prompt words), re-decode with no hotwords. Beam, int8/float16, ROVER, M9b
+  unchanged.
+- **M16b — M16a plus `multilingual=True`** (per-window language detection). Risk noted before
+  scoring: a window of silence or noise can be detected as an unrelated language (zero-shot turbo
+  once detected `lt` on a dev clip, `docs/SELECTOR.md`), which a clip-level detection suffers only
+  once.
+
+Order: both variants on the fine-tuned model alone (P1 configuration) first — per-clip dev and
+H1 T240 — then the better one in the P2 configuration.
+
+**Pass rule.** (1) Per-clip dev, paired against the same package's current output: the 95%
+interval of (M16 − incumbent) must not lie entirely above zero, and at least 150 of 155
+transcripts must be identical (the identity prediction; fewer means the mechanism is not what
+the source says and the variant is rejected regardless of WER). (2) H1 at T240, paired over the
+11 groups: the interval of (M16 long-form − incumbent long-form) must lie entirely below zero.
+(3) Not significantly worse at T120 or T60 (interval not entirely above zero). Report M16's own
+fragility (long-form − joined baseline) and per speaker throughout. All three or it does not
+ship; a variant that meets (1) but not (2) is recorded as a fail.
