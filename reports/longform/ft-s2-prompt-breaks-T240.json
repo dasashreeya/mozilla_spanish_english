@@ -1,0 +1,140 @@
+{
+  "method": "H1",
+  "variant": "ft-s2-prompt-breaks",
+  "target_seconds": 240,
+  "gap_seconds": 0.5,
+  "per_clip_run": "r3c-M9b",
+  "scored_at": "2026-09-20T14:12:54+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "package_run": {
+    "variant": "ft-s2-prompt-breaks",
+    "package_dir": "81b5bc88670d7c43",
+    "exit_code": 0,
+    "wall_seconds": 429.7,
+    "log_lines": 9,
+    "finished_at": "2026-09-20T14:12:47+00:00"
+  },
+  "groups": {
+    "groups": 11,
+    "clips_covered": 155,
+    "clips": 155,
+    "every_clip_once": true,
+    "groups_per_speaker": {
+      "speaker_2": 5,
+      "speaker_1": 6
+    },
+    "seconds": {
+      "min": 66.98,
+      "median": 224.745,
+      "max": 237.028,
+      "total": 2225.8
+    },
+    "clips_per_group": {
+      "min": 3,
+      "median": 17,
+      "max": 19
+    }
+  },
+  "per_clip": {
+    "wer": 0.1055,
+    "reference_words": 4994,
+    "substitutions": 305,
+    "deletions": 97,
+    "insertions": 125
+  },
+  "by_split": {
+    "all": {
+      "groups": 11,
+      "joined_baseline": {
+        "wer": 0.1097,
+        "reference_words": 4994,
+        "substitutions": 326,
+        "deletions": 97,
+        "insertions": 125
+      },
+      "long_form": {
+        "wer": 0.1179,
+        "reference_words": 4994,
+        "substitutions": 354,
+        "deletions": 90,
+        "insertions": 145
+      },
+      "long_form_minus_joined": {
+        "difference": 0.0082,
+        "low": 0.0017,
+        "high": 0.0146,
+        "share_of_resamples_b_worse": 0.9955
+      },
+      "groups_long_form_worse": 8,
+      "groups_long_form_better": 3
+    },
+    "speaker_1": {
+      "groups": 6,
+      "joined_baseline": {
+        "wer": 0.1145,
+        "reference_words": 3014,
+        "substitutions": 196,
+        "deletions": 79,
+        "insertions": 70
+      },
+      "long_form": {
+        "wer": 0.1244,
+        "reference_words": 3014,
+        "substitutions": 221,
+        "deletions": 70,
+        "insertions": 84
+      },
+      "long_form_minus_joined": {
+        "difference": 0.01,
+        "low": 0.001,
+        "high": 0.0191,
+        "share_of_resamples_b_worse": 0.991
+      },
+      "groups_long_form_worse": 4,
+      "groups_long_form_better": 2
+    },
+    "speaker_2": {
+      "groups": 5,
+      "joined_baseline": {
+        "wer": 0.1025,
+        "reference_words": 1980,
+        "substitutions": 130,
+        "deletions": 18,
+        "insertions": 55
+      },
+      "long_form": {
+        "wer": 0.1081,
+        "reference_words": 1980,
+        "substitutions": 133,
+        "deletions": 20,
+        "insertions": 61
+      },
+      "long_form_minus_joined": {
+        "difference": 0.0056,
+        "low": -0.0033,
+        "high": 0.0133,
+        "share_of_resamples_b_worse": 0.8975
+      },
+      "groups_long_form_worse": 4,
+      "groups_long_form_better": 1
+    }
+  },
+  "long_form_fragile": true,
+  "diagnostics": {
+    "long_form": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.1051,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 1,
+      "hypothesis_to_reference_word_ratio": 1.011,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    },
+    "joined_baseline": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.0973,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 1,
+      "hypothesis_to_reference_word_ratio": 1.0056,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "missing_long_form_rows": 0
+}

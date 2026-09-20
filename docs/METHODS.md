@@ -362,6 +362,7 @@ why the joined baseline, not the per-clip WER, is the control.
 | Package | T | per-clip | joined baseline | long-form | long − joined [95% CI] | groups worse/better | Result |
 |---|---:|---:|---:|---:|---|---|---|
 | P2 `rover3-breaks` | 240 | 0.0989 | 0.1031 (298/153/64) | **0.1103** (313/168/70) | **+0.0072 [+0.0014, +0.0120]** | 9 / 2 | **fragile** |
+| P1 `ft-s2-prompt-breaks` (fine-tuned alone) | 240 | 0.1055 | 0.1097 (326/97/125) | **0.1179** (354/90/145) | **+0.0082 [+0.0017, +0.0146]** | 8 / 3 | **fragile** |
 
 P2 at T240 (`reports/longform/rover3-breaks-T240.json`, 1,681 s CPU): both speakers degrade
 (speaker_1 +0.0066 [−0.0003, +0.0134], speaker_2 +0.0081 [−0.0033, +0.0139]; 6 and 5 groups).
@@ -369,3 +370,10 @@ Not a loop failure: 1 hypothesis with a repeated trigram ×4 in both the long-fo
 output, word ratio 0.980 vs 0.982, no hypothesis over 2× its reference. The formatting-blind WER
 (lowercased, no apostrophes/ellipses) rises 0.0907 → 0.0967, so recognition degrades, not only
 casing. Errors grow in all three classes (+15 S, +15 D, +6 I): diffuse, moderate degradation.
+
+P1 at T240 (`reports/longform/ft-s2-prompt-breaks-T240.json`, 430 s CPU): speaker_1 +0.0100
+[+0.0010, +0.0191], speaker_2 +0.0056 [−0.0033, +0.0133]; 1 looped hypothesis in both outputs,
+word ratio 1.011 vs 1.006. **Attribution:** the single faster-whisper backend degrades at least
+as much as the three-backend ROVER, so the long-form loss sits in faster-whisper's sequential
+decode (previous-text conditioning, first-window language, first-window prompt), not in ROVER
+or Qwen.
