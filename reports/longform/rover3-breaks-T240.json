@@ -4,7 +4,7 @@
   "target_seconds": 240,
   "gap_seconds": 0.5,
   "per_clip_run": "r3c-M11b",
-  "scored_at": "2026-09-20T14:05:00+00:00",
+  "scored_at": "2026-09-20T14:16:32+00:00",
   "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
   "package_run": {
     "variant": "rover3-breaks",
@@ -120,6 +120,37 @@
     }
   },
   "long_form_fragile": true,
+  "against": {
+    "label": "ft-s2-prompt-breaks",
+    "long_form": {
+      "wer": 0.1179,
+      "reference_words": 4994,
+      "substitutions": 354,
+      "deletions": 90,
+      "insertions": 145
+    },
+    "this_minus_against": {
+      "all": {
+        "difference": -0.0076,
+        "low": -0.0138,
+        "high": -0.0015,
+        "share_of_resamples_b_worse": 0.0055
+      },
+      "speaker_1": {
+        "difference": -0.005,
+        "low": -0.0135,
+        "high": 0.0026,
+        "share_of_resamples_b_worse": 0.101
+      },
+      "speaker_2": {
+        "difference": -0.0116,
+        "low": -0.02,
+        "high": -0.0026,
+        "share_of_resamples_b_worse": 0.0035
+      }
+    },
+    "groups_identical": 0
+  },
   "diagnostics": {
     "long_form": {
       "wer_lowercased_no_apostrophe_no_ellipsis": 0.0967,
