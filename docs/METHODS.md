@@ -363,6 +363,7 @@ why the joined baseline, not the per-clip WER, is the control.
 |---|---:|---:|---:|---:|---|---|---|
 | P2 `rover3-breaks` | 240 | 0.0989 | 0.1031 (298/153/64) | **0.1103** (313/168/70) | **+0.0072 [+0.0014, +0.0120]** | 9 / 2 | **fragile** |
 | P1 `ft-s2-prompt-breaks` (fine-tuned alone) | 240 | 0.1055 | 0.1097 (326/97/125) | **0.1179** (354/90/145) | **+0.0082 [+0.0017, +0.0146]** | 8 / 3 | **fragile** |
+| P2 `rover3-breaks` | 120 | 0.0989 | 0.1025 (295/153/64) | **0.1177** (304/155/129) | +0.0152 [−0.0016, +0.0440] | 11 / 8 | not fragile by the rule; one burst |
 
 P2 at T240 (`reports/longform/rover3-breaks-T240.json`, 1,681 s CPU): both speakers degrade
 (speaker_1 +0.0066 [−0.0003, +0.0134], speaker_2 +0.0081 [−0.0033, +0.0139]; 6 and 5 groups).
@@ -442,3 +443,13 @@ The package ignores it. Published fact: some test clips are monolingual.
   (no interval entirely above zero) and significantly better on zero-shot turbo. A pass does
   not show the test's `spa`/`eng` rows resemble Bangor utterances; that stays UNKNOWN. Shipping
   M17 is the user's call on mechanism plus this evidence.
+
+P2 at T120 (`reports/longform/rover3-breaks-T120.json`, 1,869 s CPU): the interval crosses zero,
+so by the pre-registered rule T120 is not fragile — but the point estimate is the largest seen and
+the cause is one group. Per-group error deltas (long-form minus joined, counts only): one
+speaker_2 group of 114 s and 214 reference words gained **+63 errors, +65 of them insertions**
+(281 output words against 213 for the joined baseline); the other 21 groups sum to +13. The burst
+is not an n-gram loop (longest repeated 4-gram appears twice in both outputs; 70 extra tokens
+of which only 4 types repeat more than twice): it is fluent invented text of the kind the
+trigram-×4 diagnostic cannot see, i.e. a hallucination continuing from the model's own previous
+window. Speaker split: speaker_1 +0.0066 [+0.0000, +0.0137], speaker_2 +0.0283 [−0.0116, +0.0982].
