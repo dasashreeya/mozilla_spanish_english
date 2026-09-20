@@ -196,6 +196,7 @@ def test_prompted_backend_falls_back_when_prompt_leaks(monkeypatch, tmp_path) ->
 
     backend = main.FasterWhisperBackend.__new__(main.FasterWhisperBackend)
     backend.beam_size, backend.leak_ngram, backend.fallbacks = 5, 4, 0
+    backend.prompt_mode, backend.decode_options = "initial_prompt", {}
     backend.initial_prompt = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later"
     backend.model = Model()
     assert backend.transcribe_one(Path("x.mp3")) == "plain decode"
@@ -205,6 +206,34 @@ def test_prompted_backend_falls_back_when_prompt_leaks(monkeypatch, tmp_path) ->
     backend.initial_prompt = "Something unrelated to the output entirely"
     assert backend.transcribe_one(Path("x.mp3")).startswith("I'm good")
     assert calls == [backend.initial_prompt] and backend.fallbacks == 1
+
+
+def test_hotwords_mode_primes_every_call_and_passes_decode_options(monkeypatch,
+                                                                    tmp_path) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+    calls = []
+
+    class Model:
+        def transcribe(self, path, **kwargs):
+            calls.append(kwargs)
+            from types import SimpleNamespace
+            text = ("I'm good gracias vamos a la tienda" if kwargs.get("hotwords")
+                    else "plain decode")
+            return iter([SimpleNamespace(text=text)]), None
+
+    spec = {"path": "m", "beam_size": 5, "cpu": {"compute_type": "int8"},
+            "initial_prompt": "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later",
+            "prompt_mode": "hotwords",
+            "decode_options": {"condition_on_previous_text": False, "multilingual": True}}
+    monkeypatch.setattr("faster_whisper.WhisperModel", lambda *a, **k: Model())
+    backend = main.FasterWhisperBackend(spec, "cpu")
+    assert backend.transcribe_one(Path("x.mp3")) == "plain decode"
+    assert [c.get("hotwords") for c in calls] == [spec["initial_prompt"], None]
+    assert all("initial_prompt" not in c for c in calls)
+    assert all(c["condition_on_previous_text"] is False and c["multilingual"] is True
+               for c in calls)
+    with pytest.raises(ValueError):
+        main.FasterWhisperBackend(spec | {"prompt_mode": "prefix"}, "cpu")
 
 
 def test_progress_logs_quarters_once(monkeypatch, tmp_path, capsys) -> None:

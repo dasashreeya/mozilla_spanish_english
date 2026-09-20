@@ -173,6 +173,12 @@ class FasterWhisperBackend:
         settings = spec[device]
         self.beam_size = spec["beam_size"]
         self.initial_prompt = spec.get("initial_prompt") or None
+        # "initial_prompt" primes the first window only; "hotwords" primes every window
+        # (docs/METHODS.md M16). decode_options are passed to transcribe() as given.
+        self.prompt_mode = spec.get("prompt_mode", "initial_prompt")
+        if self.prompt_mode not in ("initial_prompt", "hotwords"):
+            raise ValueError(f"unknown prompt_mode {self.prompt_mode!r}")
+        self.decode_options = dict(spec.get("decode_options") or {})
         self.leak_ngram = int(spec.get("prompt_leak_ngram", 4))
         self.fallbacks = 0
         self.model = WhisperModel(str(SRC / spec["path"]), device=device,
@@ -180,8 +186,9 @@ class FasterWhisperBackend:
                                   cpu_threads=settings.get("threads", 0))
 
     def _decode(self, path: Path, prompt: str | None) -> str:
+        options = self.decode_options | {self.prompt_mode: prompt}
         segments, _ = self.model.transcribe(str(path), language=None, task="transcribe",
-                                            beam_size=self.beam_size, initial_prompt=prompt)
+                                            beam_size=self.beam_size, **options)
         return " ".join(s.text.strip() for s in segments).strip()
 
     def transcribe_one(self, path: Path) -> str:

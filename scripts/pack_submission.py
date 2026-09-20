@@ -86,6 +86,31 @@ VARIANTS = {
     "mbr-setA": {"backends": ["turbo", "q17", "q06", "large-v3"], "selection": "mbr"},
     "mbr-setB": {"backends": ["turbo", "q17", "q06"], "selection": "mbr"},
 }
+# docs/METHODS.md M16: the prime as hotwords (every window) instead of initial_prompt (first
+# window), no conditioning on previous text; M16b also re-detects the language per window.
+LONG_FORM_A = {"initial_prompt": CODE_SWITCH_PROMPT, "prompt_leak_ngram": 4,
+               "prompt_mode": "hotwords",
+               "decode_options": {"condition_on_previous_text": False}}
+LONG_FORM_B = LONG_FORM_A | {"decode_options": {"condition_on_previous_text": False,
+                                                 "multilingual": True}}
+VARIANTS |= {
+    "ft-s2-breaks-lf-a": {"backends": ["ft-s2"], "selection": "first",
+                          "postprocess": "sentence-breaks-keep-ellipsis",
+                          "overrides": {"ft-s2": LONG_FORM_A}},
+    "ft-s2-breaks-lf-b": {"backends": ["ft-s2"], "selection": "first",
+                          "postprocess": "sentence-breaks-keep-ellipsis",
+                          "overrides": {"ft-s2": LONG_FORM_B}},
+    "rover3-breaks-lf-a": {"backends": ["ft-s2", "turbo", "q17"], "selection": "rover-order",
+                           "postprocess": "sentence-breaks-keep-ellipsis",
+                           "overrides": {"ft-s2": LONG_FORM_A, "turbo": LONG_FORM_A,
+                                         "q17": {"context": QWEN_CONTEXT,
+                                                 "max_new_tokens": 1024}}},
+    "rover3-breaks-lf-b": {"backends": ["ft-s2", "turbo", "q17"], "selection": "rover-order",
+                           "postprocess": "sentence-breaks-keep-ellipsis",
+                           "overrides": {"ft-s2": LONG_FORM_B, "turbo": LONG_FORM_B,
+                                         "q17": {"context": QWEN_CONTEXT,
+                                                 "max_new_tokens": 1024}}},
+}
 REQUIRED = {"faster-whisper": ["model.bin", "config.json", "tokenizer.json"],
             "qwen": ["config.json"]}
 BUDGET = {"seconds": 7200, "safety_factor": 1.3, "load_margin_seconds": 300}
