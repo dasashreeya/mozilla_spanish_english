@@ -346,3 +346,26 @@ first window only, `initial_prompt` applied to the first window only) and Qwen w
   turns are not one continuous 4-minute voice note; the joined baseline and long-form
   hypothesis differ in where sentence-final punctuation falls, which the joined baseline only
   partly controls.
+
+### Round 5 results — H1
+
+Outputs: `reports/longform/<variant>-T<seconds>.json` (aggregates only); the concatenated audio,
+references and package outputs stay under `data/interim/longform_dev/` (Data, gitignored).
+Groups: T60 45 (median 51 s, 4 clips), T120 22 (111 s, 8 clips), T240 11 (225 s, 17 clips);
+every clip in exactly one group, 4,994 scored reference tokens in all three.
+
+Joining alone (per-clip outputs joined by a space, no re-decoding) costs +0.0036 (T60, T120) to
++0.0042 (T240) for P2, P1 and the fine-tuned model alike: the normalizer lowercases a word after
+`.`/`!`/`?`, so boundary casing differs between joined hypotheses and joined references. That is
+why the joined baseline, not the per-clip WER, is the control.
+
+| Package | T | per-clip | joined baseline | long-form | long − joined [95% CI] | groups worse/better | Result |
+|---|---:|---:|---:|---:|---|---|---|
+| P2 `rover3-breaks` | 240 | 0.0989 | 0.1031 (298/153/64) | **0.1103** (313/168/70) | **+0.0072 [+0.0014, +0.0120]** | 9 / 2 | **fragile** |
+
+P2 at T240 (`reports/longform/rover3-breaks-T240.json`, 1,681 s CPU): both speakers degrade
+(speaker_1 +0.0066 [−0.0003, +0.0134], speaker_2 +0.0081 [−0.0033, +0.0139]; 6 and 5 groups).
+Not a loop failure: 1 hypothesis with a repeated trigram ×4 in both the long-form and the joined
+output, word ratio 0.980 vs 0.982, no hypothesis over 2× its reference. The formatting-blind WER
+(lowercased, no apostrophes/ellipses) rises 0.0907 → 0.0967, so recognition degrades, not only
+casing. Errors grow in all three classes (+15 S, +15 D, +6 I): diffuse, moderate degradation.
