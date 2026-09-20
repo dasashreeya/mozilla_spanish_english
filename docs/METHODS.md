@@ -415,3 +415,29 @@ the source says and the variant is rejected regardless of WER). (2) H1 at T240, 
 (3) Not significantly worse at T120 or T60 (interval not entirely above zero). Report M16's own
 fragility (long-form − joined baseline) and per speaker throughout. All three or it does not
 ship; a variant that meets (1) but not (2) is recorded as a fail.
+
+### Round 5c — M17, designed 2026-09-20 before scoring (revision.md §3.2)
+
+The test manifest carries a `language` column (`docs/SUBMISSION.md`; dev: `enspa` 151, `spa` 4).
+The package ignores it. Published fact: some test clips are monolingual.
+
+- **M17 — language-conditional decoding, per clip.** Rows labelled `spa`: faster-whisper backends
+  decode with `language="es"`, a monolingual Spanish prime in place of the code-switch prime
+  (`SPANISH_PROMPT` in `scripts/pack_submission.py`, same style and length, written there and
+  not from Data) and `multilingual=False` (VERIFIED: per-window detection overrides a forced
+  language token, `faster_whisper/transcribe.py:1192-1198`); Qwen decodes with
+  `language="Spanish"` (qwen-asr 0.0.6 accepts a per-item list, `inference/qwen3_asr.py:304`).
+  Rows labelled `eng`: the same with `en` / `English` / `ENGLISH_PROMPT`. Any other label, or a
+  manifest without the column, takes the M16 default. The leak guard applies to whichever prime
+  is used. Nothing else changes; ROVER and M9b run as before.
+- **Validation.** Dev cannot measure this (4 `spa` rows, 59 words): their error counts before and
+  after are reported as counts. The only monolingual audio available is Bangor, all of which the
+  fine-tuned model has trained on, so: a seeded sample of 200 `eng` and 200 `spa` training
+  segments of ≥ 5 s (manifest `language` field) is decoded under the default branch and the
+  monolingual branch by **zero-shot turbo** (never trained on Bangor: a clean comparison for that
+  voter) and by the fine-tuned model (contaminated; both branches equally, so only the
+  difference is read, and a null difference there is uninformative). Paired bootstrap over
+  segments. **Pass rule:** the monolingual branch is not significantly worse on either model
+  (no interval entirely above zero) and significantly better on zero-shot turbo. A pass does
+  not show the test's `spa`/`eng` rows resemble Bangor utterances; that stays UNKNOWN. Shipping
+  M17 is the user's call on mechanism plus this evidence.
