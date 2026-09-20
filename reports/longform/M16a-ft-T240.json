@@ -1,0 +1,173 @@
+{
+  "method": "H1",
+  "variant": "M16a-ft",
+  "target_seconds": 240,
+  "gap_seconds": 0.5,
+  "per_clip_run": "r5-M16a-ft",
+  "scored_at": "2026-09-20T17:04:35+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "package_run": {
+    "label": "M16a-ft",
+    "target": "240",
+    "package_dir": "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/submission_src",
+    "config": "/private/tmp/claude-501/-Users-shreeyadasa-Documents-mozilla/a80f16a6-84d6-4785-8f26-09b6aec4c3a5/scratchpad/ft-s2-breaks-lf-a.json",
+    "exit_code": 0,
+    "wall_seconds": 601.1,
+    "log_lines": 9,
+    "finished_at": "2026-09-20T17:00:59+00:00"
+  },
+  "groups": {
+    "groups": 11,
+    "clips_covered": 155,
+    "clips": 155,
+    "every_clip_once": true,
+    "groups_per_speaker": {
+      "speaker_2": 5,
+      "speaker_1": 6
+    },
+    "seconds": {
+      "min": 66.98,
+      "median": 224.745,
+      "max": 237.028,
+      "total": 2225.8
+    },
+    "clips_per_group": {
+      "min": 3,
+      "median": 17,
+      "max": 19
+    }
+  },
+  "per_clip": {
+    "wer": 0.1057,
+    "reference_words": 4994,
+    "substitutions": 304,
+    "deletions": 99,
+    "insertions": 125
+  },
+  "by_split": {
+    "all": {
+      "groups": 11,
+      "joined_baseline": {
+        "wer": 0.1099,
+        "reference_words": 4994,
+        "substitutions": 325,
+        "deletions": 99,
+        "insertions": 125
+      },
+      "long_form": {
+        "wer": 0.1143,
+        "reference_words": 4994,
+        "substitutions": 344,
+        "deletions": 97,
+        "insertions": 130
+      },
+      "long_form_minus_joined": {
+        "difference": 0.0044,
+        "low": -0.0008,
+        "high": 0.0092,
+        "share_of_resamples_b_worse": 0.952
+      },
+      "groups_long_form_worse": 7,
+      "groups_long_form_better": 2
+    },
+    "speaker_1": {
+      "groups": 6,
+      "joined_baseline": {
+        "wer": 0.1148,
+        "reference_words": 3014,
+        "substitutions": 195,
+        "deletions": 81,
+        "insertions": 70
+      },
+      "long_form": {
+        "wer": 0.1218,
+        "reference_words": 3014,
+        "substitutions": 216,
+        "deletions": 77,
+        "insertions": 74
+      },
+      "long_form_minus_joined": {
+        "difference": 0.007,
+        "low": 0.002,
+        "high": 0.014,
+        "share_of_resamples_b_worse": 0.9995
+      },
+      "groups_long_form_worse": 5,
+      "groups_long_form_better": 1
+    },
+    "speaker_2": {
+      "groups": 5,
+      "joined_baseline": {
+        "wer": 0.1025,
+        "reference_words": 1980,
+        "substitutions": 130,
+        "deletions": 18,
+        "insertions": 55
+      },
+      "long_form": {
+        "wer": 0.103,
+        "reference_words": 1980,
+        "substitutions": 128,
+        "deletions": 20,
+        "insertions": 56
+      },
+      "long_form_minus_joined": {
+        "difference": 0.0005,
+        "low": -0.0111,
+        "high": 0.0081,
+        "share_of_resamples_b_worse": 0.571
+      },
+      "groups_long_form_worse": 2,
+      "groups_long_form_better": 1
+    }
+  },
+  "long_form_fragile": false,
+  "against": {
+    "label": "ft-s2-prompt-breaks",
+    "long_form": {
+      "wer": 0.1179,
+      "reference_words": 4994,
+      "substitutions": 354,
+      "deletions": 90,
+      "insertions": 145
+    },
+    "this_minus_against": {
+      "all": {
+        "difference": -0.0036,
+        "low": -0.0089,
+        "high": 0.0009,
+        "share_of_resamples_b_worse": 0.063
+      },
+      "speaker_1": {
+        "difference": -0.0027,
+        "low": -0.0106,
+        "high": 0.005,
+        "share_of_resamples_b_worse": 0.2615
+      },
+      "speaker_2": {
+        "difference": -0.0051,
+        "low": -0.0085,
+        "high": -0.0027,
+        "share_of_resamples_b_worse": 0.0
+      }
+    },
+    "groups_identical": 0
+  },
+  "diagnostics": {
+    "long_form": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.1017,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 1,
+      "hypothesis_to_reference_word_ratio": 1.0066,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    },
+    "joined_baseline": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.0975,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 1,
+      "hypothesis_to_reference_word_ratio": 1.0052,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "missing_long_form_rows": 0
+}

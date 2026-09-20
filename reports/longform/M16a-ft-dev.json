@@ -1,0 +1,97 @@
+{
+  "method": "M16 per-clip",
+  "label": "M16a-ft",
+  "per_clip_run": "r3c-M9b",
+  "scored_at": "2026-09-20T17:04:26+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "package_run": {
+    "label": "M16a-ft",
+    "target": "dev",
+    "package_dir": "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/submission_src",
+    "config": "/private/tmp/claude-501/-Users-shreeyadasa-Documents-mozilla/a80f16a6-84d6-4785-8f26-09b6aec4c3a5/scratchpad/ft-s2-breaks-lf-a.json",
+    "exit_code": 0,
+    "wall_seconds": 1508.9,
+    "log_lines": 9,
+    "finished_at": "2026-09-20T16:50:57+00:00"
+  },
+  "identical_transcripts": 153,
+  "clips": 155,
+  "by_split": {
+    "all": {
+      "clips": 155,
+      "incumbent": {
+        "wer": 0.1055,
+        "reference_words": 4994,
+        "substitutions": 305,
+        "deletions": 97,
+        "insertions": 125
+      },
+      "candidate": {
+        "wer": 0.1057,
+        "reference_words": 4994,
+        "substitutions": 304,
+        "deletions": 99,
+        "insertions": 125
+      },
+      "candidate_minus_incumbent": {
+        "difference": 0.0002,
+        "low": 0.0,
+        "high": 0.0006,
+        "share_of_resamples_b_worse": 0.632
+      }
+    },
+    "speaker_1": {
+      "clips": 78,
+      "incumbent": {
+        "wer": 0.1135,
+        "reference_words": 3014,
+        "substitutions": 193,
+        "deletions": 79,
+        "insertions": 70
+      },
+      "candidate": {
+        "wer": 0.1138,
+        "reference_words": 3014,
+        "substitutions": 192,
+        "deletions": 81,
+        "insertions": 70
+      },
+      "candidate_minus_incumbent": {
+        "difference": 0.0003,
+        "low": 0.0,
+        "high": 0.001,
+        "share_of_resamples_b_worse": 0.6215
+      }
+    },
+    "speaker_2": {
+      "clips": 77,
+      "incumbent": {
+        "wer": 0.0934,
+        "reference_words": 1980,
+        "substitutions": 112,
+        "deletions": 18,
+        "insertions": 55
+      },
+      "candidate": {
+        "wer": 0.0934,
+        "reference_words": 1980,
+        "substitutions": 112,
+        "deletions": 18,
+        "insertions": 55
+      },
+      "candidate_minus_incumbent": {
+        "difference": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "share_of_resamples_b_worse": 0.0
+      }
+    }
+  },
+  "diagnostics": {
+    "wer_lowercased_no_apostrophe_no_ellipsis": 0.0975,
+    "empty_hypotheses": 0,
+    "hypotheses_with_repeated_trigram_x4": 0,
+    "hypothesis_to_reference_word_ratio": 1.0052,
+    "clips_with_hypothesis_over_2x_reference_words": 0
+  }
+}

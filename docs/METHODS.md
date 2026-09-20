@@ -453,3 +453,27 @@ is not an n-gram loop (longest repeated 4-gram appears twice in both outputs; 70
 of which only 4 types repeat more than twice): it is fluent invented text of the kind the
 trigram-×4 diagnostic cannot see, i.e. a hallucination continuing from the model's own previous
 window. Speaker split: speaker_1 +0.0066 [+0.0000, +0.0137], speaker_2 +0.0283 [−0.0116, +0.0982].
+
+### Round 5b results — M16a (hotwords + no previous-text conditioning), fine-tuned model alone
+
+Outputs: `reports/longform/M16a-ft-dev.json`, `reports/longform/M16a-ft-T240.json`.
+Incumbent throughout: P1 `ft-s2-prompt-breaks` (per-clip `r3c-M9b` 0.1055; T240 long-form 0.1179).
+
+| Check | Incumbent | M16a | Paired diff [95% CI] | Rule | Result |
+|---|---:|---:|---|---|---|
+| Per-clip dev (155) | 0.1055 | 0.1057 | +0.0002 [0.0000, +0.0006] | not entirely above zero; ≥150 identical | **met** (interval includes zero; 153/155 identical) |
+| T240 long-form (11 groups) | 0.1179 | **0.1143** | −0.0036 [−0.0089, **+0.0009**] | entirely below zero | **not met** |
+| T240 own fragility (long − joined) | +0.0082 | **+0.0044 [−0.0008, +0.0092]** | — | reported | no longer fragile by the H1 rule |
+
+**The identity prediction held** (153 of 155 transcripts byte-identical; the 2 that differ cost
++1 error net, 527 → 528: S/D/I 305/97/125 → 304/99/125), which confirms the mechanism read from
+the faster-whisper source: `hotwords` and `initial_prompt` build the same prompt for a
+single-window clip, and previous-text conditioning only exists across windows.
+
+**M16a fails its pre-registered T240 rule**: the long-form gain is real in size (−0.0036, 3.1%
+relative, and the package stops being long-form fragile) but the 95% interval reaches +0.0009 over
+11 groups, so it is not significant at 11 groups. Per speaker: speaker_1 −0.0027 [−0.0106,
++0.0050], speaker_2 **−0.0051 [−0.0085, −0.0027]** (significant on speaker_2 only — the same
+one-speaker pattern every gain on this track has shown). Recorded as a fail under the rule as
+written; whether 11 groups is enough resolution for this rule is a limitation of the harness, not
+evidence of no effect.
