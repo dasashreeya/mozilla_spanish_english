@@ -573,3 +573,39 @@ test clips; on the only monolingual speech available, the opposite is measured. 
 do not ship M17.** The `language` column stays unused, which also removes a dependency on a test
 manifest field whose value distribution is UNKNOWN. Limits: Bangor utterances are not test voice
 notes, the segments are ≥ 5 s and ≤ 30 s, and the Spanish side is a null result, not a gain.
+
+### Round 5b results — M16a at T120, and what the long-form failure actually is
+
+Reports: `reports/longform/ft-s2-prompt-breaks-T120.json`, `reports/longform/M16a-ft-T120.json`
+(22 groups, median 111 s, 8 clips per group).
+
+| System | joined baseline | long-form | long − joined [95% CI] | fragile? |
+|---|---:|---:|---|---|
+| Incumbent P1 | 0.1091 | 0.1348 | +0.0256 [+0.0044, +0.0587] | **yes** |
+| M16a | 0.1093 | **0.1264** | +0.0170 [−0.0002, +0.0476] | no |
+
+M16a − incumbent, long-form: −0.0084 [−0.0507, +0.0326] (all), +0.0189 [−0.0094, +0.0730]
+(speaker_1), −0.0500 [−0.1279, +0.0044] (speaker_2). Rule (3) is met (not significantly worse at
+T120); rule (2) was already unmet at T240, so **M16a remains a fail under its pre-registered rule**.
+
+Per-group error deltas (counts only) explain both the gain and the variance:
+
+- **The hallucination mode is gone.** The incumbent's worst group carries **83 insertions**; M16a's
+  worst carries **11**. Two speaker_2 groups improve by −72 and −31 errors, of which −72 and −30 are
+  insertions. This is the mechanism `condition_on_previous_text=False` was chosen to remove, and it
+  removes it.
+- **A truncation mode appears.** One speaker_1 group gets **+72 errors with 2 fewer insertions**:
+  213 output words against 290 in the reference and 290 from the incumbent, i.e. roughly 77 words
+  are simply missing. Cause UNKNOWN; it is not a loop (0 looped hypotheses) and not an insertion
+  problem.
+- Net over 22 groups: 10 groups better, 6 worse, 6 identical, −42 errors.
+
+**Reading.** The long-form deficit is not a diffuse drift, it is a small number of per-group
+catastrophes, so 11–22 groups cannot resolve a difference in the mean: both intervals are wide
+because one group can move the corpus WER by 0.01. M16a trades a frequent, large insertion
+catastrophe for a rarer, equally large deletion catastrophe. That is probably a better trade on
+test audio of 1 s to 4 minutes, but this harness cannot show it at the resolution the pass rule
+demands, and the truncation must be understood before any of it ships. Next diagnostic (to be
+pre-registered before it is run): find whether the truncation is a `no_speech_threshold` /
+`compression_ratio_threshold` stop or a lost-context stop, by re-decoding that length of audio with
+`condition_on_previous_text=False` and the thresholds disabled.
