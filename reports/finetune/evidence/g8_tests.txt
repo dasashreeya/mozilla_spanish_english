@@ -1,0 +1,15 @@
+=== 2026-09-20T19:25:36Z HEAD c319e36f72cbb3099a5e2dd00a51f317cd7e5566
+
+$ uv run --no-sync python -m pytest -q
+........................................................................ [ 98%]
+....                                                                     [100%]
+218 passed, 2 skipped in 12.55s
+exit 
+
+$ .venv-qwen/bin/python -m pytest -q tests/test_finetune.py
+.........sss.                                                            [100%]
+10 passed, 3 skipped in 3.96s
+
+$ uv run --no-sync python -m pytest -q tests/test_modal_watchdog.py tests/test_prepare_dev_folds.py
+.................                                                        [100%]
+17 passed in 0.57s

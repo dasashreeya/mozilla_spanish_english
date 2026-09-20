@@ -1,0 +1,65 @@
+{
+  "generated_at": "2026-09-20T19:39:09+00:00",
+  "privacy": "aggregates only: no transcript text, clip names, speaker codes or audio",
+  "seed": 20260920,
+  "rows": 155,
+  "audio": {
+    "format": "FLAC",
+    "sample_rate": 16000,
+    "channels": 1
+  },
+  "bytes_total": 41194056,
+  "seconds_total": 2153.8,
+  "detected_language_counts": {
+    "en": 91,
+    "es": 64
+  },
+  "language_label_counts": {
+    "enspa": 151,
+    "spa": 4
+  },
+  "speaker_row_counts": {
+    "speaker_1": 78,
+    "speaker_2": 77
+  },
+  "trainable_rows": 150,
+  "excluded_over_30s": 5,
+  "clip_folds_partition_all_rows": true,
+  "specs": [
+    {
+      "name": "clip0",
+      "train_rows": 120,
+      "eval_rows": 31
+    },
+    {
+      "name": "clip1",
+      "train_rows": 121,
+      "eval_rows": 31
+    },
+    {
+      "name": "clip2",
+      "train_rows": 119,
+      "eval_rows": 31
+    },
+    {
+      "name": "clip3",
+      "train_rows": 120,
+      "eval_rows": 31
+    },
+    {
+      "name": "clip4",
+      "train_rows": 120,
+      "eval_rows": 31
+    },
+    {
+      "name": "holdout-speaker_1",
+      "train_rows": 77,
+      "eval_rows": 78
+    },
+    {
+      "name": "holdout-speaker_2",
+      "train_rows": 73,
+      "eval_rows": 77
+    }
+  ]
+}

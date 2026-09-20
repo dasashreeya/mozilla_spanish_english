@@ -1,0 +1,31 @@
+=== 2026-09-20T19:39:41Z HEAD 57ce934ea25614eaf93c3e10863327fb0bb3f959
+--- privacy of the directory that will be uploaded: keys and counts only
+manifest rows: 155 | keys: ['audio', 'duration', 'id', 'language', 'language_label', 'speaker', 'trainable', 'transcript']
+dev clip filenames appearing anywhere in the uploaded text files: 0
+dev clip name stems appearing: 0
+real speaker codes appearing: 2
+audio file names on disk are ids only: True
+id pattern dev000..dev154: ['dev000'] ['dev154']
+speaker values in manifest: ['speaker_1', 'speaker_2']
+transcripts present in manifest (required for training): True
+sum of audio bytes: 41194056
+
+--- fold arithmetic (DERIVED)
+clip0                train 120 eval  31 steps(3 epochs, batch 4)  90 samples  360
+clip1                train 121 eval  31 steps(3 epochs, batch 4)  93 samples  363
+clip2                train 119 eval  31 steps(3 epochs, batch 4)  90 samples  357
+clip3                train 120 eval  31 steps(3 epochs, batch 4)  90 samples  360
+clip4                train 120 eval  31 steps(3 epochs, batch 4)  90 samples  360
+holdout-speaker_1    train  77 eval  78 steps(3 epochs, batch 4)  60 samples  231
+holdout-speaker_2    train  73 eval  77 steps(3 epochs, batch 4)  57 samples  219
+total samples across folds: 2250 | at S2's 0.0651 s/sample = 146.5 s of training
+
+--- correction to the 'real speaker codes appearing: 2' line above
+The two dev speaker codes are each ONE alphanumeric character (lengths [1, 1]), and both are
+substrings of the pseudonyms 'speaker_1'/'speaker_2', so a substring test over the uploaded
+text always 'finds' them and says nothing. What is actually checked:
+  distinct real speaker codes: 2 | lengths: [1, 1]
+  manifest 'speaker' field values: ['speaker_1', 'speaker_2'] -> pseudonyms only: True
+  manifest 'id' values match dev\\d{3}: True
+  a real code as a standalone token in any transcript: 0
+  dev clip filenames anywhere in the uploaded text: 0 (computed above over all 155 names and stems)

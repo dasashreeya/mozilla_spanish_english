@@ -1,0 +1,6 @@
+=== 2026-09-20T19:27:43Z HEAD 57ce934ea25614eaf93c3e10863327fb0bb3f959
+--- include_ids on the real Bangor manifest: counts only, no ids printed
+usable rows, no filter: 7200
+requested ids: 7 | returned: 7 | same set: True
+check_item_count(expected=len) passed
+unusable id rejected: ValueError -> 1 of 8 requested ids are not usable rows

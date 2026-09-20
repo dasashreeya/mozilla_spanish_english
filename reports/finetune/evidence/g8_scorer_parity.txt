@@ -1,0 +1,14 @@
+=== 2026-09-20T19:26:09Z HEAD c319e36f72cbb3099a5e2dd00a51f317cd7e5566
+
+--- scorer parity: the in-process WER of an existing run vs vendor/runtime_score.py
+$ python3 -c ... official_wer(r3c-M9b) ; $ python vendor/runtime_score.py <refs> --predicted-path <hyps>
+r3c-M9b: rows=155 in_process_official_wer=0.105527
+r3c-M11b: rows=155 in_process_official_wer=0.098919
+--- runtime_score.py r3c-M9b
+WER: 0.105527
+--- runtime_score.py r3c-M11b
+WER: 0.098919
+
+--- dummy submission format check: a 155-row CSV of the references as predictions must score 0
+dummy rows: 155 header: audio_filename,transcript
+scorer: WER: 0.000000 exit 0

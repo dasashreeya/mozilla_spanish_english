@@ -1,0 +1,27 @@
+=== 2026-09-20T19:26:21Z
+$ uv run --extra train modal volume ls lit-sp-en-train /runs/full-s2
+runs/full-s2/final
+runs/full-s2/report.json
+runs/full-s2/ct2
+runs/full-s2/ATTEMPT
+
+$ uv run --extra train modal volume ls lit-sp-en-train /runs/full-s2/final
+runs/full-s2/final/vocab.json
+runs/full-s2/final/training_args.bin
+runs/full-s2/final/tokenizer_config.json
+runs/full-s2/final/tokenizer.json
+runs/full-s2/final/special_tokens_map.json
+runs/full-s2/final/preprocessor_config.json
+runs/full-s2/final/normalizer.json
+runs/full-s2/final/model.safetensors
+runs/full-s2/final/merges.txt
+runs/full-s2/final/added_tokens.json
+runs/full-s2/final/generation_config.json
+runs/full-s2/final/config.json
+
+$ uv run --extra train modal volume ls lit-sp-en-train /
+bangor
+runs
+
+$ uv run --extra train modal app list --json | jq -r ...
+apps listed: 0
