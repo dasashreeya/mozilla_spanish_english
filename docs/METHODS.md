@@ -310,3 +310,39 @@ the ROVER package: **a 7.4 GB zip is accepted** (the largest previously known to
   incomplete dev-selection disclosure (the prompt-leak guard was also designed from a dev
   observation, `docs/SELECTOR.md`), a missing "spend no submission" alternative, and two false
   statements of mine ("P2 not built", "only a text rule differs").
+
+## Round 5 — revision.md §3 / §6.2, designed 2026-09-20 before scoring
+
+Motivation (revision.md §3.1, all facts published or MEASURED): test clips run to just under
+4 minutes; dev's longest clip is 59.75 s and only 5 clips exceed 30 s. The package decodes with
+faster-whisper 1.2.1 defaults (`condition_on_previous_text=True`, language detected from the
+first window only, `initial_prompt` applied to the first window only) and Qwen with
+`max_new_tokens=1024`. None of that is exercised by per-clip dev scoring.
+
+- **H1 — long-form harness (diagnostic, not a candidate).** Within each dev speaker, in
+  metadata order (the order is monotone in the clips' index and alternates speakers: 79
+  speaker runs over 155 rows), pack consecutive clips greedily into groups whose audio plus a
+  0.5 s silence gap between clips stays within a target T ∈ {60, 120, 240} s. Each group is one
+  48 kHz mono 16-bit WAV (dev's native rate; lossless, so no second MP3 generation is added).
+  The group's reference is the members' references joined by a single space. Every clip
+  belongs to exactly one group, so the 4,994 scored reference tokens are the same up to
+  boundary casing. Run the *extracted, validated package* unchanged (`main.py` via
+  `LIT_DATA_DIR`, CPU) on the groups and score with the official normalizer.
+  Three numbers per (package, T):
+  1. **per-clip**: the package's per-clip dev WER (known: P2 0.0989, P1 0.1055);
+  2. **joined baseline**: the same per-clip outputs joined by a space per group and scored
+     against the joined references — this absorbs the boundary-casing effect of the normalizer
+     (a word after `.`/`!`/`?` is lowercased) so that 3 − 2 isolates decoding;
+  3. **long-form**: the package's output on the concatenated audio.
+  Reported: paired bootstrap of (long-form − joined baseline) over groups, 2,000 resamples;
+  per speaker (groups are single-speaker); S/D/I; repeated-trigram-loop count; hypothesis-to-
+  reference word ratio; groups whose hypothesis exceeds 2× the reference length.
+  **Reading rule, fixed now:** the package is *long-form fragile* at T if the interval of
+  (long-form − joined baseline) lies entirely above zero. Fragility is the precondition for
+  changing decoding (a later pre-registered method); if no T is fragile, revision.md §3.1's
+  mechanism is not supported on the evidence we can build and decoding stays as is. The
+  harness cannot show that the offset shrinks (the test set is hidden); it can only show that
+  the current decoder degrades on long audio. Limits: same two speakers as dev; concatenated
+  turns are not one continuous 4-minute voice note; the joined baseline and long-form
+  hypothesis differ in where sentence-final punctuation falls, which the joined baseline only
+  partly controls.
