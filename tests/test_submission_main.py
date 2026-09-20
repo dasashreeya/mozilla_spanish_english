@@ -52,7 +52,7 @@ def fake_backend(outputs: list[str], fail_load: bool = False, fail_clips: int = 
             if fail_load:
                 raise RuntimeError("cannot load")
 
-        def transcribe_all(self, paths, progress):
+        def transcribe_all(self, paths, progress, labels=None):
             progress(len(paths))
             hyps = list(outputs[: len(paths)])
             return hyps, fail_clips
@@ -196,7 +196,7 @@ def test_prompted_backend_falls_back_when_prompt_leaks(monkeypatch, tmp_path) ->
 
     backend = main.FasterWhisperBackend.__new__(main.FasterWhisperBackend)
     backend.beam_size, backend.leak_ngram, backend.fallbacks = 5, 4, 0
-    backend.prompt_mode, backend.decode_options = "initial_prompt", {}
+    backend.prompt_mode, backend.decode_options, backend.by_language = "initial_prompt", {}, {}
     backend.initial_prompt = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later"
     backend.model = Model()
     assert backend.transcribe_one(Path("x.mp3")) == "plain decode"
@@ -234,6 +234,76 @@ def test_hotwords_mode_primes_every_call_and_passes_decode_options(monkeypatch,
                for c in calls)
     with pytest.raises(ValueError):
         main.FasterWhisperBackend(spec | {"prompt_mode": "prefix"}, "cpu")
+
+
+def test_language_branches_select_prompt_and_language_per_label(monkeypatch,
+                                                                 tmp_path) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+    calls = []
+
+    class Model:
+        def transcribe(self, path, **kwargs):
+            calls.append((kwargs["language"], kwargs["hotwords"]))
+            from types import SimpleNamespace
+            return iter([SimpleNamespace(text="ok")]), None
+
+    spec = {"path": "m", "beam_size": 5, "cpu": {"compute_type": "int8"},
+            "initial_prompt": "Hola, ¿cómo estás? I'm good, gracias.", "prompt_mode": "hotwords",
+            "by_language": {"spa": {"language": "es", "prompt": "Hola, ¿qué tal?"},
+                            "eng": {"language": "en", "prompt": "Hi, how are you?"}}}
+    monkeypatch.setattr("faster_whisper.WhisperModel", lambda *a, **k: Model())
+    backend = main.FasterWhisperBackend(spec, "cpu")
+    clips = [tmp_path / f"c{i}.mp3" for i in range(5)]
+    outputs, failures = backend.transcribe_all(
+        clips, main.Progress("a", 5), ["enspa", "spa", "eng", "", "zxx"])
+    assert outputs == ["ok"] * 5 and failures == 0
+    assert calls == [(None, spec["initial_prompt"]), ("es", "Hola, ¿qué tal?"),
+                     ("en", "Hi, how are you?"), (None, spec["initial_prompt"]),
+                     (None, spec["initial_prompt"])]
+    # Without labels (submission_format.csv has no language column) everything is default.
+    calls.clear()
+    backend.transcribe_all(clips[:2], main.Progress("a", 2))
+    assert calls == [(None, spec["initial_prompt"])] * 2
+
+
+def test_qwen_language_branches_are_passed_per_item(monkeypatch, tmp_path) -> None:
+    main, _ = load_main(monkeypatch, tmp_path, config("a"))
+    calls = []
+
+    class Model:
+        def transcribe(self, audio, context, language):
+            calls.append(language)
+            from types import SimpleNamespace
+            return [SimpleNamespace(text="x") for _ in audio]
+
+    backend = main.QwenBackend.__new__(main.QwenBackend)
+    backend.batch, backend.context, backend.model = 3, "Bilingual.", Model()
+    backend.by_language = {"spa": {"language": "Spanish"}, "eng": {"language": "English"}}
+    monkeypatch.setattr(main, "decode_16k_mono", lambda path: [0.0])
+    clips = [tmp_path / f"c{i}.mp3" for i in range(3)]
+    for clip in clips:
+        clip.write_bytes(b"x")
+    outputs, _ = backend.transcribe_all(clips, main.Progress("a", 3), ["enspa", "spa", "eng"])
+    assert outputs == ["x"] * 3 and calls == [[None, "Spanish", "English"]]
+    calls.clear()
+    backend.transcribe_all(clips, main.Progress("a", 3), ["enspa", "enspa", ""])
+    assert calls == [None]
+
+
+def test_read_manifest_returns_labels_or_blanks(monkeypatch, tmp_path) -> None:
+    main, names = load_main(monkeypatch, tmp_path, config("a"))
+    read_names, labels, manifest = main.read_manifest()
+    assert read_names == names and labels == ["enspa"] * len(names)
+    assert manifest == "test_metadata.csv"
+    main, names = load_main(monkeypatch, tmp_path / "b", config("a"),
+                            manifest="submission_format.csv")
+    with (tmp_path / "b" / "data" / "submission_format.csv").open(
+            "w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["audio_filename", "transcript"])
+        writer.writerows([[name, ""] for name in names])
+    read_names, labels, _ = main.read_manifest()
+    assert read_names == names and labels == [""] * len(names)
 
 
 def test_progress_logs_quarters_once(monkeypatch, tmp_path, capsys) -> None:
@@ -330,6 +400,7 @@ def test_qwen_backend_passes_context_per_clip(monkeypatch, tmp_path) -> None:
 
     backend = main.QwenBackend.__new__(main.QwenBackend)
     backend.batch, backend.context, backend.model = 2, "Bilingual.", Model()
+    backend.by_language = {}
     monkeypatch.setattr(main, "decode_16k_mono", lambda path: [0.0])
     clips = [tmp_path / f"c{i}.mp3" for i in range(3)]
     for clip in clips:

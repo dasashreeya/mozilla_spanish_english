@@ -125,12 +125,16 @@ def quiet_libraries() -> None:
         pass
 
 
-def read_manifest() -> tuple[list[str], str]:
+def read_manifest() -> tuple[list[str], list[str], str]:
+    """Clip names, their `language` labels (empty when the manifest has none), manifest name."""
+
     for name in MANIFEST_NAMES:
         path = DATA_DIR / name
         if path.is_file():
             with path.open(encoding="utf-8-sig", newline="") as handle:
-                return [row["audio_filename"] for row in csv.DictReader(handle)], name
+                rows = list(csv.DictReader(handle))
+            return ([row["audio_filename"] for row in rows],
+                    [(row.get("language") or "").strip() for row in rows], name)
     raise FileNotFoundError(f"none of {MANIFEST_NAMES} found in {DATA_DIR}")
 
 
@@ -179,30 +183,38 @@ class FasterWhisperBackend:
         if self.prompt_mode not in ("initial_prompt", "hotwords"):
             raise ValueError(f"unknown prompt_mode {self.prompt_mode!r}")
         self.decode_options = dict(spec.get("decode_options") or {})
+        # Per manifest language label: {"spa": {"language": "es", "prompt": "..."}, ...}.
+        # Labels not listed (and manifests without the column) take the defaults above.
+        self.by_language = dict(spec.get("by_language") or {})
         self.leak_ngram = int(spec.get("prompt_leak_ngram", 4))
         self.fallbacks = 0
         self.model = WhisperModel(str(SRC / spec["path"]), device=device,
                                   compute_type=settings["compute_type"],
                                   cpu_threads=settings.get("threads", 0))
 
-    def _decode(self, path: Path, prompt: str | None) -> str:
+    def _decode(self, path: Path, prompt: str | None, language: str | None = None) -> str:
         options = self.decode_options | {self.prompt_mode: prompt}
-        segments, _ = self.model.transcribe(str(path), language=None, task="transcribe",
+        segments, _ = self.model.transcribe(str(path), language=language, task="transcribe",
                                             beam_size=self.beam_size, **options)
         return " ".join(s.text.strip() for s in segments).strip()
 
-    def transcribe_one(self, path: Path) -> str:
-        text = self._decode(path, self.initial_prompt)
-        if self.initial_prompt and prompt_leaked(text, self.initial_prompt, self.leak_ngram):
+    def transcribe_one(self, path: Path, label: str = "") -> str:
+        branch = self.by_language.get(label, {})
+        prompt = branch.get("prompt", self.initial_prompt) or None
+        language = branch.get("language") or None
+        text = self._decode(path, prompt, language)
+        if prompt and prompt_leaked(text, prompt, self.leak_ngram):
             self.fallbacks += 1
-            text = self._decode(path, None)
+            text = self._decode(path, None, language)
         return text
 
-    def transcribe_all(self, paths: list[Path], progress: Progress) -> tuple[list[str], int]:
+    def transcribe_all(self, paths: list[Path], progress: Progress,
+                       labels: list[str] | None = None) -> tuple[list[str], int]:
+        labels = labels or [""] * len(paths)
         outputs, failures = [], 0
-        for done, path in enumerate(paths, start=1):
+        for done, (path, label) in enumerate(zip(paths, labels, strict=True), start=1):
             try:
-                outputs.append(self.transcribe_one(path))
+                outputs.append(self.transcribe_one(path, label))
             except Exception:
                 outputs.append("")
                 failures += 1
@@ -219,17 +231,24 @@ class QwenBackend:
         settings = spec[device]
         self.batch = settings["batch"]
         self.context = spec.get("context", "")
+        # Per manifest language label: {"spa": {"language": "Spanish"}, ...}; others: None.
+        self.by_language = dict(spec.get("by_language") or {})
         self.model = Qwen3ASRModel.from_pretrained(
             str(SRC / spec["path"]), dtype=getattr(torch, settings["dtype"]),
             device_map="cuda:0" if device == "cuda" else "cpu",
             max_inference_batch_size=self.batch, max_new_tokens=spec["max_new_tokens"])
 
-    def _one(self, path: Path) -> str:
+    def _language(self, label: str) -> str | None:
+        return self.by_language.get(label, {}).get("language") or None
+
+    def _one(self, path: Path, label: str = "") -> str:
         result = self.model.transcribe(audio=(decode_16k_mono(path), SAMPLE_RATE),
-                                       context=self.context, language=None)
+                                       context=self.context, language=self._language(label))
         return result[0].text.strip()
 
-    def transcribe_all(self, paths: list[Path], progress: Progress) -> tuple[list[str], int]:
+    def transcribe_all(self, paths: list[Path], progress: Progress,
+                       labels: list[str] | None = None) -> tuple[list[str], int]:
+        labels = labels or [""] * len(paths)
         outputs, failures, done = [""] * len(paths), 0, 0
         # Similar lengths in a batch waste less padding; file size is a cheap proxy.
         order = sorted(range(len(paths)), key=lambda i: paths[i].stat().st_size
@@ -238,14 +257,15 @@ class QwenBackend:
             indices = order[start:start + self.batch]
             try:
                 audios = [(decode_16k_mono(paths[i]), SAMPLE_RATE) for i in indices]
+                languages = [self._language(labels[i]) for i in indices]
                 results = self.model.transcribe(audio=audios, context=[self.context] * len(audios),
-                                                language=None)
+                                                language=languages if any(languages) else None)
                 for i, result in zip(indices, results, strict=True):
                     outputs[i] = result.text.strip()
             except Exception:
                 for i in indices:
                     try:
-                        outputs[i] = self._one(paths[i])
+                        outputs[i] = self._one(paths[i], labels[i])
                     except Exception:
                         failures += 1
             done += len(indices)
@@ -316,9 +336,10 @@ def main() -> int:
     started = time.monotonic()
     quiet_libraries()
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    names, _ = read_manifest()
+    names, labels, _ = read_manifest()
     if int(os.environ.get("LIT_LIMIT", "0") or 0):
         names = names[: int(os.environ["LIT_LIMIT"])]
+        labels = labels[: len(names)]
     paths = [DATA_DIR / "clips" / name for name in names]
     device = choose_device()
     order = [spec["id"] for spec in config["backends"]]
@@ -337,7 +358,8 @@ def main() -> int:
             backend = BACKENDS[spec["kind"]](spec, device)
             quiet_libraries()
             log(f"{spec['id']}: loaded")
-            hypotheses, _ = backend.transcribe_all(paths, Progress(spec["id"], len(paths)))
+            hypotheses, _ = backend.transcribe_all(paths, Progress(spec["id"], len(paths)),
+                                                   labels)
             t2 = time.monotonic()
             outputs[spec["id"]] = hypotheses
             if reference_seconds is None:
