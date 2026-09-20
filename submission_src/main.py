@@ -183,8 +183,10 @@ class FasterWhisperBackend:
         if self.prompt_mode not in ("initial_prompt", "hotwords"):
             raise ValueError(f"unknown prompt_mode {self.prompt_mode!r}")
         self.decode_options = dict(spec.get("decode_options") or {})
-        # Per manifest language label: {"spa": {"language": "es", "prompt": "..."}, ...}.
-        # Labels not listed (and manifests without the column) take the defaults above.
+        # Per manifest language label: {"spa": {"language": "es", "prompt": "...",
+        # "decode_options": {...}}, ...}, each key optional. Labels not listed (and
+        # manifests without the column) take the defaults above. A forced language needs
+        # multilingual=False in its branch: per-window detection overrides the language token.
         self.by_language = dict(spec.get("by_language") or {})
         self.leak_ngram = int(spec.get("prompt_leak_ngram", 4))
         self.fallbacks = 0
@@ -192,8 +194,9 @@ class FasterWhisperBackend:
                                   compute_type=settings["compute_type"],
                                   cpu_threads=settings.get("threads", 0))
 
-    def _decode(self, path: Path, prompt: str | None, language: str | None = None) -> str:
-        options = self.decode_options | {self.prompt_mode: prompt}
+    def _decode(self, path: Path, prompt: str | None, language: str | None = None,
+                branch_options: dict | None = None) -> str:
+        options = self.decode_options | (branch_options or {}) | {self.prompt_mode: prompt}
         segments, _ = self.model.transcribe(str(path), language=language, task="transcribe",
                                             beam_size=self.beam_size, **options)
         return " ".join(s.text.strip() for s in segments).strip()
@@ -202,10 +205,11 @@ class FasterWhisperBackend:
         branch = self.by_language.get(label, {})
         prompt = branch.get("prompt", self.initial_prompt) or None
         language = branch.get("language") or None
-        text = self._decode(path, prompt, language)
+        branch_options = branch.get("decode_options") or {}
+        text = self._decode(path, prompt, language, branch_options)
         if prompt and prompt_leaked(text, prompt, self.leak_ngram):
             self.fallbacks += 1
-            text = self._decode(path, None, language)
+            text = self._decode(path, None, language, branch_options)
         return text
 
     def transcribe_all(self, paths: list[Path], progress: Progress,

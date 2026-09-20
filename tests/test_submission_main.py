@@ -243,27 +243,30 @@ def test_language_branches_select_prompt_and_language_per_label(monkeypatch,
 
     class Model:
         def transcribe(self, path, **kwargs):
-            calls.append((kwargs["language"], kwargs["hotwords"]))
+            calls.append((kwargs["language"], kwargs["hotwords"], kwargs["multilingual"]))
             from types import SimpleNamespace
             return iter([SimpleNamespace(text="ok")]), None
 
     spec = {"path": "m", "beam_size": 5, "cpu": {"compute_type": "int8"},
             "initial_prompt": "Hola, ¿cómo estás? I'm good, gracias.", "prompt_mode": "hotwords",
-            "by_language": {"spa": {"language": "es", "prompt": "Hola, ¿qué tal?"},
-                            "eng": {"language": "en", "prompt": "Hi, how are you?"}}}
+            "decode_options": {"multilingual": True},
+            "by_language": {"spa": {"language": "es", "prompt": "Hola, ¿qué tal?",
+                                    "decode_options": {"multilingual": False}},
+                            "eng": {"language": "en", "prompt": "Hi, how are you?",
+                                    "decode_options": {"multilingual": False}}}}
     monkeypatch.setattr("faster_whisper.WhisperModel", lambda *a, **k: Model())
     backend = main.FasterWhisperBackend(spec, "cpu")
     clips = [tmp_path / f"c{i}.mp3" for i in range(5)]
     outputs, failures = backend.transcribe_all(
         clips, main.Progress("a", 5), ["enspa", "spa", "eng", "", "zxx"])
     assert outputs == ["ok"] * 5 and failures == 0
-    assert calls == [(None, spec["initial_prompt"]), ("es", "Hola, ¿qué tal?"),
-                     ("en", "Hi, how are you?"), (None, spec["initial_prompt"]),
-                     (None, spec["initial_prompt"])]
+    default = (None, spec["initial_prompt"], True)
+    assert calls == [default, ("es", "Hola, ¿qué tal?", False), ("en", "Hi, how are you?", False),
+                     default, default]
     # Without labels (submission_format.csv has no language column) everything is default.
     calls.clear()
     backend.transcribe_all(clips[:2], main.Progress("a", 2))
-    assert calls == [(None, spec["initial_prompt"])] * 2
+    assert calls == [default] * 2
 
 
 def test_qwen_language_branches_are_passed_per_item(monkeypatch, tmp_path) -> None:

@@ -61,6 +61,16 @@ MODELS = {
 CODE_SWITCH_PROMPT = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?"
 # Round-2 Qwen context (docs/SELECTOR.md), scored as Qwen3-ASR-1.7B-auto-cpu-float32-ctx.
 QWEN_CONTEXT = "Bilingual Spanish-English conversation with frequent code-switching."
+# docs/METHODS.md M17: monolingual primes for manifest rows labelled `spa` / `eng`, written
+# here in the style and length of the round-2 prompt; not taken from any Data.
+SPANISH_PROMPT = "Hola, ¿cómo estás? Estoy bien, gracias. Vamos a la tienda más tarde, ¿sí?"
+ENGLISH_PROMPT = "Hi, how are you? I'm good, thanks. Let's go to the store later, okay?"
+# multilingual=False in each branch: per-window detection would override the forced token.
+WHISPER_BY_LANGUAGE = {"spa": {"language": "es", "prompt": SPANISH_PROMPT,
+                               "decode_options": {"multilingual": False}},
+                       "eng": {"language": "en", "prompt": ENGLISH_PROMPT,
+                               "decode_options": {"multilingual": False}}}
+QWEN_BY_LANGUAGE = {"spa": {"language": "Spanish"}, "eng": {"language": "English"}}
 
 VARIANTS = {
     "turbo": {"backends": ["turbo"], "selection": "first"},
@@ -111,6 +121,15 @@ VARIANTS |= {
                                          "q17": {"context": QWEN_CONTEXT,
                                                  "max_new_tokens": 1024}}},
 }
+# docs/METHODS.md M17: M16 plus per-language branches from the manifest's `language` column.
+for _lf, _opts in (("a", LONG_FORM_A), ("b", LONG_FORM_B)):
+    VARIANTS[f"rover3-breaks-lf-{_lf}-lang"] = {
+        "backends": ["ft-s2", "turbo", "q17"], "selection": "rover-order",
+        "postprocess": "sentence-breaks-keep-ellipsis",
+        "overrides": {"ft-s2": _opts | {"by_language": WHISPER_BY_LANGUAGE},
+                      "turbo": _opts | {"by_language": WHISPER_BY_LANGUAGE},
+                      "q17": {"context": QWEN_CONTEXT, "max_new_tokens": 1024,
+                              "by_language": QWEN_BY_LANGUAGE}}}
 REQUIRED = {"faster-whisper": ["model.bin", "config.json", "tokenizer.json"],
             "qwen": ["config.json"]}
 BUDGET = {"seconds": 7200, "safety_factor": 1.3, "load_margin_seconds": 300}
