@@ -160,10 +160,110 @@ def summarize_groups(records: list[dict], clips: int) -> dict:
                                 "max": sizes[-1]}}
 
 
-def data_dir_for(target: str) -> Path:
+def target_dir(target: str) -> Path:
+    """dev → the per-clip runtime layout; an integer → a long-form set; a name → a custom set."""
+
     if target == "dev":
-        return ROOT / "data" / "interim" / "runtime_dev" / "data"
-    return WORK / f"T{int(target)}" / "data"
+        return ROOT / "data" / "interim" / "runtime_dev"
+    return WORK / (f"T{int(target)}" if target.isdigit() else target)
+
+
+def data_dir_for(target: str) -> Path:
+    return target_dir(target) / "data"
+
+
+BANGOR_SEGMENTS = ROOT / "data" / "processed" / "bangor_segments"
+MONO_SEED, MONO_PER_LANGUAGE, MONO_MIN_SECONDS = 20260920, 100, 5.0
+
+
+def build_bangor_mono() -> int:
+    """M17 check set (docs/METHODS.md): monolingual Bangor training segments labelled as the
+    test manifest would label them (`eng` / `spa`), runtime layout under
+    data/interim/longform_dev/bangor-mono/. Bangor is not competition data but gets the same
+    treatment: nothing but counts leaves this directory."""
+
+    import random
+
+    rows = [json.loads(line) for line in
+            (BANGOR_SEGMENTS / "manifest.jsonl").read_text(encoding="utf-8").splitlines() if line]
+    rng = random.Random(MONO_SEED)
+    chosen = []
+    for language in ("eng", "spa"):
+        pool = sorted((r for r in rows if r["language"] == language
+                       and r["duration"] >= MONO_MIN_SECONDS), key=lambda r: r["id"])
+        chosen += rng.sample(pool, MONO_PER_LANGUAGE)
+    base = WORK / "bangor-mono"
+    clips = base / "data" / "clips"
+    clips.mkdir(parents=True, exist_ok=True)
+    manifest, references = [], []
+    for k, row in enumerate(chosen):
+        source = (BANGOR_SEGMENTS / row["audio"]).resolve()
+        name = f"mono_{row['language']}_{k:03d}{source.suffix}"
+        link = clips / name
+        if not link.exists():
+            link.symlink_to(source)
+        manifest.append([name, round(row["duration"], 3), row["language"]])
+        references.append([name, row["transcript"]])
+    with (base / "data" / "test_metadata.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["audio_filename", "file_duration_seconds", "language"])
+        writer.writerows(manifest)
+    with (base / "reference.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["audio_filename", "transcript"])
+        writer.writerows(references)
+    seconds = [m[1] for m in manifest]
+    print(json.dumps({"rows": len(manifest), "seed": MONO_SEED,
+                      "per_language": dict(Counter(m[2] for m in manifest)),
+                      "seconds": {"min": min(seconds), "median": sorted(seconds)[len(seconds) // 2],
+                                  "max": max(seconds), "total": round(sum(seconds), 1)}}))
+    return 0
+
+
+def compare(target: str, label_a: str, label_b: str) -> int:
+    """Paired comparison of two runs on the same custom set, split by manifest language."""
+
+    base = target_dir(target)
+    _, ref_rows = read_csv(base / "reference.csv")
+    _, man_rows = read_csv(base / "data" / "test_metadata.csv")
+    names = [r["audio_filename"] for r in man_rows]
+    labels = [r.get("language") or "" for r in man_rows]
+    refs_by = {r["audio_filename"]: r["transcript"] or "" for r in ref_rows}
+    refs = [refs_by[n] for n in names]
+    hyps = {}
+    for label in (label_a, label_b):
+        _, rows = read_csv(base / "runs" / label / "submission.csv")
+        by = {r["audio_filename"]: r["transcript"] or "" for r in rows}
+        hyps[label] = [by.get(n, "") for n in names]
+    counts = {label: per_clip_counts(refs, hyps[label]) for label in hyps}
+    masks = {"all": [True] * len(names)}
+    for language in sorted(set(labels)):
+        masks[language] = [lab == language for lab in labels]
+
+    def pick(cs, mask):
+        return [c for c, keep in zip(cs, mask, strict=True) if keep]
+
+    report = {"method": "compare", "target": target, "a": label_a, "b": label_b,
+              "scored_at": datetime.now(UTC).isoformat(timespec="seconds"),
+              "privacy": "aggregates only", "rows": len(names),
+              "by_split": {name: {"rows": sum(mask), "a": _corpus(pick(counts[label_a], mask)),
+                                  "b": _corpus(pick(counts[label_b], mask)),
+                                  "b_minus_a": _interval(pick(counts[label_a], mask),
+                                                         pick(counts[label_b], mask))}
+                           for name, mask in masks.items()},
+              "identical_rows": sum(a == b for a, b in zip(hyps[label_a], hyps[label_b],
+                                                          strict=True))}
+    assert_no_transcript_leak(report, refs + hyps[label_a] + hyps[label_b])
+    REPORTS.mkdir(parents=True, exist_ok=True)
+    (REPORTS / f"{target}-{label_b}-vs-{label_a}.json").write_text(
+        json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    for name, split in report["by_split"].items():
+        d = split["b_minus_a"]
+        print(f"{target} {name} ({split['rows']} rows): {label_a} {split['a']['wer']} | "
+              f"{label_b} {split['b']['wer']} | b−a {d['difference']:+.4f} "
+              f"[{d['low']:+.4f}, {d['high']:+.4f}]")
+    print(f"  identical rows: {report['identical_rows']}/{len(names)}")
+    return 0
 
 
 def run(label: str, target: str, python: str, main: str | None, config: str | None,
@@ -180,7 +280,7 @@ def run(label: str, target: str, python: str, main: str | None, config: str | No
     else:
         src = extract(ROOT / "artifacts" / f"submission-{package or label}.zip")
         command, cwd, package_dir = [python, "src/main.py"], src.parent, src.parent.name
-    out_dir = WORK / ("dev" if target == "dev" else f"T{int(target)}") / "runs" / label
+    out_dir = (WORK / "dev" if target == "dev" else target_dir(target)) / "runs" / label
     out_dir.mkdir(parents=True, exist_ok=True)
     output = out_dir / "submission.csv"
     output.unlink(missing_ok=True)
@@ -415,9 +515,18 @@ def main(argv: list[str] | None = None) -> int:
     p_dev = sub.add_parser("devscore")
     p_dev.add_argument("label")
     p_dev.add_argument("--per-clip-run", required=True)
+    sub.add_parser("build-bangor-mono")
+    p_cmp = sub.add_parser("compare")
+    p_cmp.add_argument("label_a")
+    p_cmp.add_argument("label_b")
+    p_cmp.add_argument("--target", required=True)
     args = parser.parse_args(argv)
     if args.command == "build":
         return build(args.target, args.gap)
+    if args.command == "build-bangor-mono":
+        return build_bangor_mono()
+    if args.command == "compare":
+        return compare(args.target, args.label_a, args.label_b)
     if args.command == "run":
         return run(args.label, args.target, args.python, args.main, args.config, args.package)
     if args.command == "devscore":

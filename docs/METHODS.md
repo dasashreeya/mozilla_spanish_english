@@ -432,8 +432,9 @@ The package ignores it. Published fact: some test clips are monolingual.
   is used. Nothing else changes; ROVER and M9b run as before.
 - **Validation.** Dev cannot measure this (4 `spa` rows, 59 words): their error counts before and
   after are reported as counts. The only monolingual audio available is Bangor, all of which the
-  fine-tuned model has trained on, so: a seeded sample of 200 `eng` and 200 `spa` training
-  segments of ≥ 5 s (manifest `language` field) is decoded under the default branch and the
+  fine-tuned model has trained on, so: a seeded sample of 100 `eng` and 100 `spa` training
+  segments of ≥ 5 s (manifest `language` field; 200 each was the first draft, halved before any
+  decode to fit four CPU decodes in about an hour) is decoded under the default branch and the
   monolingual branch by **zero-shot turbo** (never trained on Bangor: a clean comparison for that
   voter) and by the fine-tuned model (contaminated; both branches equally, so only the
   difference is read, and a null difference there is uninformative). Paired bootstrap over
