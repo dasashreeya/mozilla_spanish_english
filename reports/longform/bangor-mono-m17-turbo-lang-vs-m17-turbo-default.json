@@ -1,0 +1,81 @@
+{
+  "method": "compare",
+  "target": "bangor-mono",
+  "a": "m17-turbo-default",
+  "b": "m17-turbo-lang",
+  "scored_at": "2026-09-20T19:26:35+00:00",
+  "privacy": "aggregates only",
+  "rows": 200,
+  "by_split": {
+    "all": {
+      "rows": 200,
+      "a": {
+        "wer": 0.2408,
+        "reference_words": 8294,
+        "substitutions": 782,
+        "deletions": 1047,
+        "insertions": 168
+      },
+      "b": {
+        "wer": 0.2492,
+        "reference_words": 8294,
+        "substitutions": 737,
+        "deletions": 1167,
+        "insertions": 163
+      },
+      "b_minus_a": {
+        "difference": 0.0084,
+        "low": -0.003,
+        "high": 0.0203,
+        "share_of_resamples_b_worse": 0.9255
+      }
+    },
+    "eng": {
+      "rows": 100,
+      "a": {
+        "wer": 0.2263,
+        "reference_words": 4229,
+        "substitutions": 431,
+        "deletions": 424,
+        "insertions": 102
+      },
+      "b": {
+        "wer": 0.2466,
+        "reference_words": 4229,
+        "substitutions": 408,
+        "deletions": 527,
+        "insertions": 108
+      },
+      "b_minus_a": {
+        "difference": 0.0203,
+        "low": 0.0066,
+        "high": 0.0371,
+        "share_of_resamples_b_worse": 0.999
+      }
+    },
+    "spa": {
+      "rows": 100,
+      "a": {
+        "wer": 0.2558,
+        "reference_words": 4065,
+        "substitutions": 351,
+        "deletions": 623,
+        "insertions": 66
+      },
+      "b": {
+        "wer": 0.2519,
+        "reference_words": 4065,
+        "substitutions": 329,
+        "deletions": 640,
+        "insertions": 55
+      },
+      "b_minus_a": {
+        "difference": -0.0039,
+        "low": -0.0226,
+        "high": 0.0129,
+        "share_of_resamples_b_worse": 0.3345
+      }
+    }
+  },
+  "identical_rows": 83
+}

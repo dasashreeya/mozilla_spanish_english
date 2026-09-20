@@ -547,3 +547,29 @@ the fold numbers, which is why no model is packaged before they exist. The secon
 also undo part of what the Bangor stage learned (catastrophic forgetting); the fold numbers
 measure that too. A fold model that trains on 124 clips of one conversation may simply memorise
 its speakers, which is what the speaker-disjoint folds exist to expose.
+
+### Round 5c results — M17 on the Bangor monolingual check set (zero-shot turbo)
+
+Check set: 100 `eng` + 100 `spa` Bangor training segments of ≥ 5 s, seed 20260920, 43.2 min of
+audio (`scripts/longform_harness.py build-bangor-mono`). Both branches otherwise identical
+(hotwords prime, `condition_on_previous_text=False`); the monolingual branch forces the language
+token, swaps in the monolingual prime and sets `multilingual=False`. Report:
+`reports/longform/bangor-mono-m17-turbo-lang-vs-m17-turbo-default.json`.
+
+| Split | code-switched branch | monolingual branch | b − a [95% CI] |
+|---|---:|---:|---|
+| all (200) | 0.2408 | 0.2492 | +0.0084 [−0.0030, +0.0203] |
+| `eng` (100) | **0.2263** | 0.2466 | **+0.0203 [+0.0066, +0.0371]** |
+| `spa` (100) | 0.2558 | 0.2519 | −0.0039 [−0.0226, +0.0129] |
+
+83 of 200 rows are unchanged. **M17 fails its pre-registered rule on the clean model**: the rule
+required no interval entirely above zero, and `eng` is. The monolingual branch is significantly
+*worse* on monolingual English speech and indistinguishable on monolingual Spanish.
+
+Reading: the code-switched prime is not a liability on monolingual conversational speech — it
+helps there too, which is consistent with it being the largest single win ever measured on this
+track (−0.0837 on zero-shot turbo). revision.md §3.2 assumed the prime works against monolingual
+test clips; on the only monolingual speech available, the opposite is measured. **Recommendation:
+do not ship M17.** The `language` column stays unused, which also removes a dependency on a test
+manifest field whose value distribution is UNKNOWN. Limits: Bangor utterances are not test voice
+notes, the segments are ≥ 5 s and ≤ 30 s, and the Spanish side is a null result, not a gain.
