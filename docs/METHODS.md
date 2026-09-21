@@ -647,3 +647,49 @@ accents and digits are. On `r3c-M11b` the remaining opportunity is 9 case-only t
 revision.md §1**, which was measured on the raw fine-tuned output before ROVER and M9b banked most
 of it. The `i` -> `I` rule that section values at ~0.007 changes this package's WER by exactly
 0.000000: all 12 of its stray lowercase `i` are sentence-initial.
+
+## Round 7 — G7, the duration-matched Bangor retrain, and its scored submission
+
+**Design** (`claims/sp-en-G7-pre-gpu-v2.md`). Bangor segments averaged 6.9 s against dev's 12.8 s,
+and the fine-tuned model's characteristic error was scattered insertions. G7 re-cuts the same
+recordings to a dev-like distribution (median 12.9 s, 4,715 segments, 17.6 h) and retrains turbo.
+The segment configuration was chosen to match dev's duration distribution, so G7 is
+**dev-informed** method selection even though its training data is Bangor, not dev (E3).
+
+**Training** (`ap-MyD2sJ7RU44QtClWOjlaIY`, watchdog bound $0.81): REPORT `items 4715`,
+`samples_seen 9430` (= 4,715 × 2 epochs: the full dataset was used), loss 1.2489 → 0.3667.
+
+**Dev results, matched clips, 2,000 paired resamples.** Every comparison is like-for-like:
+
+| Comparison | candidate | incumbent | difference | 95% interval |
+|---|---:|---:|---:|---|
+| G7 raw vs `ft-s2` raw (single model) | 0.1077 | 0.1107 | -0.0030 | [-0.0080, +0.0019] |
+| G7 + M9b vs `r3c-M9b` (= `ft-s2` + M9b) | 0.1023 | 0.1055 | -0.0032 | [-0.0079, +0.0015] |
+| **ROVER with G7 backbone vs shipped `r3c-M11b`** | **0.0965** | **0.0989** | **-0.0024** | **[-0.0056, +0.0008]** |
+
+**No comparison clears zero.** G7 is not a demonstrated improvement at the single-model or the
+ensemble level; every point estimate leans the right way. An earlier write-up reported G7 as
+"-0.0084, significant" against `ft-s2`; that compared G7 *with* M9b against `ft-s2` *without* it,
+which the pre-submit review caught. The matched figure is -0.0030.
+
+**Package and scored submission.** `rover3-g7-breaks` (M11b with `ft-g7` as backbone; turbo and
+Qwen unchanged) was built at `eff045f` and validated end to end: 155/155 transcripts identical to
+`r3c-g7-rover`, 0 empty, E6 logging clean (`reports/submissions/rover3-g7-breaks-local-validation.json`).
+Archive `a09eca07…`. Its pre-submit review returned BLOCK — chiefly because no interval cleared zero
+— and the user submitted it as a calibration shot over the block.
+
+**Public result: 0.1198, rank 12** (previously 0.1215, rank 5). Public improved by 0.0017 against a
+dev point estimate of 0.0024, the fine-tune's direction transferring even though dev could not
+resolve it. Rank fell because other teams improved faster.
+
+**The calibration value: the dev-to-public offset is now measured three times, all verified.**
+
+| Package | dev | public | offset |
+|---|---:|---:|---:|
+| `ft-s2-prompt` (id-1831) | 0.110733 | 0.1371 | +0.0264 |
+| `rover3-breaks` | 0.098919 | 0.1215 | +0.0226 |
+| `rover3-g7-breaks` | 0.096516 | 0.1198 | +0.0233 |
+
+Mean **+0.0241**, spread 0.0038. The `rover3-breaks` identity was previously marked ASSUMED; the
+user's reporting the `MiaSanMia` row with "3 submissions" as their own result confirms it. **Dev is
+now a reliable predictor of public on this track, to within about ±0.002.**

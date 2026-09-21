@@ -1,7 +1,13 @@
 # Handover — Lost in Transcription, Spanish-English track
 
-Written 2026-09-16 for whoever picks this up. Competition ends **2026-10-02, midnight UTC**.
-Current standing: **rank 5, public WER 0.1215**, 2 scored submissions used.
+Written 2026-09-16; **updated 2026-09-21** after G8 and G7. Current standing: **rank 12, public WER
+0.1198**, 3 scored submissions used (`reports/submissions/platform_results.json`).
+
+**Deadline — UNVERIFIED, check the platform.** This file and `revision.md` give **2026-10-02,
+midnight UTC** for this track. The user worked to **2026-09-25** on 2026-09-20/21, but the only saved
+page carrying that date (`../reports/strategic_review_evidence/sources/competition_competition.txt:45`)
+is the **Spanish-Nahuatl** track's, and the same page says the three tracks are independent. If
+Spanish-English really closes 2026-10-02 there are ~11 days, not 4, and GER (§6b) is feasible again.
 
 Every number here names the file it comes from. MEASURED = a file shows it; DERIVED = arithmetic
 shown; GUESS = a judgement with no measurement behind it. Method-by-method detail is in
@@ -12,12 +18,17 @@ shown; GUESS = a judgement with no measurement behind it. Method-by-method detai
 ## 1. The one number that governs everything: the dev-to-public offset
 
 We score locally on the 155-clip development set. The leaderboard scores a hidden test set. **Local
-scores are optimistic by about 0.0245 WER**, measured twice:
+scores are optimistic by about 0.024 WER**, measured three times, all verified same-build:
 
 | System | Dev WER (local, CPU int8) | Public WER | Offset |
 |---|---:|---:|---:|
 | `ft-s2-prompt` (fine-tuned turbo, id-1831) | 0.110733 | 0.1371 | +0.0264 |
-| `rover3-breaks` (3-model ROVER) | 0.098919 | **0.1215** | +0.0226 |
+| `rover3-breaks` (3-model ROVER) | 0.098919 | 0.1215 | +0.0226 |
+| `rover3-g7-breaks` (ROVER, G7 backbone) | 0.096516 | **0.1198** | +0.0233 |
+
+Mean **+0.0241**, spread 0.0038 — dev predicts public to within about ±0.002. (The `rover3-breaks`
+row was ASSUMED to be this team's until 2026-09-21, when the user reported the `MiaSanMia` row with
+3 submissions as their own.)
 
 Source: `reports/submissions/platform_results.json`, `reports/submissions/*-local-validation.json`.
 
@@ -27,12 +38,15 @@ Two consequences, both important:
    publicly it was 0.0156 better. Local improvements are real.
 2. **Dev levels do not.** Whatever dev says, add ~0.0245 to predict public.
 
-**Therefore, to hit a public target you need this dev score** (DERIVED at the mean offset 0.0245):
+**Therefore, to hit a public target you need this dev score** (DERIVED at the mean offset 0.0241):
 
-| Public target | Dev WER required | Where we are |
+| Public target | Dev WER required | Where we are (`rover3-g7-breaks`) |
 |---|---:|---:|
-| Beat leader (0.1058) | 0.0813 | 0.0989 |
-| Under 0.1 | 0.0755 | 0.0989 |
+| Beat the 2026-09-15 leader (0.1058) | 0.0817 | 0.0965 |
+| Under 0.1 | 0.0759 | 0.0965 |
+
+The leader has moved since 2026-09-15 (this team fell from rank 5 to 12 while improving); the
+current leading score is not recorded in any file.
 
 ### Why the offset exists (the most useful diagnostic we have)
 
@@ -56,12 +70,32 @@ larger gain that improves on only one.** Run `uv run --no-sync python scripts/sp
 
 Zips are gitignored (`artifacts/`); their build records and validations are committed.
 
-| Package | File | SHA-256 | Dev WER | Status |
-|---|---|---|---:|---|
-| **P2 `rover3-breaks`** | `artifacts/submission-rover3-breaks.zip` (7.4 GB) | `62f2f7a3…` | **0.098919** | **submitted → public 0.1215, rank 5.** Smoke-tested (id-1876) |
-| **P1 `ft-s2-prompt-breaks`** | `artifacts/submission-ft-s2-prompt-breaks.zip` (1.6 GB) | `81b5bc88…` | 0.105527 | validated, **reviewer PASS**, never submitted |
-| `ft-s2-prompt` | rebuildable | `0a4ab892…` | 0.110733 | submitted → public 0.1371 (id-1831) |
-| `turbo-prompt` | rebuildable | `40d7dcc2…` | 0.139567 | smoke-tested only (0.0971) |
+**Every package on disk, 2026-09-21.** All paths under `mozilla_english_spanish/artifacts/`.
+Dev WER is the full 155-clip validation of that exact archive unless a row says otherwise; public
+is from `reports/submissions/platform_results.json`.
+
+| Package | File | Size | SHA-256 | Dev WER | Public | Status |
+|---|---|---:|---|---:|---:|---|
+| **`rover3-g7-breaks`** | `submission-rover3-g7-breaks.zip` | 7.4 GB | `a09eca07…` | **0.096516** | **0.1198** | **submitted, best score, rank 12** (2026-09-21) |
+| `rover3-breaks` (P2) | `submission-rover3-breaks.zip` | 7.4 GB | `62f2f7a3…` | 0.098919 | 0.1215 | submitted, rank 5 at the time; smoke-tested (id-1876) |
+| `ft-s2-prompt-breaks` (P1) | `submission-ft-s2-prompt-breaks.zip` | 1.5 GB | `81b5bc88…` | 0.105527 | — | validated, pre-submit PASS, never submitted |
+| `ft-s2-prompt` | `submission-ft-s2-prompt.zip` | 1.5 GB | `0a4ab892…` | 0.110733 | 0.1371 | submitted (id-1831) |
+| `turbo-prompt` | `submission-turbo-prompt.zip` | 1.5 GB | `40d7dcc2…` | 0.139567 | — | smoke-tested only (0.0971; not a leaderboard score) |
+| `turbo` | `submission-turbo.zip` | 1.5 GB | `991dacd4…` | 0.223268 | — | zero-shot baseline, never submitted |
+| `mbr-setA` | `submission-mbr-setA.zip` | 11 GB | `6d5f3268…` | 0.162319 *(10 clips only)* | — | superseded; only a 10-clip smoke validation exists |
+
+Validation records: `reports/submissions/<variant>-local-validation*.json`. Build records:
+`reports/submissions/<variant>.json`.
+
+**Models on the Modal volume** `lit-sp-en-train` (not local unless noted):
+
+| Path | What | Result |
+|---|---|---|
+| `/runs/full-s2/final` | S2, fine-tuned turbo on Bangor | backbone of `rover3-breaks` |
+| `/runs/full-g7a/ct2` | G7, duration-matched Bangor retrain | backbone of `rover3-g7-breaks`; also local at `artifacts/finetune/full-g7a/ct2` |
+| `/runs/kfold-d2/<fold>/ct2` | G8, 7 dev k-fold models | FAIL, speaker-bound (`reports/finetune/kfold-d2.score.json`) |
+| `/runs/kfold-final1/all/ct2` | G8 on all 150 trainable dev clips | trained, never evaluated (unneeded after the FAIL) |
+| `/chunks/<run>/…` | 200 MB SHA-256-checked pieces of the above | transfer copies; see §7 on why they exist |
 
 Rebuild any of them with `uv run --no-sync python scripts/pack_submission.py <variant>` and validate
 with `scripts/validate_submission.py <variant> --parity-run <run>`; a full-dev validation takes
@@ -130,7 +164,14 @@ Actual Modal billing has never been checked from here; these are list-rate estim
 
 ---
 
-## 6. Ready to run, not run: G7
+## 6. G7 — run, submitted, 0.1198 (was: ready to run)
+
+**Result (2026-09-21, `docs/METHODS.md` Round 7):** trained on all 4,715 segments for $0.81; no
+matched comparison clears zero (single model -0.0030, ROVER -0.0024 vs the shipped package); packaged
+as `rover3-g7-breaks`, submitted over a pre-submit BLOCK as a calibration shot, **scored 0.1198**
+(-0.0017 public). The original proposal follows, kept for the record.
+
+### The original proposal
 
 `claims/sp-en-G7-pre-gpu-v2.md` is the full proposal. In short: Bangor segments average 6.9 s while
 dev clips average 12.8 s, and the model's characteristic error is scattered insertions (125 on dev
@@ -193,6 +234,32 @@ submission. Odds of reaching #1 with it: **maybe 1 in 5 (GUESS)**.
   three jobs killed. Run heavy local jobs one at a time. Keep disk above ~40 GB free; extracted
   validation copies are 1.5–11 GB each and live in `data/interim/runtime_dev/`.
 
+### Operational lessons from 2026-09-20/21 (each cost hours; do not relearn them)
+
+- **`modal volume get` cannot be trusted with large files.** On 1.6 GB `model.bin` files it
+  produced, in turn: a file of exactly the right length whose middle was corrupt, a hang at 855 MB,
+  a complete file followed by the CLI never exiting, and a hang at 96%. Run two at once and both
+  arrive truncated. **Never judge a transfer by the CLI's exit code or by a timeout.** Use
+  `scripts/modal_chunk.py` (splits on the volume into 200 MB pieces with a SHA-256 each) and
+  `scripts/fetch_chunks.py --workers 1` (verifies every piece and the reassembled file). One worker:
+  parallel pieces truncate too.
+- **Upload before you launch.** A run's data must be `modal volume put` onto the volume first; G8's
+  first launch died at t+30s on a missing `/dev_folds`. Only `HANDOVER`'s G7 recipe had the step.
+- **The rerun guard claims the run id before it reads data.** A launch that fails on bad input still
+  burns its id (`claim_attempt` precedes the manifest read); relaunch under a new id.
+- **Stop apps as soon as their work is done.** Finished apps can sit `ephemeral` with a live task,
+  billing, for 90 s or more before the watchdog's idle polls fire. `modal app stop <id>` and confirm
+  `stopped, tasks=0`.
+- **Never gate a waiter on `pgrep -f <pattern>` when the waiter's own command line contains the
+  pattern.** It matches itself and waits forever. This bit twice; it once cost a night.
+- **Compare on identical clips, like for like.** Dev clip subsets differ a lot in difficulty (the
+  incumbent scores 0.0914 on one 31-clip fold and 0.1055 over all 155), and M9b is worth about
+  -0.005, so comparing a post-processed candidate with an unprocessed incumbent manufactures a gain.
+  Both errors were made and caught on 2026-09-20/21.
+- **Speaker-disjoint evaluation is the test that matters.** Every gain on this track has been
+  significant on one dev speaker and not the other; G8 made it decisive. A result that has not been
+  checked on a held-out speaker has not been checked.
+
 ## 7b. Data: what was used and what else exists
 
 `docs/DATA_AUDIT.md` has the full audit (both datasets, integrity, conventions, scoring
@@ -207,9 +274,16 @@ English/Spanish). The real gap — intra-sentential code-switching, where dev ha
 
 ## 8. Open decisions
 
-1. **Fund G7 (~$2)?** Expected public ~0.108–0.118. Recommendation: only if you want rank, not the
-   top; it alone will not reach 0.1.
-2. **Fund the multi-model ensemble (~$4–5)?** The only remaining bet sized to the gap.
-3. **Use the last submission of the week on P1?** It is validated and reviewer-approved but its dev
-   score is worse than what is already submitted, so it would likely score ~0.130. Not recommended.
-4. **Check actual Modal billing** against the $2.14 estimate.
+*Updated 2026-09-21. Items resolved since 2026-09-16 are struck through with their outcome.*
+
+1. ~~Fund G7?~~ **Done** — 0.1198, see §6. The estimate of 0.108–0.118 was optimistic: the gain was
+   -0.0017 public, not -0.005 to -0.015.
+2. **Verify the deadline** (header). It decides everything below.
+3. **Fund the multi-model ensemble (~$4–5)?** Still the only untried bet sized to the gap, and now
+   the obvious next step: G7 and S2 are two fine-tuned voters of near-identical strength.
+4. **GER (`revision.md` §5.4)?** Feasible only if the deadline is 2026-10-02. The user has widened
+   the data policy to any dataset the competition does not restrict (`reports/finetune/approvals.md`
+   2026-09-21), but Bangor's GPL-3.0 LLM clause still governs using Bangor text to train a corrector.
+5. **Check actual Modal billing** against the nominal $3.72 (watchdog list-rate bounds).
+6. ~~Dev fine-tune (G8)?~~ **Fails** its pre-registered rule: the gain is speaker-bound (Round 6).
+7. ~~Orthography (§6.1)?~~ **Withdrawn**: ceiling 0.0030 on the shipped package, not 0.0150.

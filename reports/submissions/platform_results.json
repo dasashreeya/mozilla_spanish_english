@@ -64,6 +64,20 @@
     "commit": "0e04d0b767871114082b90d70e21224a6e52194b",
     "dev_wer_same_build": 0.098919,
     "source": "user-pasted leaderboard row: '#5 MiaSanMia 1h 1min ago 2 submissions 0.1215'",
-    "notes": "ASSUMED to be this user's team row (2 submissions matches id-1831 plus this one); not confirmed by the user. Dev-to-public gap +0.0226, close to id-1831's +0.0264."
+    "notes": "Originally recorded as ASSUMED to be this user's team row. CONFIRMED 2026-09-21: the user reported the next scored submission by pasting the '#12 MiaSanMia ... 3 submissions 0.1198' row as their own result, and 3 submissions = id-1831 + this package + rover3-g7-breaks. Dev-to-public gap +0.0226.",
+    "identity": "confirmed 2026-09-21"
+  },
+  {
+    "date": "2026-09-21",
+    "kind": "scored submission",
+    "public_score": 0.1198,
+    "leaderboard_rank": 12,
+    "zip": "submission-rover3-g7-breaks.zip",
+    "zip_sha256": "a09eca07a99926d0016530896d6e17daeca496a446512d87252ac21d787390af",
+    "commit": "eff045f2d5b2639c740ca732d43c6b04d94043bb",
+    "dev_wer_same_build": 0.096516,
+    "source": "user-pasted leaderboard row: '#12 MiaSanMia 31min ago 3 submissions 0.1198'",
+    "identity": "confirmed (user reported it as their own result)",
+    "notes": "M11b ROVER with the G7 duration-matched fine-tune as backbone. Validated locally with 155/155 transcripts identical to r3c-g7-rover, so the dev number is exactly this build's. Dev-to-public gap +0.0233. Public improved 0.1215 -> 0.1198 (-0.0017) against a dev improvement of -0.0024 [-0.0056,+0.0008]. Rank fell 5 -> 12 because other teams improved; the leaderboard displays this better score, which is consistent with best-of or latest and does not distinguish them. Submitted as a calibration shot over a pre-submit BLOCK (reports/finetune/approvals.md 2026-09-21)."
   }
 ]

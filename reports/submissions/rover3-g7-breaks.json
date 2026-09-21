@@ -1,0 +1,191 @@
+{
+  "variant": "rover3-g7-breaks",
+  "built_at": "2026-09-21T19:00:11+00:00",
+  "git": {
+    "commit": "eff045f2d5b2639c740ca732d43c6b04d94043bb",
+    "dirty": false,
+    "dirty_scope": [
+      "submission_src",
+      "scripts/pack_submission.py"
+    ]
+  },
+  "zip": {
+    "name": "submission-rover3-g7-breaks.zip",
+    "bytes": 7947642489,
+    "sha256": "a09eca07a99926d0016530896d6e17daeca496a446512d87252ac21d787390af"
+  },
+  "models": {
+    "ft-g7": {
+      "local_dir": "artifacts/finetune/full-g7a/ct2",
+      "files_sha256": {
+        "config.json": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e",
+        "model.bin": "e4e23736e61627d143ff2acbc541b1647a4d274feb8260f5108516b61ff828fc",
+        "preprocessor_config.json": "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499",
+        "tokenizer.json": "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b",
+        "vocabulary.json": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+      }
+    },
+    "turbo": {
+      "repo_id": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "revision": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+    },
+    "q17": {
+      "repo_id": "Qwen/Qwen3-ASR-1.7B",
+      "revision": "7278e1e70fe206f11671096ffdd38061171dd6e5"
+    }
+  },
+  "config": {
+    "variant": "rover3-g7-breaks",
+    "selection": "rover-order",
+    "postprocess": "sentence-breaks-keep-ellipsis",
+    "budget": {
+      "seconds": 7200,
+      "safety_factor": 1.3,
+      "load_margin_seconds": 300
+    },
+    "backends": [
+      {
+        "id": "ft-g7",
+        "path": "models/ft-g7",
+        "kind": "faster-whisper",
+        "beam_size": 5,
+        "cpu": {
+          "compute_type": "int8",
+          "threads": 8
+        },
+        "cuda": {
+          "compute_type": "float16"
+        },
+        "relative_cost": 1.0,
+        "initial_prompt": "Hola, \u00bfc\u00f3mo est\u00e1s? I'm good, gracias. Vamos a la tienda later, okay?",
+        "prompt_leak_ngram": 4
+      },
+      {
+        "id": "turbo",
+        "path": "models/turbo",
+        "kind": "faster-whisper",
+        "beam_size": 5,
+        "cpu": {
+          "compute_type": "int8",
+          "threads": 8
+        },
+        "cuda": {
+          "compute_type": "float16"
+        },
+        "relative_cost": 1.0,
+        "initial_prompt": "Hola, \u00bfc\u00f3mo est\u00e1s? I'm good, gracias. Vamos a la tienda later, okay?",
+        "prompt_leak_ngram": 4
+      },
+      {
+        "id": "q17",
+        "path": "models/q17",
+        "kind": "qwen",
+        "max_new_tokens": 1024,
+        "cpu": {
+          "dtype": "float32",
+          "batch": 1
+        },
+        "cuda": {
+          "dtype": "bfloat16",
+          "batch": 8
+        },
+        "relative_cost": 0.52,
+        "context": "Bilingual Spanish-English conversation with frequent code-switching."
+      }
+    ]
+  },
+  "files": {
+    "main.py": {
+      "bytes": 16349,
+      "sha256": "1bd74017da69c6931e7435f2f5e8d03da8b62ae1374fd9163dd8f6e23dee6bba"
+    },
+    "selection.py": {
+      "bytes": 13781,
+      "sha256": "921b20b0b7330f53b6704b232c03f7466a26f7b37363f5fce362f053b6277456"
+    },
+    "config.json": {
+      "bytes": 1449,
+      "sha256": "5d341f9b929e8100153d3395153854d23c6a410da20841cf8029712678b01117"
+    },
+    "models/ft-g7/config.json": {
+      "bytes": 2263,
+      "sha256": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e"
+    },
+    "models/ft-g7/model.bin": {
+      "bytes": 1617884929,
+      "sha256": "e4e23736e61627d143ff2acbc541b1647a4d274feb8260f5108516b61ff828fc"
+    },
+    "models/ft-g7/preprocessor_config.json": {
+      "bytes": 357,
+      "sha256": "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499"
+    },
+    "models/ft-g7/tokenizer.json": {
+      "bytes": 3930645,
+      "sha256": "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b"
+    },
+    "models/ft-g7/vocabulary.json": {
+      "bytes": 1068114,
+      "sha256": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+    },
+    "models/turbo/config.json": {
+      "bytes": 2263,
+      "sha256": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e"
+    },
+    "models/turbo/model.bin": {
+      "bytes": 1617884929,
+      "sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da"
+    },
+    "models/turbo/preprocessor_config.json": {
+      "bytes": 340,
+      "sha256": "7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711"
+    },
+    "models/turbo/tokenizer.json": {
+      "bytes": 2710337,
+      "sha256": "297b13372ac43916285644fb9687add3cc62ee2a1adb60da3dc25cc94c1871fd"
+    },
+    "models/turbo/vocabulary.json": {
+      "bytes": 1068114,
+      "sha256": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+    },
+    "models/q17/chat_template.json": {
+      "bytes": 1161,
+      "sha256": "75a8cfca24f00de72d796fbfed6858fc9614ef3dabd8696684cc3bc03a9c58ff"
+    },
+    "models/q17/config.json": {
+      "bytes": 6194,
+      "sha256": "2e74a751548b8ad7d7526d29365ad8144c345d8b412b1152d25dc6698452712f"
+    },
+    "models/q17/generation_config.json": {
+      "bytes": 142,
+      "sha256": "1da527824d81e07118facff437e03f2e24a23311e3bdeb2368973fe77e5f275c"
+    },
+    "models/q17/merges.txt": {
+      "bytes": 1671853,
+      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    "models/q17/model-00001-of-00002.safetensors": {
+      "bytes": 4220320824,
+      "sha256": "a4cd1f1a04d90b757dc7f7dd26254e69a013b19e80efe590a83c6a3bde8608d6"
+    },
+    "models/q17/model-00002-of-00002.safetensors": {
+      "bytes": 478200688,
+      "sha256": "6e0b9d9e09e2e0238e7ef3cc8a484ab387e91b90f1900bedf88bc92d7929ccfc"
+    },
+    "models/q17/model.safetensors.index.json": {
+      "bytes": 64821,
+      "sha256": "f994739fe38e5210b9e3e8ce6c6307315e2ceac3cb630e7b7414d69dce520f60"
+    },
+    "models/q17/preprocessor_config.json": {
+      "bytes": 330,
+      "sha256": "45e120a4eda2c20c5d7f2ea9354e63536bf35e27aa573fb7cdf78017b378770d"
+    },
+    "models/q17/tokenizer_config.json": {
+      "bytes": 12487,
+      "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+    },
+    "models/q17/vocab.json": {
+      "bytes": 2776833,
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  }
+}
