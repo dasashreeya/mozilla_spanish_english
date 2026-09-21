@@ -609,3 +609,41 @@ demands, and the truncation must be understood before any of it ships. Next diag
 pre-registered before it is run): find whether the truncation is a `no_speech_threshold` /
 `compression_ratio_threshold` stop or a lost-context stop, by re-decoding that length of audio with
 `condition_on_previous_text=False` and the thresholds disabled.
+
+### Round 6 results — G8 fails the pre-registered rule: the dev gain is speaker-bound
+
+Run `kfold-d2` on Modal (`ap-sEX0G4RtQjN5JpZlk8EU3M`, 8m15s, 7/7 folds, ~$0.47; a first attempt
+`ap-ep30fYhThNMiMko0ODjvZo` died at t+30s because nothing had uploaded `/dev_folds` to the volume,
+~$0.10). Every fold matched its registered counts and every fold's loss fell. Each fold's model
+decoded **only its held-out clips** on this CPU with the S4 settings, then M9b
+(`scripts/evaluate_kfold.py`, `scripts/score_kfold.py`). All comparisons are against the incumbent
+on **identical clips**; `parity=True` on every decode.
+
+| Comparison | clips | `r3c-M9b` | G8 | difference | 95% interval |
+|---|---:|---:|---:|---:|---|
+| pooled, 5 clip folds | 155 | 0.1055 | **0.0957** | **-0.0098** | [-0.0169, -0.0026] |
+| `holdout-speaker_1` | 78 | 0.1135 | 0.1151 | +0.0017 | [-0.0050, +0.0091] |
+| `holdout-speaker_2` | 77 | 0.0934 | 0.0944 | +0.0010 | [-0.0045, +0.0076] |
+
+**VERDICT: FAIL** (`reports/finetune/kfold-d2.score.json`). The rule needs the interval entirely
+below zero on the pooled clips **and** both speaker-disjoint folds; both speaker folds include zero
+and both point estimates are positive.
+
+The two speaker folds agree, so this is not one unlucky fold. In the five clip folds **both dev
+speakers appear in training and evaluation**, so the model only had to generalise to new sentences;
+the speaker folds remove that and the -0.0098 disappears. The pooled gain is therefore **in-domain
+convention learned per speaker, not a transferable improvement** — exactly the outcome this round
+pre-registered as "in-domain convention gain, no speaker transfer". The hidden test contains
+speakers the model has never heard, so this is not shipped.
+
+Measured against the **shipped** package P2 `r3c-M11b` (0.0989) rather than P1, pooled G8 is
+-0.0032 [-0.0118, +0.0061] — a tie. A single fine-tuned model drawing level with the three-backend
+ROVER is a real finding, but it is not grounds to replace it.
+
+**Orthography (revision.md §6.1) is also withdrawn as a lever, on measurement.** The official
+normalizer lowercases *sentence-initial* letters, so case there is not scored; mid-sentence case,
+accents and digits are. On `r3c-M11b` the remaining opportunity is 9 case-only tokens (0.0018) and
+6 accent-only tokens (0.0012) over 4,994 reference words — **a ceiling of 0.0030, not the 0.0150 of
+revision.md §1**, which was measured on the raw fine-tuned output before ROVER and M9b banked most
+of it. The `i` -> `I` rule that section values at ~0.007 changes this package's WER by exactly
+0.000000: all 12 of its stray lowercase `i` are sentence-initial.

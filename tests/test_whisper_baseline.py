@@ -207,3 +207,37 @@ def test_extra_decode_options_are_passed_and_recorded() -> None:
     with mock.patch.object(whisper_baseline, "FasterWhisperBackend") as backend_class:
         whisper_baseline.load_backend(args)
     assert backend_class.call_args.kwargs["decode_options"] == options
+
+
+def _rows(n: int) -> list[dict]:
+    return [{"audio_filename": f"clip{i}.mp3", "transcript": "x"} for i in range(n)]
+
+
+def test_select_dev_ids_maps_positionally_and_sorts() -> None:
+    rows = _rows(155)
+    picked = whisper_baseline.select_dev_ids(rows, "dev004,dev001,dev154")
+    assert picked == [rows[1], rows[4], rows[154]]
+
+
+def test_select_dev_ids_reads_a_file_one_id_per_line(tmp_path: Path) -> None:
+    path = tmp_path / "eval.txt"
+    path.write_text("dev000\ndev002\n\n", encoding="utf-8")
+    assert whisper_baseline.select_dev_ids(_rows(10), f"@{path}") == [
+        {"audio_filename": "clip0.mp3", "transcript": "x"},
+        {"audio_filename": "clip2.mp3", "transcript": "x"},
+    ]
+
+
+@pytest.mark.parametrize(
+    "spec, message",
+    [
+        ("", "selected no rows"),
+        ("dev1", "not a devNNN id"),
+        ("clip001", "not a devNNN id"),
+        ("dev999", "out of range"),
+        ("dev001,dev001", "duplicate ids"),
+    ],
+)
+def test_select_dev_ids_rejects_bad_input(spec: str, message: str) -> None:
+    with pytest.raises(SystemExit, match=message):
+        whisper_baseline.select_dev_ids(_rows(155), spec)

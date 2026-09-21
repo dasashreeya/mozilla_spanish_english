@@ -1,0 +1,131 @@
+{
+  "run": "kfold-d2-holdout-speaker_1-heldout-breaks",
+  "backend": "sentence-breaks-keep-ellipsis",
+  "generated_at": "2026-09-21T05:33:59+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "design": "docs/METHODS.md",
+  "candidates_in_tie_break_order": [
+    "kfold-d2-holdout-speaker_1-heldout"
+  ],
+  "preprocess": "none",
+  "selection": {
+    "method": "remove internal sentence breaks, lowercase the next word (docs/METHODS.md M9)",
+    "clips_changed": 39
+  },
+  "dataset": {
+    "split": "dev",
+    "rows": 78
+  },
+  "scores": {
+    "official": {
+      "clips": 78,
+      "reference_words": 3014,
+      "wer": 0.1151,
+      "substitutions": 185,
+      "deletions": 106,
+      "insertions": 56,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.1011,
+        "high": 0.1297
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 74,
+          "reference_words": 2955,
+          "wer": 0.1147,
+          "substitutions": 181,
+          "deletions": 103,
+          "insertions": 55
+        },
+        "spa": {
+          "clips": 4,
+          "reference_words": 59,
+          "wer": 0.1356,
+          "substitutions": 4,
+          "deletions": 3,
+          "insertions": 1
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 78,
+          "reference_words": 3014,
+          "wer": 0.1151,
+          "substitutions": 185,
+          "deletions": 106,
+          "insertions": 56
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 29,
+          "reference_words": 1065,
+          "wer": 0.1239,
+          "substitutions": 73,
+          "deletions": 36,
+          "insertions": 23
+        },
+        "20-30": {
+          "clips": 15,
+          "reference_words": 949,
+          "wer": 0.1149,
+          "substitutions": 56,
+          "deletions": 34,
+          "insertions": 19
+        },
+        "5-10": {
+          "clips": 21,
+          "reference_words": 399,
+          "wer": 0.0952,
+          "substitutions": 20,
+          "deletions": 12,
+          "insertions": 6
+        },
+        "<5": {
+          "clips": 8,
+          "reference_words": 71,
+          "wer": 0.1408,
+          "substitutions": 9,
+          "deletions": 0,
+          "insertions": 1
+        },
+        ">=30": {
+          "clips": 5,
+          "reference_words": 530,
+          "wer": 0.1094,
+          "substitutions": 27,
+          "deletions": 24,
+          "insertions": 7
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.1085,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9834,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.115129,
+    "matches_in_process_wer": true
+  },
+  "versus_incumbent": {
+    "incumbent": "kfold-d2-holdout-speaker_1-heldout",
+    "paired_selector_minus_incumbent": {
+      "difference_b_minus_a": -0.0013,
+      "low": -0.0031,
+      "high": 0.0004,
+      "share_of_resamples_b_worse": 0.046,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "comparisons": {}
+}

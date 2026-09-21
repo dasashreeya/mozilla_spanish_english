@@ -1,0 +1,198 @@
+{
+  "summary": {
+    "run": "kfold-d2",
+    "folds": 7,
+    "total_train_seconds": 235.0
+  },
+  "folds": [
+    {
+      "fold": "clip0",
+      "train_items": 120,
+      "eval_items": 31,
+      "training_loss": 0.3208,
+      "optimizer_steps": 90,
+      "train_seconds": 38.8,
+      "language_counts": {
+        "en": 72,
+        "es": 48
+      },
+      "peak_gpu_memory_gib": 12.7,
+      "loss_first_last": [
+        [
+          [
+            5,
+            0.602
+          ]
+        ],
+        [
+          [
+            90,
+            0.2179
+          ]
+        ]
+      ]
+    },
+    {
+      "fold": "clip1",
+      "train_items": 121,
+      "eval_items": 31,
+      "training_loss": 0.2969,
+      "optimizer_steps": 93,
+      "train_seconds": 37.5,
+      "language_counts": {
+        "en": 73,
+        "es": 48
+      },
+      "peak_gpu_memory_gib": 12.71,
+      "loss_first_last": [
+        [
+          [
+            5,
+            0.5131
+          ]
+        ],
+        [
+          [
+            90,
+            0.1836
+          ]
+        ]
+      ]
+    },
+    {
+      "fold": "clip2",
+      "train_items": 119,
+      "eval_items": 31,
+      "training_loss": 0.2945,
+      "optimizer_steps": 90,
+      "train_seconds": 36.2,
+      "language_counts": {
+        "en": 67,
+        "es": 52
+      },
+      "peak_gpu_memory_gib": 12.71,
+      "loss_first_last": [
+        [
+          [
+            5,
+            0.6143
+          ]
+        ],
+        [
+          [
+            90,
+            0.2263
+          ]
+        ]
+      ]
+    },
+    {
+      "fold": "clip3",
+      "train_items": 120,
+      "eval_items": 31,
+      "training_loss": 0.284,
+      "optimizer_steps": 90,
+      "train_seconds": 36.4,
+      "language_counts": {
+        "en": 67,
+        "es": 53
+      },
+      "peak_gpu_memory_gib": 12.71,
+      "loss_first_last": [
+        [
+          [
+            5,
+            0.4668
+          ]
+        ],
+        [
+          [
+            90,
+            0.132
+          ]
+        ]
+      ]
+    },
+    {
+      "fold": "clip4",
+      "train_items": 120,
+      "eval_items": 31,
+      "training_loss": 0.307,
+      "optimizer_steps": 90,
+      "train_seconds": 36.0,
+      "language_counts": {
+        "en": 69,
+        "es": 51
+      },
+      "peak_gpu_memory_gib": 12.71,
+      "loss_first_last": [
+        [
+          [
+            5,
+            0.4724
+          ]
+        ],
+        [
+          [
+            90,
+            0.1815
+          ]
+        ]
+      ]
+    },
+    {
+      "fold": "holdout-speaker_1",
+      "train_items": 77,
+      "eval_items": 78,
+      "training_loss": 0.2595,
+      "optimizer_steps": 60,
+      "train_seconds": 25.9,
+      "language_counts": {
+        "en": 56,
+        "es": 21
+      },
+      "peak_gpu_memory_gib": 12.71,
+      "loss_first_last": [
+        [
+          [
+            5,
+            0.457
+          ]
+        ],
+        [
+          [
+            60,
+            0.1145
+          ]
+        ]
+      ]
+    },
+    {
+      "fold": "holdout-speaker_2",
+      "train_items": 73,
+      "eval_items": 77,
+      "training_loss": 0.3562,
+      "optimizer_steps": 57,
+      "train_seconds": 24.2,
+      "language_counts": {
+        "en": 31,
+        "es": 42
+      },
+      "peak_gpu_memory_gib": 12.71,
+      "loss_first_last": [
+        [
+          [
+            5,
+            0.5184
+          ]
+        ],
+        [
+          [
+            55,
+            0.1967
+          ]
+        ]
+      ]
+    }
+  ]
+}

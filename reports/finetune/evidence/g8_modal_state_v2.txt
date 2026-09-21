@@ -1,0 +1,9 @@
+# Modal account state immediately before the G8 launch
+HEAD: ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+date: 2026-09-21T00:03:42Z
+invocation: the same one modal_watchdog.py:50 uses
+
+$ uv run --extra train modal app list --json
+[]
+exit: 0
+apps listed: 0

@@ -1,0 +1,35 @@
+{
+  "passed": false,
+  "pooled": {
+    "label": "pooled (5 clip folds)",
+    "clips": 155,
+    "incumbent_wer": 0.1055,
+    "candidate_wer": 0.0957,
+    "difference": -0.0098,
+    "low": -0.0169,
+    "high": -0.0026,
+    "interval_below_zero": true
+  },
+  "speaker": [
+    {
+      "label": "holdout-speaker_1",
+      "clips": 78,
+      "incumbent_wer": 0.1135,
+      "candidate_wer": 0.1151,
+      "difference": 0.0017,
+      "low": -0.005,
+      "high": 0.0091,
+      "interval_below_zero": false
+    },
+    {
+      "label": "holdout-speaker_2",
+      "clips": 77,
+      "incumbent_wer": 0.0934,
+      "candidate_wer": 0.0944,
+      "difference": 0.001,
+      "low": -0.0045,
+      "high": 0.0076,
+      "interval_below_zero": false
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# Modal volume state before G7, establishing that run id g7a is unused
+HEAD: ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+date: 2026-09-21T17:41:49Z
+
+$ uv run --extra train modal volume ls lit-sp-en-train /runs
+runs/trial-s1
+runs/full-s2
+runs/kfold-d1
+runs/kfold-d2
+runs/kfold-final1
+exit: 0
+
+$ uv run --extra train modal volume ls lit-sp-en-train
+bangor
+dev_folds
+runs
+chunks
+exit: 0
+
+# No full-g7a under /runs -> no ATTEMPT marker -> the run cannot GUARD on attempt 1.
+# No bangor_g7 at the root -> the upload step is required.

@@ -1,0 +1,19 @@
+# G8 test evidence, regenerated with exit codes (pre-gpu v2)
+HEAD: ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+date: 2026-09-20T21:13:23Z
+note: a second session is committing to this repo concurrently; HEAD is pinned as above
+
+$ uv run --no-sync python -m pytest -q
+....                                                                     [100%]
+218 passed, 2 skipped in 4.58s
+exit: 0
+
+$ .venv-qwen/bin/python -m pytest -q tests/test_finetune.py
+.........sss.                                                            [100%]
+10 passed, 3 skipped in 2.09s
+exit: 0
+
+$ uv run --no-sync python -m pytest -q tests/test_modal_watchdog.py tests/test_prepare_dev_folds.py
+.................                                                        [100%]
+17 passed in 0.20s
+exit: 0

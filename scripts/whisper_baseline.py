@@ -228,6 +228,30 @@ def official_cli_wer(names: list[str], references: list[str], hypotheses: list[s
     return float(last.split(":", 1)[1])
 
 
+def select_dev_ids(rows: list[dict], spec: str) -> list[dict]:
+    """Select dev rows by the devNNN ids that scripts/prepare_dev_folds.py assigns.
+
+    `devNNN` is index NNN into `read_dev_metadata` order (prepare_dev_folds.py:101), which is
+    the order `rows` already carries, so the mapping is positional and exact. `spec` is a
+    comma-separated list or `@path` to a file with one id per line.
+    """
+    text = Path(spec[1:]).read_text(encoding="utf-8") if spec.startswith("@") else spec
+    wanted = [token.strip() for token in text.replace(",", "\n").splitlines() if token.strip()]
+    if not wanted:
+        raise SystemExit("--ids selected no rows")
+    indices = []
+    for token in wanted:
+        if not (token.startswith("dev") and token[3:].isdigit() and len(token) == 6):
+            raise SystemExit(f"--ids: {token!r} is not a devNNN id")
+        index = int(token[3:])
+        if not 0 <= index < len(rows):
+            raise SystemExit(f"--ids: {token} out of range for {len(rows)} dev rows")
+        indices.append(index)
+    if len(set(indices)) != len(indices):
+        raise SystemExit("--ids: duplicate ids")
+    return [rows[index] for index in sorted(indices)]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -247,6 +271,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--vad-filter", action="store_true", help="faster-whisper only")
     parser.add_argument("--repetition-penalty", type=float, help="faster-whisper only")
     parser.add_argument("--limit", type=int, help="first N rows only (smoke test)")
+    parser.add_argument("--ids", help="decode only these dev ids: devNNN, comma-separated, or "
+                                      "@path to a file with one per line. Used for held-out "
+                                      "scoring of k-fold models")
     parser.add_argument("--run-name")
     args = parser.parse_args(argv)
 
@@ -254,6 +281,8 @@ def main(argv: list[str] | None = None) -> int:
     speaker_rank = {s: f"speaker_{i + 1}" for i, (s, _) in
                     enumerate(Counter(r["speaker"] for r in rows).most_common())}
     rows = rows[: args.limit] if args.limit else rows
+    if args.ids:
+        rows = select_dev_ids(rows, args.ids)
 
     started = datetime.now(UTC)
     load_start = time.perf_counter()

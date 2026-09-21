@@ -1,0 +1,355 @@
+# G7 resolved training configuration at the current HEAD
+HEAD: ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+date: 2026-09-21T17:39:52Z
+$ .venv-qwen/bin/python scripts/dump_training_args.py full --dataset g7 --run-id g7a --expected-items 4715
+
+transformers 4.57.6 | torch 2.11.0
+stage overrides parsed from scripts/modal_finetune.py: {'trial': {'epochs': 2.0, 'max_train_seconds': 600.0, 'save_final': False}, 'full': {'epochs': 2.0}}
+bypass: transformers.training_args.is_torch_bf16_gpu_available -> True (only patch)
+datasets parsed from scripts/modal_finetune.py: {'bangor': 'bangor', 'g7': 'bangor_g7'}
+FinetuneConfig: {"base_model": "openai/whisper-large-v3-turbo", "data_dir": "/vol/bangor_g7", "languages_file": "/vol/bangor_g7/segment_languages.json", "output_dir": "/vol/runs/full-g7a", "epochs": 2.0, "max_steps": -1, "max_train_seconds": 0.0, "limit_segments": 0, "include_ids": [], "per_device_batch": 16, "grad_accum": 2, "learning_rate": 1e-05, "warmup_steps": 50, "weight_decay": 0.0, "seed": 20260914, "gradient_checkpointing": true, "spec_augment": true, "num_workers": 8, "max_label_tokens": 448, "expected_items": 4715, "save_final": true}
+model config overrides: {'use_cache': False, 'forced_decoder_ids': None} | spec augment overrides: {'apply_spec_augment': True, 'mask_time_prob': 0.05} | generation_config.forced_decoder_ids = None
+Seq2SeqTrainingArguments.to_dict() (cuda=True), 137 keys:
+{
+ "accelerator_config": {
+  "dispatch_batches": null,
+  "even_batches": true,
+  "gradient_accumulation_kwargs": null,
+  "non_blocking": false,
+  "split_batches": false,
+  "use_seedable_sampler": true
+ },
+ "adafactor": false,
+ "adam_beta1": 0.9,
+ "adam_beta2": 0.999,
+ "adam_epsilon": 1e-08,
+ "auto_find_batch_size": false,
+ "average_tokens_across_devices": true,
+ "batch_eval_metrics": false,
+ "bf16": true,
+ "bf16_full_eval": false,
+ "data_seed": null,
+ "dataloader_drop_last": false,
+ "dataloader_num_workers": 8,
+ "dataloader_persistent_workers": false,
+ "dataloader_pin_memory": true,
+ "dataloader_prefetch_factor": null,
+ "ddp_backend": null,
+ "ddp_broadcast_buffers": null,
+ "ddp_bucket_cap_mb": null,
+ "ddp_find_unused_parameters": null,
+ "ddp_timeout": 1800,
+ "debug": [],
+ "deepspeed": null,
+ "disable_tqdm": false,
+ "do_eval": false,
+ "do_predict": false,
+ "do_train": false,
+ "eval_accumulation_steps": null,
+ "eval_delay": 0,
+ "eval_do_concat_batches": true,
+ "eval_on_start": false,
+ "eval_steps": null,
+ "eval_strategy": "no",
+ "eval_use_gather_object": false,
+ "fp16": false,
+ "fp16_backend": "auto",
+ "fp16_full_eval": false,
+ "fp16_opt_level": "O1",
+ "fsdp": [],
+ "fsdp_config": {
+  "min_num_params": 0,
+  "xla": false,
+  "xla_fsdp_grad_ckpt": false,
+  "xla_fsdp_v2": false
+ },
+ "fsdp_min_num_params": 0,
+ "fsdp_transformer_layer_cls_to_wrap": null,
+ "full_determinism": false,
+ "generation_config": null,
+ "generation_max_length": null,
+ "generation_num_beams": null,
+ "gradient_accumulation_steps": 2,
+ "gradient_checkpointing": true,
+ "gradient_checkpointing_kwargs": {
+  "use_reentrant": false
+ },
+ "greater_is_better": null,
+ "group_by_length": false,
+ "half_precision_backend": "auto",
+ "hub_always_push": false,
+ "hub_model_id": null,
+ "hub_private_repo": null,
+ "hub_revision": null,
+ "hub_strategy": "every_save",
+ "hub_token": "<HUB_TOKEN>",
+ "ignore_data_skip": false,
+ "include_for_metrics": [],
+ "include_inputs_for_metrics": false,
+ "include_num_input_tokens_seen": "no",
+ "include_tokens_per_second": false,
+ "jit_mode_eval": false,
+ "label_names": null,
+ "label_smoothing_factor": 0.0,
+ "learning_rate": 1e-05,
+ "length_column_name": "length",
+ "liger_kernel_config": null,
+ "load_best_model_at_end": false,
+ "local_rank": 0,
+ "log_level": "passive",
+ "log_level_replica": "warning",
+ "log_on_each_node": true,
+ "logging_dir": "/vol/runs/full-g7a/runs/Sep21_13-39-54_Shreeyas-MacBook-Pro-3.local",
+ "logging_first_step": false,
+ "logging_nan_inf_filter": false,
+ "logging_steps": 5,
+ "logging_strategy": "steps",
+ "lr_scheduler_kwargs": null,
+ "lr_scheduler_type": "linear",
+ "max_grad_norm": 1.0,
+ "max_steps": -1,
+ "metric_for_best_model": null,
+ "mp_parameters": "",
+ "neftune_noise_alpha": null,
+ "no_cuda": false,
+ "num_train_epochs": 2.0,
+ "optim": "adamw_torch_fused",
+ "optim_args": null,
+ "optim_target_modules": null,
+ "output_dir": "/vol/runs/full-g7a",
+ "overwrite_output_dir": false,
+ "parallelism_config": null,
+ "past_index": -1,
+ "per_device_eval_batch_size": 8,
+ "per_device_train_batch_size": 16,
+ "per_gpu_eval_batch_size": null,
+ "per_gpu_train_batch_size": null,
+ "predict_with_generate": false,
+ "prediction_loss_only": false,
+ "project": "huggingface",
+ "push_to_hub": false,
+ "push_to_hub_model_id": null,
+ "push_to_hub_organization": null,
+ "push_to_hub_token": "<PUSH_TO_HUB_TOKEN>",
+ "ray_scope": "last",
+ "remove_unused_columns": false,
+ "report_to": [],
+ "restore_callback_states_from_checkpoint": false,
+ "resume_from_checkpoint": null,
+ "run_name": null,
+ "save_on_each_node": false,
+ "save_only_model": false,
+ "save_safetensors": true,
+ "save_steps": 500,
+ "save_strategy": "no",
+ "save_total_limit": null,
+ "seed": 20260914,
+ "skip_memory_metrics": true,
+ "sortish_sampler": false,
+ "tf32": null,
+ "torch_compile": false,
+ "torch_compile_backend": null,
+ "torch_compile_mode": null,
+ "torch_empty_cache_steps": null,
+ "torchdynamo": null,
+ "tpu_metrics_debug": false,
+ "tpu_num_cores": null,
+ "trackio_space_id": "trackio",
+ "use_cpu": false,
+ "use_legacy_prediction_loop": false,
+ "use_liger_kernel": false,
+ "use_mps_device": false,
+ "warmup_ratio": 0.0,
+ "warmup_steps": 50,
+ "weight_decay": 0.0
+}
+
+Per-field meaning (value | default | set here | source line | help):
+accelerator_config = {"split_batches": false, "dispatch_batches": null, "even_batches": true, "use_seedable_sampler": true, "non_blocking": false, "gradient_accumulation_kwargs": null} | default {"split_batches": false, "dispatch_batches": null, "even_batches": true, "use_seedable_sampler": true, "non_blocking": false, "gradient_accumulation_kwargs": null} | - | training_args.py:1266 | Config to be used with the internal Accelerator object initialization. The value is either a accelerator json config file (e.g., `accelerator_config.json`) or an already loaded json file as `dict`.
+adafactor = false | default false | - | training_args.py:1303 | Whether or not to replace AdamW by Adafactor.
+adam_beta1 = 0.9 | default 0.9 | - | training_args.py:917 | Beta1 for AdamW optimizer
+adam_beta2 = 0.999 | default 0.999 | - | training_args.py:918 | Beta2 for AdamW optimizer
+adam_epsilon = 1e-08 | default 1e-08 | - | training_args.py:919 | Epsilon for AdamW optimizer.
+auto_find_batch_size = false | default false | - | training_args.py:1459 | Whether to automatically decrease the batch size in half and rerun the training loop again each time a CUDA Out-of-Memory was reached
+average_tokens_across_devices = true | default true | - | training_args.py:1585 | Whether or not to average tokens across devices. If enabled, will use all_reduce to synchronize num_tokens_in_batch for precise loss calculation. Reference: https://github.com/huggingface/transformers/issues/34242
+batch_eval_metrics = false | default false | - | training_args.py:1548 | Break eval metrics calculation into batches to save memory.
+bf16 = true | default false | SET | training_args.py:1068 | Whether to use bf16 (mixed) precision instead of 32-bit. Requires Ampere or higher NVIDIA architecture or using CPU (use_cpu) or Ascend NPU. This is an experimental API and it may change.
+bf16_full_eval = false | default false | - | training_args.py:1097 | Whether to use full bfloat16 evaluation instead of 32-bit. This is an experimental API and it may change.
+data_seed = null | default null | - | training_args.py:1064 | Random seed to be used with data samplers.
+dataloader_drop_last = false | default false | - | training_args.py:1149 | Drop the last incomplete batch if it is not divisible by the batch size.
+dataloader_num_workers = 8 | default 0 | SET | training_args.py:1161 | Number of subprocesses to use for data loading (PyTorch only). 0 means that the data will be loaded in the main process.
+dataloader_persistent_workers = false | default false | - | training_args.py:1359 | If True, the data loader will not shut down the worker processes after a dataset has been consumed once. This allows to maintain the workers Dataset instances alive. Can potentially speed up training, but will increase RAM usage.
+dataloader_pin_memory = true | default true | - | training_args.py:1356 | Whether or not to pin memory for DataLoader.
+dataloader_prefetch_factor = null | default null | - | training_args.py:1170 | Number of batches loaded in advance by each worker. 2 means there will be a total of 2 * num_workers batches prefetched across all workers.
+ddp_backend = null | default null | - | training_args.py:1120 | The backend to be used for distributed training
+ddp_broadcast_buffers = null | default null | - | training_args.py:1347 | When using distributed training, the value of the flag `broadcast_buffers` passed to `DistributedDataParallel`.
+ddp_bucket_cap_mb = null | default null | - | training_args.py:1338 | When using distributed training, the value of the flag `bucket_cap_mb` passed to `DistributedDataParallel`.
+ddp_find_unused_parameters = null | default null | - | training_args.py:1329 | When using distributed training, the value of the flag `find_unused_parameters` passed to `DistributedDataParallel`.
+ddp_timeout = 1800 | default 1800 | - | training_args.py:1496 | Overrides the default timeout for distributed training (value should be given in seconds).
+debug = [] | default [] | - | training_args.py:1138 | Whether or not to enable debug mode. Current options: `underflow_overflow` (Detect underflow and overflow in activations and weights), `tpu_metrics_debug` (print debug metrics on TPU).
+deepspeed = null | default null | - | training_args.py:1279 | Enable deepspeed and pass the path to deepspeed json config file (e.g. `ds_config.json`) or an already loaded json file as a dict
+disable_tqdm = false | default false | - | training_args.py:1193 | Whether or not to disable the tqdm progress bars.
+do_eval = false | default false | - | training_args.py:850 | Whether to run eval on the dev set.
+do_predict = false | default false | - | training_args.py:851 | Whether to run predictions on the test set.
+do_train = false | default false | - | training_args.py:849 | Whether to run training.
+eval_accumulation_steps = null | default null | - | training_args.py:891 | Number of predictions steps to accumulate before moving the tensors to the CPU.
+eval_delay = 0 | default 0 | - | training_args.py:896 | Number of epochs or steps to wait for before the first evaluation can be performed, depending on the eval_strategy.
+eval_do_concat_batches = true | default true | - | training_args.py:1430 | Whether to recursively concat inputs/losses/labels/predictions across batches. If `False`, will instead store them as lists, with each batch kept separate.
+eval_on_start = false | default false | - | training_args.py:1553 | Whether to run through the entire `evaluation` step at the very beginning of training as a sanity check.
+eval_steps = null | default null | - | training_args.py:1152 | Run an evaluation every X steps. Should be an integer or a float in range `[0,1)`. If smaller than 1, will be interpreted as ratio of total training steps.
+eval_strategy = "no" | default "no" | - | training_args.py:852 | The evaluation strategy to use.
+eval_use_gather_object = false | default false | - | training_args.py:1578 | Whether to run recursively gather object in a nested list/tuple/dictionary of objects from all devices.
+fp16 = false | default false | - | training_args.py:1077 | Whether to use fp16 (mixed) precision instead of 32-bit
+fp16_backend = "auto" | default "auto" | - | training_args.py:1437 | Deprecated. Use half_precision_backend instead
+fp16_full_eval = false | default false | - | training_args.py:1106 | Whether to use full float16 evaluation instead of 32-bit
+fp16_opt_level = "O1" | default "O1" | - | training_args.py:1081 | For fp16: Apex AMP optimization level selected in ['O0', 'O1', 'O2', and 'O3']. See details at https://nvidia.github.io/apex/amp.html
+fsdp = [] | default [] | - | training_args.py:1227 | Whether or not to use PyTorch Fully Sharded Data Parallel (FSDP) training (in distributed training only). The base option should be `full_shard`, `shard_grad_op` or `no_shard` and you can add CPU-offload to `full_shard` or `shard_grad_op` like this: full_shard offload` or `shard_grad_op offload`. You can add auto-wrap to `full_shard` or `shard_grad_op` with the same syntax: full_shard auto_wrap` or `shard_grad_op auto_wrap`.
+fsdp_config = {"min_num_params": 0, "xla": false, "xla_fsdp_v2": false, "xla_fsdp_grad_ckpt": false} | default {"min_num_params": 0, "xla": false, "xla_fsdp_v2": false, "xla_fsdp_grad_ckpt": false} | - | training_args.py:1248 | Config to be used with FSDP (Pytorch Fully Sharded Data Parallel). The value is either a fsdp json config file (e.g., `fsdp_config.json`) or an already loaded json file as `dict`.
+fsdp_min_num_params = 0 | default 0 | - | training_args.py:1239 | This parameter is deprecated. FSDP's minimum number of parameters for Default Auto Wrapping. (useful only when `fsdp` field is passed).
+fsdp_transformer_layer_cls_to_wrap = null | default null | - | training_args.py:1257 | This parameter is deprecated. Transformer layer class name (case-sensitive) to wrap, e.g, `BertLayer`, `GPTJBlock`, `T5Block` .... (useful only when `fsdp` flag is passed).
+full_determinism = false | default false | - | training_args.py:1468 | Whether to call enable_full_determinism instead of set_seed for reproducibility in distributed training. Important: this will negatively impact the performance, so only use it for debugging.
+generation_config = null | default null | - | training_args_seq2seq.py:73 | Model id, file path or url pointing to a GenerationConfig json file, to use during prediction.
+generation_max_length = null | default null | - | training_args_seq2seq.py:55 | The `max_length` to use on each evaluation loop when `predict_with_generate=True`. Will default to the `max_length` value of the model configuration.
+generation_num_beams = null | default null | - | training_args_seq2seq.py:64 | The `num_beams` to use on each evaluation loop when `predict_with_generate=True`. Will default to the `num_beams` value of the model configuration.
+gradient_accumulation_steps = 2 | default 1 | SET | training_args.py:887 | Number of updates steps to accumulate before performing a backward/update pass.
+gradient_checkpointing = true | default false | SET | training_args.py:1405 | If True, use gradient checkpointing to save memory at the expense of slower backward pass.
+gradient_checkpointing_kwargs = {"use_reentrant": false} | default null | SET | training_args.py:1411 | Gradient checkpointing key word arguments such as `use_reentrant`. Will be passed to `torch.utils.checkpoint.checkpoint` through `model.gradient_checkpointing_enable`.
+greater_is_better = null | default null | - | training_args.py:1215 | Whether the `metric_for_best_model` should be maximized or not.
+group_by_length = false | default false | - | training_args.py:1304 | Whether or not to group samples of roughly the same length together when batching.
+half_precision_backend = "auto" | default "auto" | - | training_args.py:1090 | The backend to be used for half precision.
+hub_always_push = false | default false | - | training_args.py:1395 | Unless `True`, the Trainer will skip pushes if the previous one wasn't finished yet.
+hub_model_id = null | default null | - | training_args.py:1378 | The name of the repository to keep in sync with the local `output_dir`.
+hub_private_repo = null | default null | - | training_args.py:1386 | Whether to make the repo private. If `None` (default), the repo will be public unless the organization's default is private. This value is ignored if the repo already exists. If reporting to Trackio with deployment to Hugging Face Spaces enabled, the same logic determines whether the Space is private.
+hub_revision = null | default null | - | training_args.py:1399 | The revision to use when pushing to the Hub. Can be a branch name, a tag, or a commit hash.
+hub_strategy = "every_save" | default "every_save" | - | training_args.py:1381 | The hub strategy to use when `--push_to_hub` is activated.
+hub_token = "<HUB_TOKEN>" | default "<HUB_TOKEN>" | - | training_args.py:1385 | The token to use to push to the Model Hub.
+ignore_data_skip = false | default false | - | training_args.py:1218 | When resuming training, whether or not to skip the first epochs and batches to get to the same training data.
+include_for_metrics = [] | default [] | - | training_args.py:1423 | List of strings to specify additional data to include in the `compute_metrics` function.Options: 'inputs', 'loss'.
+include_inputs_for_metrics = false | default false | - | training_args.py:1417 | This argument is deprecated and will be removed in version 5 of 🤗 Transformers. Use `include_for_metrics` instead.
+include_num_input_tokens_seen = "no" | default "no" | - | training_args.py:1523 | Whether to track the number of input tokens seen. Can be `'all'` to count all tokens, `'non_padding'` to count only non-padding tokens, or a boolean (`True` maps to `'all'`, `False` to `'no'`).
+include_tokens_per_second = false | default false | - | training_args.py:1518 | If set to `True`, the speed metrics will include `tgs` (tokens per second per device).
+jit_mode_eval = false | default false | - | training_args.py:1065 | Whether or not to use PyTorch jit trace for inference
+label_names = null | default null | - | training_args.py:1200 | The list of keys in your dictionary of inputs that correspond to the labels.
+label_smoothing_factor = 0.0 | default 0.0 | - | training_args.py:1288 | The label smoothing epsilon to apply (zero means no label smoothing).
+learning_rate = 1e-05 | default 5e-05 | SET | training_args.py:915 | The initial learning rate for AdamW.
+length_column_name = "length" | default "length" | - | training_args.py:1308 | Column name with precomputed lengths to use when grouping by length.
+liger_kernel_config = null | default null | - | training_args.py:1565 | Configuration to be used for Liger Kernel. When use_liger_kernel=True, this dict is passed as keyword arguments to the `_apply_liger_kernel_to_instance` function, which specifies which kernels to apply. Available options vary by model but typically include: 'rope', 'swiglu', 'cross_entropy', 'fused_linear_cross_entropy', 'rms_norm', etc. If None, use the default kernel configurations.
+load_best_model_at_end = false | default false | - | training_args.py:1203 | Whether or not to load the best model found during training at the end of training. When this option is enabled, the best checkpoint will always be saved. See `save_total_limit` for more.
+local_rank = 0 | default 0 | - | training_args.py:1119 | For distributed training: local_rank
+log_level = "passive" | default "passive" | - | training_args.py:944 | Logger log level to use on the main node. Possible choices are the log levels as strings: 'debug', 'info', 'warning', 'error' and 'critical', plus a 'passive' level which doesn't set anything and lets the application set the level. Defaults to 'passive'.
+log_level_replica = "warning" | default "warning" | - | training_args.py:955 | Logger log level to use on replica nodes. Same choices and defaults as ``log_level``
+log_on_each_node = true | default true | - | training_args.py:962 | When doing a multinode distributed training, whether to log once per node or just once on the main node.
+logging_dir = "/vol/runs/full-g7a/runs/Sep21_13-39-54_Shreeyas-MacBook-Pro-3.local" | default "/vol/runs/full-g7a/runs/Sep21_13-39-54_Shreeyas-MacBook-Pro-3.local" | - | training_args.py:971 | Tensorboard log dir.
+logging_first_step = false | default false | - | training_args.py:976 | Log the first global_step
+logging_nan_inf_filter = false | default true | SET | training_args.py:986 | Filter nan and inf losses for logging.
+logging_steps = 5 | default 500 | SET | training_args.py:977 | Log every X updates steps. Should be an integer or a float in range `[0,1)`. If smaller than 1, will be interpreted as ratio of total training steps.
+logging_strategy = "steps" | default "steps" | - | training_args.py:972 | The logging strategy to use.
+lr_scheduler_kwargs = null | default null | - | training_args.py:931 | Extra parameters for the lr_scheduler such as {'num_cycles': 1} for the cosine with hard restarts.
+lr_scheduler_type = "linear" | default "linear" | - | training_args.py:927 | The scheduler type to use.
+max_grad_norm = 1.0 | default 1.0 | - | training_args.py:920 | Max gradient norm.
+max_steps = -1 | default -1 | - | training_args.py:923 | If > 0: set total number of training steps to perform. Override num_train_epochs.
+metric_for_best_model = null | default null | - | training_args.py:1212 | The metric to use to compare two different models.
+mp_parameters = "" | default "" | - | training_args.py:1454 | Used by the SageMaker launcher to send mp-specific args. Ignored in Trainer
+neftune_noise_alpha = null | default null | - | training_args.py:1534 | Activates neftune noise embeddings into the model. NEFTune has been proven to drastically improve model performances for instruction fine-tuning. Check out the original paper here: https://huggingface.co/papers/2310.05914 and the original code here: https://github.com/neelsjain/NEFTune. Only supported for `PreTrainedModel` and `PeftModel` classes.
+no_cuda = false | default false | - | training_args.py:1046 | This argument is deprecated. It will be removed in version 5.0 of 🤗 Transformers.
+num_train_epochs = 2.0 | default 3.0 | SET | training_args.py:922 | Total number of training epochs to perform.
+optim = "adamw_torch_fused" | default "adamw_torch_fused" | - | training_args.py:1298 | The optimizer to use.
+optim_args = null | default null | - | training_args.py:1302 | Optional arguments to supply to optimizer.
+optim_target_modules = null | default null | - | training_args.py:1541 | Target modules for the optimizer defined in the `optim` argument. Only used for the GaLore optimizer at the moment.
+output_dir = "/vol/runs/full-g7a" | default "/vol/runs/full-g7a" | - | training_args.py:833 | The output directory where the model predictions and checkpoints will be written. Defaults to 'trainer_output' if not provided.
+overwrite_output_dir = false | default false | - | training_args.py:839 | Overwrite the content of the output directory. Use this to continue training if output_dir points to a checkpoint directory.
+parallelism_config = null | default null | - | training_args.py:1275 | Parallelism configuration for the training run. Requires Accelerate `1.10.1`
+past_index = -1 | default -1 | - | training_args.py:1179 | If >=0, uses the corresponding part of the output as the past state for next step.
+per_device_eval_batch_size = 8 | default 8 | - | training_args.py:864 | Batch size per device accelerator core/CPU for evaluation.
+per_device_train_batch_size = 16 | default 8 | SET | training_args.py:861 | Batch size per device accelerator core/CPU for training.
+per_gpu_eval_batch_size = null | default null | - | training_args.py:877 | Deprecated, the use of `--per_device_eval_batch_size` is preferred. Batch size per GPU/TPU core/CPU for evaluation.
+per_gpu_train_batch_size = null | default null | - | training_args.py:868 | Deprecated, the use of `--per_device_train_batch_size` is preferred. Batch size per GPU/TPU core/CPU for training.
+predict_with_generate = false | default false | - | training_args_seq2seq.py:52 | Whether to use generate to calculate generative metrics (ROUGE, BLEU).
+prediction_loss_only = false | default false | - | training_args.py:856 | When performing evaluation and predictions, only returns the loss.
+project = "huggingface" | default "huggingface" | - | training_args.py:1315 | The name of the project to use for logging. Currenly, only used by Trackio.
+push_to_hub = false | default false | - | training_args.py:1371 | Whether or not to upload the trained model to the model hub after training.
+push_to_hub_model_id = null | default null | - | training_args.py:1444 | The name of the repository to which push the `Trainer`.
+push_to_hub_organization = null | default null | - | training_args.py:1447 | The name of the organization in with to which push the `Trainer`.
+push_to_hub_token = "<PUSH_TO_HUB_TOKEN>" | default "<PUSH_TO_HUB_TOKEN>" | - | training_args.py:1450 | The token to use to push to the Model Hub.
+ray_scope = "last" | default "last" | - | training_args.py:1483 | The scope to use when doing hyperparameter search with Ray. By default, `"last"` will be used. Ray will then use the last checkpoint of all trials, compare those, and select the best one. However, other options are also available. See the Ray documentation (https://docs.ray.io/en/latest/tune/api_docs/analysis.html#ray.tune.ExperimentAnalysis.get_best_trial) for more options.
+remove_unused_columns = false | default true | SET | training_args.py:1197 | Remove columns not required by the model when using an nlp.Dataset.
+report_to = [] | default [] | - | training_args.py:1312 | The list of integrations to report the results and logs to.
+restore_callback_states_from_checkpoint = false | default false | - | training_args.py:1040 | Whether to restore the callback states from the checkpoint. If `True`, will override callbacks passed to the `Trainer` if they exist in the checkpoint.
+resume_from_checkpoint = null | default null | - | training_args.py:1374 | The path to a folder with a valid checkpoint for your model.
+run_name = null | default null | - | training_args.py:1184 | An optional descriptor for the run. Notably used for trackio, wandb, mlflow comet and swanlab logging.
+save_on_each_node = false | default false | - | training_args.py:1020 | When doing multi-node distributed training, whether to save models and checkpoints on each node, or only on the main one
+save_only_model = false | default false | - | training_args.py:1029 | When checkpointing, whether to only save the model, or also the optimizer, scheduler & rng state.Note that when this is true, you won't be able to resume training from checkpoint.This enables you to save storage by not storing the optimizer, scheduler & rng state.You can only load the model using from_pretrained with this option set to True.
+save_safetensors = true | default true | - | training_args.py:1014 | Use safetensors saving and loading for state dicts instead of default torch.load and torch.save.
+save_steps = 500 | default 500 | - | training_args.py:991 | Save checkpoint every X updates steps. Should be an integer or a float in range `[0,1)`. If smaller than 1, will be interpreted as ratio of total training steps.
+save_strategy = "no" | default "steps" | SET | training_args.py:987 | The checkpoint save strategy to use.
+save_total_limit = null | default null | - | training_args.py:1000 | If a value is passed, will limit the total amount of checkpoints. Deletes the older checkpoints in `output_dir`. When `load_best_model_at_end` is enabled, the 'best' checkpoint according to `metric_for_best_model` will always be retained in addition to the most recent ones. For example, for `save_total_limit=5` and `load_best_model_at_end=True`, the four last checkpoints will always be retained alongside the best model. When `save_total_limit=1` and `load_best_model_at_end=True`, it is possible that two checkpoints are saved: the last one and the best one (if they are different). Default is unlimited checkpoints
+seed = 20260914 | default 42 | SET | training_args.py:1063 | Random seed that will be set at the beginning of training.
+skip_memory_metrics = true | default true | - | training_args.py:1365 | Whether or not to skip adding of memory profiler reports to metrics.
+sortish_sampler = false | default false | - | training_args_seq2seq.py:51 | Whether to use SortishSampler or not.
+tf32 = null | default null | - | training_args.py:1110 | Whether to enable tf32 mode, available in Ampere and newer GPU architectures. This is an experimental API and it may change.
+torch_compile = false | default false | - | training_args.py:1502 | If set to `True`, the model will be wrapped in `torch.compile`.
+torch_compile_backend = null | default null | - | training_args.py:1505 | Which backend to use with `torch.compile`, passing one will trigger a model compilation.
+torch_compile_mode = null | default null | - | training_args.py:1511 | Which mode to use with `torch.compile`, passing one will trigger a model compilation.
+torch_empty_cache_steps = null | default null | - | training_args.py:906 | Number of steps to wait before calling `torch.<device>.empty_cache()`.This can help avoid CUDA out-of-memory errors by lowering peak VRAM usage at a cost of about [10% slower performance](https://github.com/huggingface/transformers/issues/31372).If left unset or set to None, cache will not be emptied.
+torchdynamo = null | default null | - | training_args.py:1477 | This argument is deprecated, use `--torch_compile_backend` instead.
+tpu_metrics_debug = false | default false | - | training_args.py:1130 | Deprecated, the use of `--debug tpu_metrics_debug` is preferred. TPU: Whether to print debug metrics
+tpu_num_cores = null | default null | - | training_args.py:1127 | TPU: Number of TPU cores (automatically passed by launcher script)
+trackio_space_id = "trackio" | default "trackio" | - | training_args.py:1319 | The Hugging Face Space ID to deploy to when using Trackio. Should be a complete Space name like 'username/reponame' or 'orgname/reponame', or just 'reponame' in which case the Space will be created in the currently-logged-in Hugging Face user's namespace. If `None`, will log to a local directory. Note that this Space will be public unless you set `hub_private_repo=True` or your organization's default is to create private Spaces.
+use_cpu = false | default false | - | training_args.py:1050 | Whether or not to use cpu. If left to False, we will use the available torch device/backend (cuda/mps/xpu/hpu etc.)
+use_legacy_prediction_loop = false | default false | - | training_args.py:1368 | Whether or not to use the legacy prediction_loop in the Trainer.
+use_liger_kernel = false | default false | - | training_args.py:1560 | Whether or not to enable the Liger Kernel for model training.
+use_mps_device = false | default false | - | training_args.py:1056 | This argument is deprecated. `mps` device will be used if available similar to `cuda` device. It will be removed in version 5.0 of 🤗 Transformers
+warmup_ratio = 0.0 | default 0.0 | - | training_args.py:939 | Linear warmup over warmup_ratio fraction of total steps.
+warmup_steps = 50 | default 0 | SET | training_args.py:942 | Linear warmup over warmup_steps.
+weight_decay = 0.0 | default 0.0 | - | training_args.py:916 | Weight decay for AdamW if we apply some.
+
+FinetuneConfig fields and the lines that read them:
+base_model = 'openai/whisper-large-v3-turbo'
+    src/lit_sp_en/finetune.py:231: processor = WhisperProcessor.from_pretrained(cfg.base_model)
+    src/lit_sp_en/finetune.py:232: model = WhisperForConditionalGeneration.from_pretrained(cfg.base_model)
+data_dir = '/vol/bangor_g7'
+    src/lit_sp_en/finetune.py:49: data_dir = Path(cfg.data_dir)
+languages_file = '/vol/bangor_g7/segment_languages.json'
+    src/lit_sp_en/finetune.py:50: languages = json.loads(Path(cfg.languages_file).read_text(encoding="utf-8"))
+output_dir = '/vol/runs/full-g7a'
+    src/lit_sp_en/finetune.py:204: output_dir=cfg.output_dir, per_device_train_batch_size=cfg.per_device_batch,
+    src/lit_sp_en/finetune.py:252: final_dir = Path(cfg.output_dir) / "final" if cfg.save_final else None
+epochs = 2.0
+    src/lit_sp_en/finetune.py:206: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
+max_steps = -1
+    src/lit_sp_en/finetune.py:206: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
+max_train_seconds = 0.0
+    src/lit_sp_en/finetune.py:242: callback = make_callback(cfg.max_train_seconds, samples_per_step, len(items))
+limit_segments = 0
+    src/lit_sp_en/finetune.py:68: return items[: cfg.limit_segments] if cfg.limit_segments else items
+include_ids = ()
+    src/lit_sp_en/finetune.py:62: if cfg.include_ids:
+    src/lit_sp_en/finetune.py:63: wanted = set(cfg.include_ids)
+per_device_batch = 16
+    src/lit_sp_en/finetune.py:204: output_dir=cfg.output_dir, per_device_train_batch_size=cfg.per_device_batch,
+    src/lit_sp_en/finetune.py:241: samples_per_step = cfg.per_device_batch * cfg.grad_accum
+grad_accum = 2
+    src/lit_sp_en/finetune.py:205: gradient_accumulation_steps=cfg.grad_accum, learning_rate=cfg.learning_rate,
+    src/lit_sp_en/finetune.py:241: samples_per_step = cfg.per_device_batch * cfg.grad_accum
+learning_rate = 1e-05
+    src/lit_sp_en/finetune.py:205: gradient_accumulation_steps=cfg.grad_accum, learning_rate=cfg.learning_rate,
+warmup_steps = 50
+    src/lit_sp_en/finetune.py:206: warmup_steps=cfg.warmup_steps, num_train_epochs=cfg.epochs, max_steps=cfg.max_steps,
+weight_decay = 0.0
+    src/lit_sp_en/finetune.py:207: weight_decay=cfg.weight_decay, lr_scheduler_type="linear", bf16=cuda,
+seed = 20260914
+    src/lit_sp_en/finetune.py:217: remove_unused_columns=False, seed=cfg.seed,
+gradient_checkpointing = True
+    src/lit_sp_en/finetune.py:208: gradient_checkpointing=cfg.gradient_checkpointing,
+spec_augment = True
+    src/lit_sp_en/finetune.py:236: if cfg.spec_augment:
+num_workers = 8
+    src/lit_sp_en/finetune.py:216: eval_strategy="no", report_to=[], dataloader_num_workers=cfg.num_workers if cuda else 0,
+max_label_tokens = 448
+    src/lit_sp_en/finetune.py:246: train_dataset=SegmentDataset(items, processor, cfg.max_label_tokens),
+expected_items = 4715
+    src/lit_sp_en/finetune.py:240: check_item_count(items, cfg.expected_items)
+save_final = True
+    src/lit_sp_en/finetune.py:252: final_dir = Path(cfg.output_dir) / "final" if cfg.save_final else None
+
+exit: 0

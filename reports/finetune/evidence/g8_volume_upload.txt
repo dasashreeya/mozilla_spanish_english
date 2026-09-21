@@ -1,0 +1,28 @@
+# dev_folds upload to the lit-sp-en-train volume, before the G8 relaunch
+HEAD: ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+date: 2026-09-21T00:53:46Z
+reason: the first launch (ap-ep30fYhThNMiMko0ODjvZo) died at t+30s with
+        FileNotFoundError: '/vol/dev_folds/manifest.jsonl' - the claim described the data
+        to be uploaded but no step uploaded it. Pattern from docs/HANDOVER.md:144.
+
+$ uv run --extra train modal volume put lit-sp-en-train data/processed/dev_folds /dev_folds
+Uploaded directory 'data/processed/dev_folds' to '/dev_folds'
+
+$ uv run --extra train modal volume ls lit-sp-en-train
+bangor
+runs
+dev_folds
+
+$ uv run --extra train modal volume ls lit-sp-en-train /dev_folds
+dev_folds/audio
+dev_folds/folds.json
+dev_folds/manifest.jsonl
+dev_folds/segment_languages.json
+exit: 0
+
+# Relaunch run id
+The failed attempt ap-ep30fYhThNMiMko0ODjvZo claimed /runs/kfold-d1 via claim_attempt(), which
+runs at modal_finetune_dev.py:77, before the manifest read at :82 that raised FileNotFoundError.
+`modal volume ls lit-sp-en-train /runs` confirms runs/kfold-d1 exists. Relaunching as run id d2
+rather than deleting the marker, so the failed attempt remains on the record. The claim file and
+docs/METHODS.md name `kfold d1`; this is a deviation in run id only, same command otherwise.

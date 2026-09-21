@@ -1,0 +1,18 @@
+# Watchdog cost bounds for the G8 runs, extracted from each run's watchdog output
+HEAD: ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+date: 2026-09-21T17:40:13Z
+rate: 0.000694 (A100-80GB) + 8*0.0000131 (cpu) + 64*0.00000222 (mem) = $0.00094088/s
+      per reports/finetune/evidence/modal_pricing.txt and scripts/modal_finetune_dev.py:37-43
+
+--- kfold-d1 (failed, missing volume upload) ---
+WATCHDOG 00:49:50Z t+130s app=ap-ep30fYhThNMiMko0ODjvZo state=stopped tasks=0 client=exited 1 cost<=$0.12
+
+--- kfold-d2 (7/7 folds) ---
+WATCHDOG 01:03:44Z t+567s app=ap-sEX0G4RtQjN5JpZlk8EU3M state=stopped tasks=0 client=exited 0 cost<=$0.53
+
+--- kfold-final1 (all 150 clips) ---
+WATCHDOG 05:13:06Z t+92s app=ap-98Z6RK6qEdwf0bQ4IlFGmt state=stopped tasks=0 client=exited 0 cost<=$0.09
+
+--- Modal app list: actual container lifetimes ---
+[]
+exit: 0

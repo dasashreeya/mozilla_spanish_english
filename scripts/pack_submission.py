@@ -56,6 +56,20 @@ MODELS = {
                       "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"},
               "beam_size": 5, "cpu": {"compute_type": "int8", "threads": 8},
               "cuda": {"compute_type": "float16"}, "relative_cost": 1.0},
+    "ft-g7": {"kind": "faster-whisper", "local_dir": "artifacts/finetune/full-g7a/ct2",
+              "files_sha256": {
+                  "config.json":
+                      "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e",
+                  "model.bin":
+                      "e4e23736e61627d143ff2acbc541b1647a4d274feb8260f5108516b61ff828fc",
+                  "preprocessor_config.json":
+                      "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499",
+                  "tokenizer.json":
+                      "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b",
+                  "vocabulary.json":
+                      "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"},
+              "beam_size": 5, "cpu": {"compute_type": "int8", "threads": 8},
+              "cuda": {"compute_type": "float16"}, "relative_cost": 1.0},
 }
 # Round-2 prompt, fixed in docs/SELECTOR.md before any prompted run was scored.
 CODE_SWITCH_PROMPT = "Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay?"
@@ -93,6 +107,14 @@ VARIANTS = {
                                     "turbo": {"initial_prompt": CODE_SWITCH_PROMPT,
                                               "prompt_leak_ngram": 4},
                                     "q17": {"context": QWEN_CONTEXT, "max_new_tokens": 1024}}},
+    # G7 (docs/METHODS.md Round 7): M11b with the duration-matched G7 model as backbone.
+    "rover3-g7-breaks": {"backends": ["ft-g7", "turbo", "q17"], "selection": "rover-order",
+                         "postprocess": "sentence-breaks-keep-ellipsis",
+                         "overrides": {"ft-g7": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                                 "prompt_leak_ngram": 4},
+                                       "turbo": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                                 "prompt_leak_ngram": 4},
+                                       "q17": {"context": QWEN_CONTEXT, "max_new_tokens": 1024}}},
     "mbr-setA": {"backends": ["turbo", "q17", "q06", "large-v3"], "selection": "mbr"},
     "mbr-setB": {"backends": ["turbo", "q17", "q06"], "selection": "mbr"},
 }

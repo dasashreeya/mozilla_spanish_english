@@ -1,0 +1,69 @@
+{
+  "runs": [
+    "r3c-M9b",
+    "r3c-M11b",
+    "ft-s2-turbo-auto-int8-b5-prompt",
+    "ft-g7-turbo-auto-int8-b5-prompt"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "r3c-M11b minus r3c-M9b": {
+      "difference_b_minus_a": -0.0066,
+      "low": -0.0139,
+      "high": 0.0009,
+      "share_of_resamples_b_worse": 0.0345,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-s2-turbo-auto-int8-b5-prompt minus r3c-M9b": {
+      "difference_b_minus_a": 0.0052,
+      "low": 0.0028,
+      "high": 0.0077,
+      "share_of_resamples_b_worse": 1.0,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-g7-turbo-auto-int8-b5-prompt minus r3c-M9b": {
+      "difference_b_minus_a": 0.0022,
+      "low": -0.003,
+      "high": 0.0074,
+      "share_of_resamples_b_worse": 0.7785,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-s2-turbo-auto-int8-b5-prompt minus r3c-M11b": {
+      "difference_b_minus_a": 0.0118,
+      "low": 0.0037,
+      "high": 0.0198,
+      "share_of_resamples_b_worse": 0.998,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-g7-turbo-auto-int8-b5-prompt minus r3c-M11b": {
+      "difference_b_minus_a": 0.0088,
+      "low": -0.0008,
+      "high": 0.0182,
+      "share_of_resamples_b_worse": 0.964,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-g7-turbo-auto-int8-b5-prompt minus ft-s2-turbo-auto-int8-b5-prompt": {
+      "difference_b_minus_a": -0.003,
+      "low": -0.008,
+      "high": 0.0019,
+      "share_of_resamples_b_worse": 0.104,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.0833,
+    "clips_won": {
+      "r3c-M11b": 37,
+      "ft-g7-turbo-auto-int8-b5-prompt": 18,
+      "tie": 98,
+      "r3c-M9b": 2
+    }
+  }
+}

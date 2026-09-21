@@ -1,0 +1,163 @@
+{
+  "run": "kfold-d2-clip1-heldout",
+  "backend": "faster-whisper",
+  "generated_at": "2026-09-21T03:57:51+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "dataset": {
+    "split": "dev",
+    "rows": 31,
+    "limit": null
+  },
+  "model": {
+    "name": "ct2",
+    "local_dir": "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip1/ct2",
+    "files_sha256": {
+      "config.json": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e",
+      "model.bin": "c997200798ef0af67b0bcc54ec86400caec17f25c30c84dc6b38d3e65015de34",
+      "preprocessor_config.json": "654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499",
+      "tokenizer.json": "5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b",
+      "vocabulary.json": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+    }
+  },
+  "decoding": {
+    "language": "auto",
+    "task": "transcribe",
+    "beam_size": 5,
+    "compute_type": "int8",
+    "device": "cpu",
+    "cpu_threads": 8,
+    "initial_prompt_sha256": "c44393b079a8e80f96f323d97983005f0e913c95f1981c766cfa8c8be1a8321d",
+    "extra_transcribe_arguments": {},
+    "other_transcribe_arguments": "faster-whisper 1.2.1 defaults"
+  },
+  "software": {
+    "faster_whisper": "1.2.1",
+    "ctranslate2": "4.8.2",
+    "python": "3.12.13",
+    "machine": "arm64"
+  },
+  "timing": {
+    "audio_seconds": 434.71,
+    "model_load_seconds": 1.8,
+    "decode_seconds": 295.5,
+    "real_time_factor": 0.6798
+  },
+  "detected_language": {
+    "es": {
+      "clips": 16,
+      "mean_probability": 0.9249
+    },
+    "en": {
+      "clips": 15,
+      "mean_probability": 0.8941
+    }
+  },
+  "scores": {
+    "official": {
+      "clips": 31,
+      "reference_words": 1086,
+      "wer": 0.105,
+      "substitutions": 62,
+      "deletions": 32,
+      "insertions": 20,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.0841,
+        "high": 0.1233
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 29,
+          "reference_words": 1056,
+          "wer": 0.1061,
+          "substitutions": 62,
+          "deletions": 30,
+          "insertions": 20
+        },
+        "spa": {
+          "clips": 2,
+          "reference_words": 30,
+          "wer": 0.0667,
+          "substitutions": 0,
+          "deletions": 2,
+          "insertions": 0
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 18,
+          "reference_words": 745,
+          "wer": 0.1047,
+          "substitutions": 40,
+          "deletions": 23,
+          "insertions": 15
+        },
+        "speaker_2": {
+          "clips": 13,
+          "reference_words": 341,
+          "wer": 0.1056,
+          "substitutions": 22,
+          "deletions": 9,
+          "insertions": 5
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 17,
+          "reference_words": 597,
+          "wer": 0.0938,
+          "substitutions": 31,
+          "deletions": 15,
+          "insertions": 10
+        },
+        "20-30": {
+          "clips": 1,
+          "reference_words": 53,
+          "wer": 0.2075,
+          "substitutions": 5,
+          "deletions": 3,
+          "insertions": 3
+        },
+        "5-10": {
+          "clips": 8,
+          "reference_words": 140,
+          "wer": 0.0786,
+          "substitutions": 7,
+          "deletions": 4,
+          "insertions": 0
+        },
+        "<5": {
+          "clips": 3,
+          "reference_words": 33,
+          "wer": 0.1212,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 1
+        },
+        ">=30": {
+          "clips": 2,
+          "reference_words": 263,
+          "wer": 0.1217,
+          "substitutions": 16,
+          "deletions": 10,
+          "insertions": 6
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.0976,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.989,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.104972,
+    "matches_in_process_wer": true
+  }
+}
