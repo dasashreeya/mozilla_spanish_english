@@ -237,13 +237,17 @@ class QwenBackend:
         self.context = spec.get("context", "")
         # Per manifest language label: {"spa": {"language": "Spanish"}, ...}; others: None.
         self.by_language = dict(spec.get("by_language") or {})
+        # A flat language forces every clip, whatever its label. Running this model twice, once
+        # forced to Spanish and once to English, gives ROVER two voters that fail in different
+        # places on code-switched speech (docs/METHODS.md Round 8).
+        self.language = spec.get("language")
         self.model = Qwen3ASRModel.from_pretrained(
             str(SRC / spec["path"]), dtype=getattr(torch, settings["dtype"]),
             device_map="cuda:0" if device == "cuda" else "cpu",
             max_inference_batch_size=self.batch, max_new_tokens=spec["max_new_tokens"])
 
     def _language(self, label: str) -> str | None:
-        return self.by_language.get(label, {}).get("language") or None
+        return self.by_language.get(label, {}).get("language") or self.language or None
 
     def _one(self, path: Path, label: str = "") -> str:
         result = self.model.transcribe(audio=(decode_16k_mono(path), SAMPLE_RATE),

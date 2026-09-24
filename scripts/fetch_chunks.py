@@ -112,8 +112,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run")
     parser.add_argument("--fold", action="append", required=True)
-    parser.add_argument("--workers", type=int, default=2,
-                        help="pieces to download at once")
+    parser.add_argument("--workers", type=int, default=1,
+                        help="pieces to download at once. Leave at 1: two concurrent "
+                             "`modal volume get` calls truncated every piece on 2026-09-21")
     args = parser.parse_args(argv)
     for fold in args.fold:
         destination = ROOT / "artifacts" / "finetune" / args.run / fold / "ct2"

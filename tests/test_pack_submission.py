@@ -107,8 +107,9 @@ def test_real_variants_reference_known_models() -> None:
     import importlib
 
     real = importlib.reload(pack_submission)
-    for variant, spec in real.VARIANTS.items():
-        assert set(spec["backends"]) <= set(real.MODELS), variant
+    for variant in real.VARIANTS:
+        models = {model_id for _, model_id in real.backend_pairs(variant)}
+        assert models <= set(real.MODELS), variant
     assert real.VARIANTS["mbr-setA"]["backends"] == ["turbo", "q17", "q06", "large-v3"]
 
 
@@ -147,3 +148,35 @@ def test_round3_variants_carry_postprocess_and_backbone_order() -> None:
     assert rover["backends"][0] == "ft-s2" and rover["selection"] == "rover-order"
     assert rover["postprocess"] == real.VARIANTS["ft-s2-prompt-breaks"]["postprocess"]
     assert rover["overrides"]["q17"]["max_new_tokens"] == 1024
+
+
+def test_backend_pairs_resolves_strings_and_shared_models(monkeypatch) -> None:
+    monkeypatch.setitem(pack_submission.VARIANTS, "two-voices", {
+        "backends": ["turbo", {"id": "q17-es", "model": "q17"},
+                     {"id": "q17-en", "model": "q17"}],
+        "selection": "rover-order"})
+    assert pack_submission.backend_pairs("two-voices") == [
+        ("turbo", "turbo"), ("q17-es", "q17"), ("q17-en", "q17")]
+
+
+def test_backend_pairs_rejects_duplicate_backend_ids(monkeypatch) -> None:
+    monkeypatch.setitem(pack_submission.VARIANTS, "clash", {
+        "backends": [{"id": "q17-es", "model": "q17"}, {"id": "q17-es", "model": "q17"}],
+        "selection": "rover-order"})
+    with pytest.raises(pack_submission.PackError, match="duplicate backend ids"):
+        pack_submission.backend_pairs("clash")
+
+
+def test_shared_model_is_configured_twice_but_packed_once(monkeypatch) -> None:
+    monkeypatch.setitem(pack_submission.VARIANTS, "two-voices", {
+        "backends": ["turbo", {"id": "q17-es", "model": "q17"},
+                     {"id": "q17-en", "model": "q17"}],
+        "selection": "rover-order",
+        "overrides": {"q17-es": {"language": "Spanish"}, "q17-en": {"language": "English"}}})
+    config = pack_submission.build_config("two-voices")
+    ids = [b["id"] for b in config["backends"]]
+    paths = [b["path"] for b in config["backends"]]
+    assert ids == ["turbo", "q17-es", "q17-en"]
+    # both Qwen voters read the same weights, so the archive carries them once
+    assert paths[1] == paths[2] == "models/q17"
+    assert [b.get("language") for b in config["backends"]] == [None, "Spanish", "English"]

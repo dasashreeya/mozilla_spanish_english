@@ -115,6 +115,21 @@ VARIANTS = {
                                        "turbo": {"initial_prompt": CODE_SWITCH_PROMPT,
                                                  "prompt_leak_ngram": 4},
                                        "q17": {"context": QWEN_CONTEXT, "max_new_tokens": 1024}}},
+    # docs/METHODS.md Round 8: M11b's recipe, but Qwen votes twice - forced Spanish and forced
+    # English - instead of once on auto-detect. Same three models, same 7.4 GB.
+    "rover4-qeqn-breaks": {"backends": ["ft-g7", "turbo",
+                                        {"id": "q17-es", "model": "q17"},
+                                        {"id": "q17-en", "model": "q17"}],
+                           "selection": "rover-order",
+                           "postprocess": "sentence-breaks-keep-ellipsis",
+                           "overrides": {"ft-g7": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                                   "prompt_leak_ngram": 4},
+                                         "turbo": {"initial_prompt": CODE_SWITCH_PROMPT,
+                                                   "prompt_leak_ngram": 4},
+                                         "q17-es": {"language": "Spanish",
+                                                    "max_new_tokens": 1024},
+                                         "q17-en": {"language": "English",
+                                                    "max_new_tokens": 1024}}},
     "mbr-setA": {"backends": ["turbo", "q17", "q06", "large-v3"], "selection": "mbr"},
     "mbr-setB": {"backends": ["turbo", "q17", "q06"], "selection": "mbr"},
 }
@@ -232,14 +247,30 @@ def git_state() -> dict:
             "dirty_scope": PACKAGE_INPUTS}
 
 
+def backend_pairs(variant: str) -> list[tuple[str, str]]:
+    """(backend id, model id) per voter, in order.
+
+    A plain string is both. A {"id": ..., "model": ...} entry lets two voters share one model
+    file, which is how Qwen can vote twice - once forced to Spanish, once to English - without
+    the 4.4 GB weights being written into the archive twice.
+    """
+    pairs = []
+    for entry in VARIANTS[variant]["backends"]:
+        pairs.append((entry, entry) if isinstance(entry, str) else (entry["id"], entry["model"]))
+    seen = [b for b, _ in pairs]
+    if len(set(seen)) != len(seen):
+        raise PackError(f"{variant}: duplicate backend ids {seen}")
+    return pairs
+
+
 def build_config(variant: str) -> dict:
     spec = VARIANTS[variant]
     backends = []
-    for model_id in spec["backends"]:
+    for backend_id, model_id in backend_pairs(variant):
         model = {k: v for k, v in MODELS[model_id].items()
                  if k not in {"repo_id", "revision", "local_dir", "files_sha256"}}
-        overrides = spec.get("overrides", {}).get(model_id, {})
-        backends.append({"id": model_id, "path": f"models/{model_id}"} | model | overrides)
+        overrides = spec.get("overrides", {}).get(backend_id, {})
+        backends.append({"id": backend_id, "path": f"models/{model_id}"} | model | overrides)
     return {"variant": variant, "selection": spec["selection"],
             "postprocess": spec.get("postprocess", "none"), "budget": BUDGET,
             "backends": backends}
@@ -255,7 +286,9 @@ def pack(variant: str, allow_dirty: bool) -> dict:
         (ROOT / "submission_src" / name, name) for name in CODE_FILES]
     entries.append((json.dumps(config, indent=2).encode(), "config.json"))
     models = {}
-    for model_id in VARIANTS[variant]["backends"]:
+    for _, model_id in backend_pairs(variant):
+        if model_id in models:      # two voters sharing a model: write the weights once
+            continue
         files = model_files(model_id)
         spec = MODELS[model_id]
         models[model_id] = ({"local_dir": spec["local_dir"], "files_sha256": spec["files_sha256"]}

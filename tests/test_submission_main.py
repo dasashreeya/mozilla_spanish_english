@@ -282,6 +282,7 @@ def test_qwen_language_branches_are_passed_per_item(monkeypatch, tmp_path) -> No
     backend = main.QwenBackend.__new__(main.QwenBackend)
     backend.batch, backend.context, backend.model = 3, "Bilingual.", Model()
     backend.by_language = {"spa": {"language": "Spanish"}, "eng": {"language": "English"}}
+    backend.language = None   # no flat override; label lookup decides
     monkeypatch.setattr(main, "decode_16k_mono", lambda path: [0.0])
     clips = [tmp_path / f"c{i}.mp3" for i in range(3)]
     for clip in clips:
@@ -404,6 +405,7 @@ def test_qwen_backend_passes_context_per_clip(monkeypatch, tmp_path) -> None:
     backend = main.QwenBackend.__new__(main.QwenBackend)
     backend.batch, backend.context, backend.model = 2, "Bilingual.", Model()
     backend.by_language = {}
+    backend.language = None   # no flat override
     monkeypatch.setattr(main, "decode_16k_mono", lambda path: [0.0])
     clips = [tmp_path / f"c{i}.mp3" for i in range(3)]
     for clip in clips:
