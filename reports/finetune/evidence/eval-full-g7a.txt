@@ -1,0 +1,97 @@
+2026-09-21T18:12:39Z
+$ git rev-parse HEAD
+ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+head exit=0
+2026-09-21T18:12:40Z
+/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2 already exists; not downloading
+$ shasum -a 256 /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/config.json /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/model.bin /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/preprocessor_config.json /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/tokenizer.json /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/vocabulary.json
+b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e  /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/config.json
+e4e23736e61627d143ff2acbc541b1647a4d274feb8260f5108516b61ff828fc  /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/model.bin
+654cf18d3e163b948ceaf9766da56ce0b52de265d58673cf61c9376f126bd499  /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/preprocessor_config.json
+5c1bf30c9e716e1477bedef846b01be0013daecb89e9e3ef7ab89b23c178df1b  /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/tokenizer.json
+c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1  /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/full-g7a/ct2/vocabulary.json
+hashes exit=0
+2026-09-21T18:12:44Z
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/full-g7a/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --run-name ft-g7-turbo-auto-int8-b5-prompt
+ft-g7-turbo-auto-int8-b5-prompt: clips=155 WER=0.1077 [0.0964, 0.1191] cli=0.107729 parity=True RTF=0.6787
+decode exit=0
+2026-09-21T18:37:16Z
+$ uv run --no-sync python scripts/combine_runs.py ft-g7-turbo-auto-int8-b5-prompt --name ft-g7-turbo-auto-int8-b5-prompt-breaks --method sentence-breaks-keep-ellipsis --compare-to r3c-M9b --compare-to r3c-M11b --compare-to ft-s2-turbo-auto-int8-b5-prompt
+ft-g7-turbo-auto-int8-b5-prompt-breaks: WER=0.1023 [0.0911, 0.1136] cli=0.102323 parity=True | vs ft-g7-turbo-auto-int8-b5-prompt: -0.0054 [-0.0081, -0.0029] | selection={'clips_changed': 143}
+  ft-g7-turbo-auto-int8-b5-prompt-breaks minus r3c-M9b: -0.0032 [-0.0079, +0.0015]
+  ft-g7-turbo-auto-int8-b5-prompt-breaks minus r3c-M11b: +0.0034 [-0.0053, +0.0118]
+  ft-g7-turbo-auto-int8-b5-prompt-breaks minus ft-s2-turbo-auto-int8-b5-prompt: -0.0084 [-0.0139, -0.0029]
+sentence-breaks exit=0
+2026-09-21T18:37:22Z
+$ uv run --no-sync python scripts/compare_runs.py r3c-M9b r3c-M11b ft-s2-turbo-auto-int8-b5-prompt ft-g7-turbo-auto-int8-b5-prompt --output comparison-g7.json
+{
+  "runs": [
+    "r3c-M9b",
+    "r3c-M11b",
+    "ft-s2-turbo-auto-int8-b5-prompt",
+    "ft-g7-turbo-auto-int8-b5-prompt"
+  ],
+  "clips": 155,
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "pairs": {
+    "r3c-M11b minus r3c-M9b": {
+      "difference_b_minus_a": -0.0066,
+      "low": -0.0139,
+      "high": 0.0009,
+      "share_of_resamples_b_worse": 0.0345,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-s2-turbo-auto-int8-b5-prompt minus r3c-M9b": {
+      "difference_b_minus_a": 0.0052,
+      "low": 0.0028,
+      "high": 0.0077,
+      "share_of_resamples_b_worse": 1.0,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-g7-turbo-auto-int8-b5-prompt minus r3c-M9b": {
+      "difference_b_minus_a": 0.0022,
+      "low": -0.003,
+      "high": 0.0074,
+      "share_of_resamples_b_worse": 0.7785,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-s2-turbo-auto-int8-b5-prompt minus r3c-M11b": {
+      "difference_b_minus_a": 0.0118,
+      "low": 0.0037,
+      "high": 0.0198,
+      "share_of_resamples_b_worse": 0.998,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-g7-turbo-auto-int8-b5-prompt minus r3c-M11b": {
+      "difference_b_minus_a": 0.0088,
+      "low": -0.0008,
+      "high": 0.0182,
+      "share_of_resamples_b_worse": 0.964,
+      "level": 0.95,
+      "reps": 2000
+    },
+    "ft-g7-turbo-auto-int8-b5-prompt minus ft-s2-turbo-auto-int8-b5-prompt": {
+      "difference_b_minus_a": -0.003,
+      "low": -0.008,
+      "high": 0.0019,
+      "share_of_resamples_b_worse": 0.104,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "oracle_per_clip_selection": {
+    "oracle_wer": 0.0833,
+    "clips_won": {
+      "r3c-M11b": 37,
+      "ft-g7-turbo-auto-int8-b5-prompt": 18,
+      "tie": 98,
+      "r3c-M9b": 2
+    }
+  }
+}
+compare exit=0
+2026-09-21T18:37:22Z

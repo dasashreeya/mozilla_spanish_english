@@ -1,0 +1,8 @@
+# Round 10 verdict: switch-dense upsampling -- 2026-09-25T03:02:16Z
+
+== ft-g7sd-turbo-auto-int8-b5-prompt [none], paired bootstrap 2000 resamples seed 20260908, on the candidate's clips ==
+ft-g7-turbo-auto-int8-b5-prompt clips=155  ft-g7-turbo-auto-int8-b5-prompt=0.1077  candidate=0.1151  diff=+0.0074 [+0.0020, +0.0131]  includes zero
+
+rover-g7sd-qeqn: WER 0.0915 [0.0814, 0.1021]
+rover4-qeqn: WER 0.0885 [0.0788, 0.0989]
+rover-g7sd-qeqn minus rover4-qeqn: {"difference_b_minus_a": 0.003, "low": 0.0, "high": 0.0062, "share_of_resamples_b_worse": 0.9705, "level": 0.95, "reps": 2000}

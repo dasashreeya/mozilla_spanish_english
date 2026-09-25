@@ -1,0 +1,84 @@
+# Falsification of the output auditors in tests/test_modal_decode.py
+# 2026-09-24T15:35:44Z  (regenerated after the v5 review)
+# Samples are synthetic code strings, not competition data.
+
+History of this file, because the history is the point:
+  v1's test was a NAME BLACKLIST. A review mutation-tested it: 8 of 10 realistic leaks
+  passed. Replaced with an ALLOWLIST. Writing this file then exposed the rebinding hole
+  in (C). The v4 review found five channel gaps; the v5 review found that one of the four
+  I claimed closed -- functools.partial(print) -- was NOT closed, plus nine more. All of
+  them are now in (B) with a regression test, so a later edit cannot silently reopen one.
+  That is the whole reason this file exists: a closure with no test is a promise, not a
+  property.
+
+A) Leak shapes -- audit():
+  CAUGHT  a whole manifest row
+  CAUGHT  a clip path aliased to one letter
+  CAUGHT  a transcript under another name
+  CAUGHT  the entire row list
+  CAUGHT  the dataset path
+  CAUGHT  the output path
+  CAUGHT  output that is not a print
+  CAUGHT  a direct stderr write
+  CAUGHT  print reached through an attribute
+  CAUGHT  a clip path, the original defect
+  CAUGHT  an exception value rather than its type
+  CAUGHT  an exception aliased to e
+  CAUGHT  transcript text
+  CAUGHT  text off a segment object
+  CAUGHT  str() of a row
+  CAUGHT  clip paths through a comprehension
+  -> 16/16 caught
+
+B) Channel and laundering attacks -- audit() + audit_bindings():
+  CAUGHT  clip path through print's sep=
+  CAUGHT  transcript through print's end=
+  CAUGHT  writelines instead of write
+  CAUGHT  sys.__stdout__ instead of sys.stdout
+  CAUGHT  the buffer beneath sys.stdout
+  CAUGHT  a traceback printed wholesale
+  CAUGHT  a traceback formatted then printed
+  CAUGHT  print aliased by assignment
+  CAUGHT  print aliased by annotated assignment
+  CAUGHT  print aliased by tuple unpacking
+  CAUGHT  print aliased at import
+  CAUGHT  print wrapped in functools.partial
+  CAUGHT  partial(print) called inline
+  CAUGHT  print reached through getattr
+  CAUGHT  a safe key subscripted on an unsafe object
+  CAUGHT  an exception value laundered through an allowlisted name
+  CAUGHT  a file handle laundered through an allowlisted name
+  -> 17/17 caught
+
+C) Rebinding attacks -- audit_bindings():
+  CAUGHT  a clip path bound to the allowlisted `done`
+  CAUGHT  transcript text bound to the allowlisted `name`
+  CAUGHT  the row list bound to the allowlisted `seconds`
+  CAUGHT  loop binding an allowlisted name to rows
+  -> 4/4 caught
+
+D) Every output call in the module -- none may be flagged:
+  ok              print(f"SEGMENTS {len(rows)}", flush=True)
+  ok              print(f"FAILED {run_id}: {type(exc).__name__}", flush=True)
+  ok              print("VOTER " + json.dumps(entry), flush=True)
+  ok              print(f"PROGRESS {name} {done}/{len(rows)}", flush=True)
+  ok              print(f"GUARD {run_id}: summary.json exists; not decoding", flush=
+  ok              print(f"RESUME {name}: {have} already decoded; skipping", flush=Tr
+  ok              print(f"RESUME {name}: {have}/{len(rows)} incomplete; decoding aga
+  ok              print("REPORT " + json.dumps({"run": run_id, "segments": len(rows)
+  ok              print(json.dumps(result))
+  ok              sink.write(json.dumps({"id": row["id"], "text": text}) + "\n")
+  ok              marker.write(time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()) + 
+  -> 11/11 accepted
+  (Eleven, not six: an earlier version of this file listed only six and omitted RESUME x2,
+   REPORT, the local entrypoint's print, and the two .write calls. A test now asserts this
+   list matches the module's actual output-call count.)
+
+E) scripts/modal_decode.py as it stands:
+  audit()          : 0 findings
+  audit_bindings() : 0 findings
+
+F) What these auditors are NOT: they are shape- and name-based, not value-flow analysis.
+   They are bounded by the shapes enumerated above. Every gap a review has named is now
+   closed AND regression-tested, but that is not the same as a proof, and this file does
+   not claim one.

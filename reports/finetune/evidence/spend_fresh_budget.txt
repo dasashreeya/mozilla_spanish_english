@@ -1,0 +1,43 @@
+# Spend against the FRESH $35 budget (user, 2026-09-24)
+# One file, one ledger. The review found three files carrying three different positions
+# ($29.67 / $30.45 / "$35 fresh"), which is how a withdrawn number survives. This supersedes
+# every remaining-budget figure elsewhere; spend_reconciliation.txt is now the PRE-RESET record
+# only and its "remaining" line does not apply.
+#
+# rate = 0.000694 + 8*0.0000131 + 64*0.00000222 = $0.00094088/s   (modal_watchdog.py:52)
+# Every MEASURED figure is the final WATCHDOG line, read by scripts/spend_from_watchdog.py,
+# never typed. Every BOUND is deadline_seconds x rate, arithmetic shown.
+
+run              state      figure   basis
+ger1 (decode)    MEASURED   $5.40    watchdog t+5736s, state=stopped tasks=0, exited 0
+                                     93.2 min for 3 voters x 4715 segments, 0 empty
+                                     realised RTF 0.0295 vs 0.0367 projected
+g7sd (full)      MEASURED   $0.43    watchdog t+458s, stopped. GUARD fired: an earlier ATTEMPT
+                                     existed, so it trained NOTHING. Cost bought no result.
+                                     ----
+SPENT                       $5.83
+
+gertrain ger1    BOUND      $8.47    150-min deadline x rate (in flight)
+                                     Deadline raised from 60 min because docs/METHODS.md:789
+                                     estimates ~124 min for this stage; a 60-min deadline would
+                                     have produced a bill and no adapter.
+gerapply         BOUND      $1.69    30-min deadline x rate (not launched)
+                                     ----
+COMMITTED TOTAL             $15.99
+WORST CASE REMAINING        $19.01   35 - 15.99
+
+PROVIDER CEILINGS, per attempt, which no deadline can override:
+  gertrain  (180 + 10) min x rate = $10.73
+  gerapply   (90 + 10) min x rate = $5.65
+  decode    (240 + 10) min x rate = $14.11
+
+NOT VERIFIED:
+  - Actual Modal billing has never been read from this machine. Every figure is a watchdog
+    upper bound on container-seconds x rate, not an invoice.
+  - Image-build time is excluded and UNKNOWN. The gertrain image (torch + full CUDA stack) is
+    the largest built in this project; its build billed $0.00 of GPU time by the watchdog's
+    reckoning, which is the watchdog's reckoning and not an invoice.
+  - No total bound is claimable: a crash before the ATTEMPT marker can be retried by the
+    provider, and a stop that fails to confirm keeps billing. Three apps lingered past a
+    "confirmed stopped" reading on 2026-09-24, which is why modal_watchdog.py now requires two
+    stopped/0-task readings 15 s apart (CONFIRMATIONS_REQUIRED=2, RECHECK_SECONDS=15).

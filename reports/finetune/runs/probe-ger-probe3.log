@@ -1,0 +1,17 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-kprBGMOrODfQFNQNLYB3u9
+Building image im-FHWpw0FZBG5Yj6KTwfIOMO
+
+=> Step 0: FROM base
+
+=> Step 1: RUN python -c "import os, nvidia.cublas.lib as a, nvidia.cudnn.lib as b; print(os.path.dirname(a.__file__)); print(os.path.dirname(b.__file__))" > /etc/ld.so.conf.d/nvidia.conf
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<frozen posixpath>", line 181, in dirname
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+Terminating task due to error: failed to run builder command "python -c \"import os, nvidia.cublas.lib as a, nvidia.cudnn.lib as b; print(os.path.dirname(a.__file__)); print(os.path.dirname(b.__file__))\" > /etc/ld.so.conf.d/nvidia.conf": container exit status: 1
+Runner failed with exit code: -1
+╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Image build for im-FHWpw0FZBG5Yj6KTwfIOMO failed. See build logs for more    │
+│ details.                                                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯

@@ -693,3 +693,363 @@ resolve it. Rank fell because other teams improved faster.
 Mean **+0.0241**, spread 0.0038. The `rover3-breaks` identity was previously marked ASSUMED; the
 user's reporting the `MiaSanMia` row with "3 submissions" as their own result confirms it. **Dev is
 now a reliable predictor of public on this track, to within about ±0.002.**
+
+## Round 8 — one model, two forced languages: dev 0.0885 without a new model
+
+**The finding.** `r3c-g7-rover` votes between the fine-tuned turbo, zero-shot turbo, and Qwen 1.7B
+run once on auto-detect with a context string. Replacing that single Qwen pass with **two passes of
+the same model, one forced to Spanish and one forced to English**, gives dev **0.0885** against
+0.0965 — with the same three model files and the same 7.4 GB archive
+(`reports/baselines/rover4-qeqn.json`).
+
+| Comparison (matched clips, like-for-like post-processing) | difference | 95% interval |
+|---|---:|---|
+| vs `r3c-g7-rover` (public 0.1198) | -0.0080 | [-0.0140, -0.0024] seed 0 / [-0.0140, -0.0021] seed 20260908 |
+| vs `r3c-M11b` (public 0.1215) | -0.0104 | [-0.0174, -0.0036] |
+| speaker_1 / speaker_2 | -0.0070 / -0.0096 | [-0.0149, +0.0008] / [-0.0192, -0.0010] |
+
+Evidence: `reports/finetune/evidence/rover4-qeqn-comparisons.txt`. Forced Qwen is *worse* alone
+(0.1794 es, 0.2918 en) than auto+context (0.2097); a voter earns its place by decorrelation, not
+by its solo score.
+
+**Selection intensity (E3), stated plainly.** The set is the winner of a search over already-decoded
+systems against these same 155 dev clips: a greedy pass of 184 configurations, then a beam search of
+**12,878** (`reports/finetune/evidence/rover-voter-search.txt`). The measured -0.0080 is therefore an
+**upper bound**, inflated by an unknown amount. The best configuration the search found at all was
+0.0877 with six voters at 8.91 GB — 0.0008 better, inside noise, which says the top of the surface
+is flat and recombining existing decodes is exhausted. The four-voter set was taken instead because
+it is the smallest archive and adds no model the scored package lacks.
+
+**What did not work, so nobody repeats it:**
+
+- **A CTC voter.** `jonatasgrosman/wav2vec2-large-xlsr-53-spanish`, greedy, scores 0.5919 on dev
+  (`reports/baselines/ctc-xlsr-es.json`). Added to the four-voter set it makes the ensemble
+  **worse**: 0.0973, +0.0088 [+0.0046, +0.0131] (`reports/baselines/rover5-ctc.json`). Diversity has
+  a floor: a voter wrong on most tokens breaks ties badly, and CTC output carries no capitalisation,
+  which the official normalizer scores mid-sentence.
+- **Knowledge distillation.** Not applicable here. Big-to-small buys speed, and the package uses
+  ~400 s of a 7,200 s budget. Ensemble-to-single loses accuracy by construction. Pseudo-labelling
+  needs unlabelled in-domain audio; Bangor already has gold labels and dev is the G8 trap.
+- **New corpora.** The 2026-09-19 survey in revision.md §4.0 found no Spanish-English code-switched
+  speech corpus on Hugging Face beyond a Bangor mirror. That still holds.
+
+## Round 9 — GER, pre-registered 2026-09-24 before any GPU run
+
+**Target.** Public WER **below 0.10** (user, 2026-09-24). At the two calibrations that needs dev
+**0.0809** (ratio) or **0.0759** (additive). The best system on hand is `rover4-qeqn` at dev 0.0885,
+and recombining existing decodes is exhausted (Round 8: 12,878 configurations, best found 0.0877).
+GER is the only method in revision.md sized to the remaining -0.008 to -0.013.
+
+**Method** (revision.md §5.4, arXiv 2310.13013). LoRA-tune a language model to map several ASR
+hypotheses for a clip to its reference. Published: -24.5% relative on an ensemble for
+Mandarin-English code-switching; data-efficient, 1k pairs already gave -8.2%, 5k gave -15.5%.
+
+**Training pairs.** Bangor G7 (`/bangor_g7` on the volume, 4,715 segments, 17.58 h) carries gold
+references. Decode it with three fine-tuned/zero-shot faster-whisper voters — `ft-g7`, `ft-s2`,
+`turbo` — giving 4,715 pairs of (3 hypotheses -> reference). That is inside the paper's productive
+range and below the 5k where it measured -15.5%.
+
+*Corrected 2026-09-24:* this paragraph originally said all three were "already used in the shipped
+package". **Two of the three are.** `rover4-qeqn` -- the best system on hand, which has **no public
+score**; it was packaged but never submitted -- votes with `ft-g7`, `turbo` and two
+forced-language Qwen passes (`reports/baselines/rover4-qeqn.json`,
+`candidates_in_tie_break_order`); `ft-s2` appears only here, and neither Qwen pass is decoded for
+GER. `turbo` counts because `faster_whisper.utils._MODELS["large-v3-turbo"]` resolves to
+`mobiuslabsgmbh/faster-whisper-large-v3-turbo`, the same repo the packager pins. So the corrector
+trains on a hypothesis distribution that overlaps `rover4-qeqn`'s but is not the same — recorded as
+a reason a dev gain may not carry, not waved away.
+
+**Corrector, and the licence.** Bangor Miami is GPL-3.0 with a clause barring training "an AI large
+language model" unless all of its training data is public (`docs/DATA_AUDIT.md` finding 7). The
+pairs are Bangor-derived, so the corrector must be one whose own training data is public:
+`allenai/OLMo-2-*` or `HuggingFaceTB/SmolLM3-3B` (revision.md §5.4 mitigation 3). This is chosen
+over asking the organisers because it removes the question rather than waiting on an answer.
+
+**Guard rails, fixed now.** GER's failure mode is fluent invention. Three, all measured on dev
+before anything ships: reject the corrector's output and keep the ROVER output when their
+normalised word edit distance exceeds a threshold; reject when the output/input length ratio falls
+outside a band; decode greedily with a capped `max_new_tokens`. The rate at which each fires is
+reported; a high reject rate means the adapter is undertrained, not that the guard is working.
+
+**Threshold VALUES, registered 2026-09-25T01:40Z — before `gerapply` has run even once.** The
+paragraph above registered only the *shapes*; a review pointed out that a later claim cited it as
+having registered the numbers, which it had not. The numbers are therefore recorded here now, while
+no corrector output exists yet, so they cannot be chosen to flatter a result:
+
+| guard | value | why this value |
+|---|---|---|
+| normalised word edit distance vs ROVER | **> 0.50 → keep ROVER** | half the ROVER words changed is a rewrite, not a correction |
+| output/ROVER length ratio | **outside [0.50, 1.80] → keep ROVER** | dev hypothesis/reference word ratio is 0.98 (`rover4-qeqn-breaks-local-validation.json`), so a correction at half or nearly double the length is not a correction |
+| decoding | **greedy, `max_new_tokens = 200`** | dev reference median is 38 words; 200 tokens is ~3x the longest plausible output and stops a runaway |
+
+They are defaults in `scripts/modal_ger_apply.py` (`max_edit=0.5`, `min_ratio=0.5`,
+`max_ratio=1.8`, `max_new_tokens=200`). **If any of them is changed after seeing a dev result, that
+is threshold tuning on dev and the result is selection, not measurement — it must be reported as a
+new pre-registration with the old one quoted.**
+
+**Pass rule, fixed now.** Against `rover4-qeqn` (dev 0.0885), paired bootstrap over the same 155
+dev clips, 2,000 resamples: the 95% interval of (GER - rover4-qeqn) entirely below zero, **and**
+the same direction on both dev speakers. Reported with the selection-intensity disclosure Round 8
+established. A pass does not authorise a submission by itself; the user decides.
+
+**Cost, stated before launch.** *Corrected 2026-09-24 after a pre-gpu review; the original text
+is kept below so the change is visible.*
+
+Decode: 3 faster-whisper passes over 17.58 h on one A100. The GPU real-time factor is **UNKNOWN** —
+no GPU decode has ever run in this project — so no honest point estimate exists and the **smoke run
+is what measures it**. The operative figures are bounds, not estimates: the watchdog deadline the
+launch actually passes, and the provider ceiling of `(240 + 10) min x $0.00094088/s` = **$14.11**
+per attempt. LoRA: 4,715 pairs on a 3B model, **~$7**, also unmeasured, also bounded by its own
+watchdog deadline. No total bound is claimable (retries before the ATTEMPT marker are unbounded).
+Budget position (updated after the 2026-09-24 GER attempts): artifact-backed spend is **$3.92**, at least **$4.55** counting the one run with no
+watchdog artifact at its DERIVED lower bound, of the $35 cap — see
+`reports/finetune/evidence/spend_reconciliation.txt`. So **at most $30.45 remains** (35 - 4.55), and the
+**~$7 LoRA step below comes out of that same allowance**, not out of a separate budget.
+
+> **Withdrawn original:** "DERIVED from the S2 throughput already measured (14.4 samples/s at
+> training; decode is cheaper), expected 20-30 min per pass, so ~1.5 h and **~$5**". Two faults:
+> training throughput is not a decode RTF (different operation), so this was not DERIVED from
+> anything; and it conflicted with the ~$9 in the decode claim written the same day. Withdrawn
+> rather than adjusted, because the input it rested on does not exist.
+
+**What would make this fail, written down now.** The corrector invents fluent text that the guards
+do not catch; 4,715 pairs prove too few; or the gain appears on dev and not on a held-out speaker,
+as G8's did. The speaker check in the pass rule exists for the last one.
+
+## Round 10 — the training mix is half monolingual: switch density measured, 2026-09-24
+
+**The gap, now measured rather than asserted.** `revision.md` §4.0 listed "Bangor bilingual
+utterances, upsampled 3-5x" as a P0 training set — "the only *real* high-switch-density speech;
+attacks the 7.18x switch gap" — and it had never been trained on, partly because nothing recorded
+*which* segments switch. `segment_languages.json` stores only a majority label per segment, which
+is blind to alternation: a segment that is 90% English with six switches and one that is 100%
+English both come out `en`.
+
+The CHAT converter carries a per-word language tag, so alternations are recoverable.
+`scripts/switch_density.py` rebuilds the G7 segmentation (same config and seed, ids verified
+against the existing manifest) and counts them. MEASURED, over all 4,715 G7 segments:
+
+| alternations per segment | segments |
+|---|---:|
+| 0 | **2,532 (54%)** |
+| 1-2 | 1,165 |
+| 3-5 | 680 |
+| 6+ | 338 |
+
+- at least one switch: **2,183 segments, 9.40 h** of 17.58 h
+- three or more: 1,018 segments, 5.14 h
+
+**So 54% of the backbone's training segments contain no code-switch at all**, while the dev set is
+code-switched throughout. `reports/bangor_switch_density.json`.
+
+**The intervention.** `scripts/build_switch_dense.py` upsamples switch-bearing segments by
+repeating manifest rows. It re-cuts no audio — the G7 FLACs are unchanged and already on the
+volume — so the change is free, reversible, and leaves every audio hash intact. At `--repeat 4
+--min-switches 1`: 11,264 rows, 45.79 h, and the switch-bearing share of training hours rises
+**0.535 -> 0.822** (`reports/bangor_segments_g7sd_summary.json`).
+
+**What this is not.** Upsampling by repetition is not new data; it reweights what exists, and it
+can overfit the repeated segments. The gain, if any, must be measured the same way every other
+change on this track is: a paired interval against the build it would replace, on the same 155
+dev clips, **and** the same direction on both dev speakers. G8 is the precedent for why the
+speaker check is not optional.
+
+**Expected size, stated before training.** Small. G7 — a whole new backbone — moved the *ensemble*
+by only -0.0024, because ROVER absorbs most of a single model's gain. A reweighting of the same
+audio should be expected to do less than a new corpus, not more. This is a stacking candidate, not
+a standalone route to <0.10.
+
+## Correction to the Round 9 rationale, 2026-09-25
+
+A review contradicted a sentence I had used to justify GER: *"every method measured on this track
+has moved dev by ≤0.003."* **That is false**, and it was load-bearing — it was the argument that
+only GER could close the remaining gap. The record:
+
+| comparison | dev move | source |
+|---|---:|---|
+| `ft-s2-prompt` → `rover3-breaks` (shipped) | **−0.0118** | `platform_results.json` `dev_wer_same_build` |
+| `rover3-breaks` → `rover3-g7-breaks` (shipped) | −0.0024 | same |
+| `r3c-g7-rover` → `rover4-qeqn` | **−0.0080** | `rover4-qeqn.json` `comparisons`, [−0.0140, −0.0024] |
+| best single system → `rover4-qeqn` | **−0.0192** | `rover4-qeqn.json` `versus_incumbent` |
+
+So a further **−0.0076** — what public <0.10 needs under the ratio calibration — is **not
+unprecedented on this track**. Two recorded moves exceed it. The honest argument for GER is
+narrower than the one I made:
+
+1. every one of those moves came from a **genuinely new component** — a new backbone, a new
+   voter, or Qwen voting twice — not from recombining what already existed;
+2. recombination of the existing decodes **is** exhausted: 12,878 configurations, best anywhere
+   0.0877, only 0.0008 below the shipped 0.0885 and at 8.91 GB
+   (`reports/finetune/evidence/rover-voter-search.txt`);
+3. GER is the largest *untried* component, and the switch-dense backbone (Round 10) is the
+   second. Neither is the only option, and stacking them is a live path.
+
+Also corrected: the same claim said "53 systems scored on all 155 clips". A scan of
+`reports/baselines/*.json` for `dataset.rows == 155` with a WER gives **52**. No artifact ever
+said 53.
+
+## Round 9 licence exposure: the base model in flight is the weaker of the two, 2026-09-25
+
+A review flagged that I asserted "SmolLM3-3B and OLMo-2 publish their corpora" with no artifact
+behind it. Checking the repo's own note, the two are **not** equivalent — `revision.md:437`:
+
+> `allenai/OLMo-2-*` (**fully open corpus**), `HuggingFaceTB/SmolLM3-3B` (**open recipe**,
+> multilingual incl. Spanish)
+
+The Bangor GPL-3.0 clause permits training "an AI large language model" only if **all its
+training data is public** (`docs/FINETUNE_PLAN.md:12-14`). *Fully open corpus* satisfies that on
+its face. *Open recipe* does not obviously satisfy it — a published recipe is not a published
+corpus — and **SmolLM3 is the default in `scripts/modal_ger_train.py` and is the base of the run
+now training (`gertrain ger1`)**. I picked the weaker of the two and then described both as
+satisfying the clause.
+
+**What this does and does not invalidate.** The run in flight is a *measurement* of whether GER
+helps this task at all, and that measurement is worth having on either base. What it cannot do is
+ship: an archive whose corrector was tuned on Bangor references with an "open recipe" base rests
+on a licence reading the repo itself does not support.
+
+**So the rule for this round:** SmolLM3 answers "does GER help?"; anything that reaches a
+submission must be retrained on `allenai/OLMo-2-*`, the base the repo calls fully open, and the
+dev number re-measured on that base rather than carried over. `docs/DATA_AUDIT.md:275` still
+lists asking the organisers as the open question, and `revision.md:434-436` lists two mitigations
+ahead of the open-data-base one — *ask the organisers*, and *build the pairs from dev plus
+spliced-synthetic instead of Bangor* — **neither of which was tried, and neither of which I
+mentioned when I chose mitigation 3.**
+
+## Round 9 verdict: GER FAILS, decisively and on both speakers — 2026-09-25
+
+**Result.**
+
+| | WER |
+|---|---:|
+| `ger1-corrected` | **0.1123** (`official_cli` 0.112335, parity True) |
+| `rover4-qeqn` | 0.0885 |
+
+Paired over the same 155 dev clips, 2,000 resamples:
+
+| split | GER − incumbent |
+|---|---|
+| all (155) | **+0.0238** [+0.0146, +0.0334], `share_of_resamples_b_worse` **1.0** |
+| speaker_1 (78) | +0.0186 [+0.0077, +0.0297] |
+| speaker_2 (77) | +0.0318 [+0.0158, +0.0481] |
+
+**FAIL on both parts of the pre-registered rule.** The interval is entirely *above* zero, not
+below it, and it is above zero on each speaker independently. The corrector did not fail to help;
+it actively harmed, by roughly a quarter of the WER.
+
+**It got a fair test, which is what makes this informative.** The failure modes that would have
+made the result uninterpretable did not occur:
+
+- accept rate **0.9161** — 142 of 155 corrections passed the guards, 13 rejected on edit distance,
+  0 on length ratio, 0 empty. A low accept rate would have meant an undertrained adapter; this is
+  the opposite. The model confidently rewrote 142 transcripts and the rewrites were worse.
+- training was healthy: loss 0.7803 → 0.5499 over 2.0 epochs, `samples_seen` 9,433 ≈ 4,715 × 2.
+- the guard-rail values were registered **before** any output existed, so they were not chosen to
+  flatter or to rescue the number.
+
+**Not retuned.** Tightening `max_edit` until the WER improves would be threshold selection on dev.
+The thresholds stand as registered and the result stands as measured.
+
+**Most likely causes, all disclosed before the run:** the corrector trained on 3 hypotheses
+(`ft-g7`, `ft-s2`, `turbo`) and was applied to 4 sharing only two; it trained on Bangor references
+and was applied to dev, a different domain and different speakers; its pairs are GPU float16 while
+dev hypotheses are CPU int8; and 4,715 pairs sits at the bottom of the paper's 5k–15k range.
+
+**Consequence for the target.** GER was the only remaining method with published headroom large
+enough to reach dev 0.0809 on its own. That path is now closed by measurement rather than by
+assumption. Cost of establishing it: **$6.69** — decode $5.40, LoRA $0.86, apply. The shippability
+and licence questions raised earlier (archive size above the proven 7.4 GB, the 1-minute smoke
+limit, SmolLM3 being "open recipe" rather than "fully open corpus") are now moot for GER.
+
+## Round 10 verdict: switch-dense upsampling FAILS — 2026-09-25
+
+Upsampling the switch-bearing Bangor segments 4x (53.5% -> 82.2% of training hours, 11,264 rows,
+`scripts/build_switch_dense.py`) produced a backbone that is **worse on every measure**.
+
+| | WER | paired vs the build it would replace |
+|---|---:|---|
+| `ft-g7sd` (switch-dense) alone | **0.1151** [0.1023, 0.1272] | **+0.0074** [+0.0020, +0.0131] vs `ft-g7` 0.1077 |
+| `rover-g7sd-qeqn` (as ROVER backbone) | **0.0915** [0.0814, 0.1021] | **+0.0030** [+0.0000, +0.0062] vs `rover4-qeqn` 0.0885 |
+
+Both intervals lie at or above zero. Decoded CPU/int8, beam 5, language auto, with the same
+code-switch prompt (SHA `c44393b0…`, verified identical to `ft-g7`'s) — like-for-like on every
+axis except the training mix, which was the point.
+
+**The low training loss was the warning, not the promise.** `train_loss 0.3289` against `g7a`'s
+`0.5286` looked like a better fit and was recorded at the time as "not evidence — the switch-dense
+set repeats 2,183 segments four times, so lower training loss is what you would expect from seeing
+the same data more often, and can equally mean memorisation." That is what it was.
+
+**What this does not overturn.** The measurement behind Round 10 stands: 54% of the G7 segments
+carry no code-switch while dev is code-switched throughout
+(`reports/bangor_switch_density.json`). The gap is real. **Repetition is simply the wrong way to
+close it** — it adds no new acoustic variation, only more passes over the same 2,183 segments.
+What the finding argues for is *new* switch-dense audio, or synthesis, not reweighting.
+
+**Cost:** $1.89 (train $1.75 + convert $0.14), plus a local CPU decode. The model is preserved at
+`artifacts/finetune/full-g7sd2/ct2` and on the volume at `/runs/full-g7sd2/`.
+
+## Round 11 — prompt register, pre-registered 2026-09-25 before any decode
+
+**Why.** The largest single effect measured on this track is the initial prompt, not fine-tuning:
+
+| | dev WER | delta |
+|---|---:|---|
+| `large-v3-turbo-auto-int8-b5` (no prompt) | 0.2233 | — |
+| `large-v3-turbo-auto-int8-b5-prompt` | 0.1396 | **−0.0837** from the prompt |
+| `ft-g7-turbo-auto-int8-b5-prompt` | 0.1077 | −0.0319 from fine-tuning on top |
+
+The prompt is worth **2.6×** the entire fine-tune and costs nothing to vary. The current one is
+12 words of clean, scripted-sounding dialogue — *"Hola, ¿cómo estás? I'm good, gracias. Vamos a la
+tienda later, okay?"* — while dev is spontaneous Miami conversation with disfluencies and
+intra-sentential switching. That is a register mismatch, and Whisper's `initial_prompt`
+conditions style as much as vocabulary.
+
+**What is being tested.** Prompt variants decoded on the full 155 dev clips with `ft-g7`, CPU
+int8, beam 5, language auto — every setting identical to `ft-g7-turbo-auto-int8-b5-prompt` so the
+prompt is the only difference. Variants, fixed now:
+
+- **P1 `register`** — spontaneous, disfluent, intra-sentential: *"Yeah, o sea, I was telling her
+  que no podía ir, you know, porque tenía que trabajar. And she's like, pero why? Y yo le dije,
+  mira, it's complicated, ¿sabes?"*
+
+**Pass rule.** Paired bootstrap over the same 155 clips against `ft-g7-turbo-auto-int8-b5-prompt`,
+95% interval entirely below zero, and the same direction on both dev speakers.
+
+**Selection disclosure, stated before the result.** `docs/METHODS.md:31` already records that
+"dev chose the prompt", so the incumbent prompt is itself a dev-selected artefact and this search
+compounds that. The 2026-09-25 submission measured how much such selection transfers: **52%**
+(dev −0.0080 → public −0.0042). **Any dev gain here should be halved before it is believed**, and
+every variant tried will be reported, not just the best.
+
+## Round 11 verdict: the incumbent prompt holds — 2026-09-25
+
+Two variants tested against `ft-g7-turbo-auto-int8-b5-prompt` (0.1077), everything else
+identical — CPU int8, beam 5, language auto, same model — so the prompt was the only difference.
+**Both reported, as pre-registered, not only the better one.**
+
+| prompt | dev WER | paired vs incumbent |
+|---|---:|---|
+| incumbent, 12 words, clean | **0.1077** | — |
+| **P1** register-matched (disfluent, spontaneous) | 0.1091 | +0.0014 [−0.0019, +0.0045] — indistinguishable |
+| **P2** high switch density (~1 switch per 4 words) | 0.1113 | +0.0036 [+0.0004, +0.0069] — **worse** |
+
+**FAIL on the pre-registered rule.** Neither interval lies below zero; P2's lies above it.
+
+**What this says about where the prompt's value comes from.** The prompt is worth −0.0837 on this
+task (0.2233 → 0.1396 zero-shot), which is 2.6× the entire fine-tune. But that value comes from
+*signalling that the audio is code-switched Spanish-English at all* — not from matching register,
+and not from matching switch density. Once the signal is present, refining it does nothing
+measurable, and pushing switch density past the natural rate actively hurts. A twelve-word clean
+example is apparently sufficient signal.
+
+**Why this was worth testing anyway.** It was the largest lever on the track by effect size and
+the cheapest to vary — two local CPU decodes, no GPU, no budget. Ruling it out costs almost
+nothing; leaving it untested would have left the biggest measured effect unexamined.
+
+**Stopped deliberately after two.** `docs/METHODS.md:31` already records that "dev chose the
+prompt", so this search compounds an existing dev selection. The 2026-09-25 submission measured
+that such selection returns **52%** publicly (dev −0.0080 → public −0.0042). Continuing to try
+prompts until one beat 0.1077 would have manufactured exactly that kind of gain, and with two
+submissions left it is not worth spending one on an artefact.
+

@@ -1,0 +1,11 @@
+# Round 9 GER verdict -- 2026-09-25T02:07:48Z
+
+REPORT {"run": "ger1", "adapter": "ger1", "base": "HuggingFaceTB/SmolLM3-3B", "clips": 155, "seconds": 293.4, "guards": {"edit": 13, "ratio": 0, "empty": 0, "accepted": 142}, "accept_rate": 0.9161, "thresholds": {"max_edit": 0.5, "min_ratio": 0.5, "max_ratio": 1.8, "max_new_tokens": 200}}
+
+speaker_1 (78 clips): ger1-corrected 0.1218 | rover4-qeqn 0.1032
+speaker_2 (77 clips): ger1-corrected 0.0980 | rover4-qeqn 0.0662
+
+ger1-corrected minus rover4-qeqn, all: +0.0238 [+0.0146, +0.0334]
+ger1-corrected minus rover4-qeqn, speaker_1: +0.0186 [+0.0077, +0.0297]
+ger1-corrected minus rover4-qeqn, speaker_2: +0.0318 [+0.0158, +0.0481]
+

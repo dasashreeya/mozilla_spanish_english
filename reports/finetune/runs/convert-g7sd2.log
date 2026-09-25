@@ -1,0 +1,14 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-tsd5llywUDS8dVps8455vN
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_f
+│   inetune.py
+├── 🔨 Created mount PythonPackage:lit_sp_en
+├── 🔨 Created function trial.
+├── 🔨 Created function full.
+└── 🔨 Created function convert.
+REPORT {"run": "full-g7sd2", "converted": true, "ct2_dir": "/vol/runs/full-g7sd2/ct2"}
+[modal-client] 2026-09-24T22:40:37-0400 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/dasashreeya/main/ap-tsd5llywUDS8dVps8455vN

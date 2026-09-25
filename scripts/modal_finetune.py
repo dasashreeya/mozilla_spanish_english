@@ -92,7 +92,50 @@ def trial(run_id: str, dataset: str = "bangor", expected_items: int = EXPECTED_I
 
 
 # S2: the full 2-epoch run, only after S1's throughput projects it under the cap.
+@app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=30 * 60,
+              startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
+def convert(run_id: str, stage: str = "full") -> dict:
+    """Convert an already-trained run's `final/` to CTranslate2, without retraining.
+
+    `full-g7sd2` trained for 1,691 s, saved `final/`, and was then PREEMPTED mid-conversion
+    ("Container terminated due to preemption"). Modal restarted it and the ATTEMPT guard
+    correctly refused to train again -- but that left the weights on the volume with no `ct2/`
+    and no report, and the only other recovery was a 28-minute retrain under a new run id.
+    A preemption after training should not cost the training.
+    """
+    import json
+    from pathlib import Path
+
+    from lit_sp_en.finetune import convert_to_ctranslate2
+
+    out = Path(VOLUME) / "runs" / f"{stage}-{run_id}"
+    volume.reload()
+    final = out / "final"
+    if not final.is_dir():
+        raise ValueError("no final/ to convert")
+    if (out / "ct2").is_dir():
+        print(f"GUARD {out.name}: ct2/ exists; not converting", flush=True)
+        return {"guard": "refused", "run": out.name}
+    try:
+        convert_to_ctranslate2(str(final), str(out / "ct2"), "float16")
+    except Exception as exc:
+        print(f"FAILED {out.name}: {type(exc).__name__}", flush=True)
+        raise RuntimeError(f"convert failed: {type(exc).__name__}") from None
+    report = {"run": out.name, "converted": True, "ct2_dir": str(out / "ct2")}
+    (out / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    volume.commit()
+    print("REPORT " + json.dumps(report), flush=True)
+    return report
+
+
 @app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=75 * 60,
               startup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
-def full(run_id: str, dataset: str = "bangor", expected_items: int = EXPECTED_ITEMS) -> dict:
-    return _run("full", run_id, dataset=dataset, epochs=2.0, expected_items=expected_items)
+def full(run_id: str, dataset: str = "bangor", expected_items: int = EXPECTED_ITEMS,
+         upsample_ids_file: str = "", upsample_factor: int = 1) -> dict:
+    # `upsample_*` implements docs/METHODS.md Round 10: repeat the switch-bearing segments,
+    # because 54% of the G7 rows carry no code-switch while dev is code-switched throughout.
+    # `expected_items` counts rows AFTER upsampling, so it must be raised in step or left at 0.
+    return _run("full", run_id, dataset=dataset, epochs=2.0, expected_items=expected_items,
+                upsample_ids_file=(f"{VOLUME}/{DATASETS[dataset]}/{upsample_ids_file}"
+                                   if upsample_ids_file else ""),
+                upsample_factor=upsample_factor)

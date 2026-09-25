@@ -3,6 +3,9 @@ from pathlib import Path
 
 from lit_sp_en.finetune import FinetuneConfig, load_items
 from scripts.segment_languages import majority_language
+from collections import Counter
+from dataclasses import replace
+import pytest
 
 
 def _write_dataset(tmp_path: Path) -> FinetuneConfig:
@@ -212,3 +215,35 @@ def test_samples_seen_does_not_overcount_short_accumulation_groups() -> None:
     partial = make_callback(0.0, 32, 7200)
     partial.steps, partial.started = 280, None
     assert partial.summary()["samples_seen"] == 8960
+
+
+def test_upsample_repeats_only_the_listed_ids(tmp_path: Path) -> None:
+    """Round 10: 54% of the G7 segments carry no code-switch while dev is code-switched
+    throughout, so the switch-bearing rows are repeated."""
+    cfg = _write_dataset(tmp_path)
+    ids = tmp_path / "dense.json"
+    ids.write_text(json.dumps(["r_0005"]))
+    cfg = replace(cfg, upsample_ids_file=str(ids), upsample_factor=3)
+    items = load_items(cfg)
+    counts = Counter(i["id"] for i in items)
+    assert counts == {"r_0000": 1, "r_0005": 3}, counts
+
+
+def test_upsample_is_inert_without_a_factor(tmp_path: Path) -> None:
+    cfg = _write_dataset(tmp_path)
+    ids = tmp_path / "dense.json"
+    ids.write_text(json.dumps(["r_0005"]))
+    base = [i["id"] for i in load_items(cfg)]
+    for factor in (0, 1):
+        got = [i["id"] for i in load_items(replace(cfg, upsample_ids_file=str(ids),
+                                                   upsample_factor=factor))]
+        assert got == base, (factor, got)
+
+
+def test_upsample_refuses_an_id_list_that_matches_nothing(tmp_path: Path) -> None:
+    """A typo in the id file would otherwise train the ordinary mix and report success."""
+    cfg = _write_dataset(tmp_path)
+    ids = tmp_path / "dense.json"
+    ids.write_text(json.dumps(["not_a_real_id"]))
+    with pytest.raises(ValueError, match="matches no usable row"):
+        load_items(replace(cfg, upsample_ids_file=str(ids), upsample_factor=3))

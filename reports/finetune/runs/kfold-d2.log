@@ -1,0 +1,886 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-sEX0G4RtQjN5JpZlk8EU3M
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_f
+│   inetune_dev.py
+├── 🔨 Created mount PythonPackage:lit_sp_en
+└── 🔨 Created function kfold.
+Detected kernel version 4.19.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+
+[1A  0%|          | 0/90 [00:00<?, ?it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A  1%|          | 1/90 [00:02<04:23,  2.96s/it]
+[1A  2%|▏         | 2/90 [00:03<02:00,  1.37s/it]
+[1A  3%|▎         | 3/90 [00:03<01:17,  1.12it/s]
+[1A  4%|▍         | 4/90 [00:03<00:58,  1.48it/s]
+[1A  6%|▌         | 5/90 [00:04<00:47,  1.81it/s]
+[1A                                              
+{'loss': 0.602, 'grad_norm': 26.95525360107422, 'learning_rate': 1.6e-06, 'epoch': 0.17}
+[1A
+[1A  6%|▌         | 5/90 [00:04<00:47,  1.81it/s]
+[1A  7%|▋         | 6/90 [00:04<00:40,  2.08it/s]
+[1A  8%|▊         | 7/90 [00:04<00:35,  2.31it/s]
+[1A  9%|▉         | 8/90 [00:05<00:32,  2.49it/s]
+[1A 10%|█         | 9/90 [00:05<00:30,  2.62it/s]
+[1A 11%|█         | 10/90 [00:05<00:29,  2.73it/s]
+[1A                                               
+{'loss': 0.4152, 'grad_norm': 17.482208251953125, 'learning_rate': 1.9058823529411762e-06, 'epoch': 0.33}
+[1A
+[1A 11%|█         | 10/90 [00:05<00:29,  2.73it/s]
+[1A 12%|█▏        | 11/90 [00:06<00:28,  2.80it/s]
+[1A 13%|█▎        | 12/90 [00:06<00:27,  2.85it/s]
+[1A 14%|█▍        | 13/90 [00:06<00:26,  2.87it/s]
+[1A 16%|█▌        | 14/90 [00:07<00:26,  2.90it/s]
+[1A 17%|█▋        | 15/90 [00:07<00:25,  2.92it/s]
+[1A                                               
+{'loss': 0.4889, 'grad_norm': 14.58928394317627, 'learning_rate': 1.7882352941176472e-06, 'epoch': 0.5}
+[1A
+[1A 17%|█▋        | 15/90 [00:07<00:25,  2.92it/s]
+[1A 18%|█▊        | 16/90 [00:07<00:25,  2.93it/s]
+[1A 19%|█▉        | 17/90 [00:08<00:24,  2.95it/s]
+[1A 20%|██        | 18/90 [00:08<00:24,  2.96it/s]
+[1A 21%|██        | 19/90 [00:08<00:23,  2.97it/s]
+[1A 22%|██▏       | 20/90 [00:09<00:23,  2.97it/s]
+[1A                                               
+{'loss': 0.4549, 'grad_norm': 17.527748107910156, 'learning_rate': 1.6705882352941177e-06, 'epoch': 0.67}
+[1A
+[1A 22%|██▏       | 20/90 [00:09<00:23,  2.97it/s]
+[1A 23%|██▎       | 21/90 [00:09<00:23,  2.96it/s]
+[1A 24%|██▍       | 22/90 [00:10<00:25,  2.68it/s]
+[1A 26%|██▌       | 23/90 [00:10<00:24,  2.76it/s]
+[1A 27%|██▋       | 24/90 [00:10<00:23,  2.82it/s]
+[1A 28%|██▊       | 25/90 [00:11<00:22,  2.86it/s]
+[1A                                               
+{'loss': 0.4599, 'grad_norm': 12.630949974060059, 'learning_rate': 1.5529411764705883e-06, 'epoch': 0.83}
+[1A
+[1A 28%|██▊       | 25/90 [00:11<00:22,  2.86it/s]
+[1A 29%|██▉       | 26/90 [00:11<00:22,  2.90it/s]
+[1A 30%|███       | 27/90 [00:11<00:21,  2.91it/s]
+[1A 31%|███       | 28/90 [00:12<00:21,  2.93it/s]
+[1A 32%|███▏      | 29/90 [00:12<00:20,  2.94it/s]
+[1A 33%|███▎      | 30/90 [00:12<00:20,  2.91it/s]
+[1A                                               
+{'loss': 0.4163, 'grad_norm': 14.774848937988281, 'learning_rate': 1.4352941176470588e-06, 'epoch': 1.0}
+[1A
+[1A 33%|███▎      | 30/90 [00:12<00:20,  2.91it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 34%|███▍      | 31/90 [00:13<00:31,  1.90it/s]
+[1A 36%|███▌      | 32/90 [00:14<00:26,  2.15it/s]
+[1A 37%|███▋      | 33/90 [00:14<00:24,  2.34it/s]
+[1A 38%|███▊      | 34/90 [00:14<00:22,  2.50it/s]
+[1A 39%|███▉      | 35/90 [00:15<00:20,  2.63it/s]
+[1A                                               
+{'loss': 0.3918, 'grad_norm': 11.783193588256836, 'learning_rate': 1.3176470588235294e-06, 'epoch': 1.17}
+[1A
+[1A 39%|███▉      | 35/90 [00:15<00:20,  2.63it/s]
+[1A 40%|████      | 36/90 [00:15<00:19,  2.72it/s]
+[1A 41%|████      | 37/90 [00:15<00:19,  2.78it/s]
+[1A 42%|████▏     | 38/90 [00:16<00:18,  2.83it/s]
+[1A 43%|████▎     | 39/90 [00:16<00:17,  2.87it/s]
+[1A 44%|████▍     | 40/90 [00:16<00:17,  2.89it/s]
+[1A                                               
+{'loss': 0.305, 'grad_norm': 11.140296936035156, 'learning_rate': 1.2e-06, 'epoch': 1.33}
+[1A
+[1A 44%|████▍     | 40/90 [00:16<00:17,  2.89it/s]
+[1A 46%|████▌     | 41/90 [00:17<00:16,  2.90it/s]
+[1A 47%|████▋     | 42/90 [00:17<00:16,  2.92it/s]
+[1A 48%|████▊     | 43/90 [00:17<00:16,  2.94it/s]
+[1A 49%|████▉     | 44/90 [00:18<00:17,  2.67it/s]
+[1A 50%|█████     | 45/90 [00:18<00:16,  2.76it/s]
+[1A                                               
+{'loss': 0.2047, 'grad_norm': 10.159802436828613, 'learning_rate': 1.0823529411764705e-06, 'epoch': 1.5}
+[1A
+[1A 50%|█████     | 45/90 [00:18<00:16,  2.76it/s]
+[1A 51%|█████     | 46/90 [00:18<00:15,  2.81it/s]
+[1A 52%|█████▏    | 47/90 [00:19<00:15,  2.85it/s]
+[1A 53%|█████▎    | 48/90 [00:19<00:14,  2.88it/s]
+[1A 54%|█████▍    | 49/90 [00:19<00:14,  2.91it/s]
+[1A 56%|█████▌    | 50/90 [00:20<00:13,  2.92it/s]
+[1A                                               
+{'loss': 0.2061, 'grad_norm': 14.728619575500488, 'learning_rate': 9.64705882352941e-07, 'epoch': 1.67}
+[1A
+[1A 56%|█████▌    | 50/90 [00:20<00:13,  2.92it/s]
+[1A 57%|█████▋    | 51/90 [00:20<00:13,  2.93it/s]
+[1A 58%|█████▊    | 52/90 [00:20<00:12,  2.94it/s]
+[1A 59%|█████▉    | 53/90 [00:21<00:12,  2.94it/s]
+[1A 60%|██████    | 54/90 [00:21<00:12,  2.95it/s]
+[1A 61%|██████    | 55/90 [00:21<00:11,  2.96it/s]
+[1A                                               
+{'loss': 0.338, 'grad_norm': 12.779487609863281, 'learning_rate': 8.470588235294117e-07, 'epoch': 1.83}
+[1A
+[1A 61%|██████    | 55/90 [00:22<00:11,  2.96it/s]
+[1A 62%|██████▏   | 56/90 [00:22<00:11,  2.96it/s]
+[1A 63%|██████▎   | 57/90 [00:22<00:11,  2.96it/s]
+[1A 64%|██████▍   | 58/90 [00:22<00:10,  2.96it/s]
+[1A 66%|██████▌   | 59/90 [00:23<00:10,  2.96it/s]
+[1A 67%|██████▋   | 60/90 [00:23<00:10,  2.91it/s]
+[1A                                               
+{'loss': 0.2591, 'grad_norm': 6.755857467651367, 'learning_rate': 7.294117647058823e-07, 'epoch': 2.0}
+[1A
+[1A 67%|██████▋   | 60/90 [00:23<00:10,  2.91it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 68%|██████▊   | 61/90 [00:24<00:14,  2.04it/s]
+[1A 69%|██████▉   | 62/90 [00:24<00:12,  2.27it/s]
+[1A 70%|███████   | 63/90 [00:25<00:11,  2.44it/s]
+[1A 71%|███████   | 64/90 [00:25<00:11,  2.35it/s]
+[1A 72%|███████▏  | 65/90 [00:25<00:09,  2.50it/s]
+[1A                                               
+{'loss': 0.2517, 'grad_norm': 7.292494773864746, 'learning_rate': 6.117647058823529e-07, 'epoch': 2.17}
+[1A
+[1A 72%|███████▏  | 65/90 [00:26<00:09,  2.50it/s]
+[1A 73%|███████▎  | 66/90 [00:26<00:09,  2.62it/s]
+[1A 74%|███████▍  | 67/90 [00:26<00:08,  2.70it/s]
+[1A 76%|███████▌  | 68/90 [00:26<00:07,  2.77it/s]
+[1A 77%|███████▋  | 69/90 [00:27<00:07,  2.83it/s]
+[1A 78%|███████▊  | 70/90 [00:27<00:06,  2.86it/s]
+[1A                                               
+{'loss': 0.164, 'grad_norm': 8.358263969421387, 'learning_rate': 4.941176470588235e-07, 'epoch': 2.33}
+[1A
+[1A 78%|███████▊  | 70/90 [00:27<00:06,  2.86it/s]
+[1A 79%|███████▉  | 71/90 [00:27<00:06,  2.89it/s]
+[1A 80%|████████  | 72/90 [00:28<00:06,  2.91it/s]
+[1A 81%|████████  | 73/90 [00:28<00:05,  2.92it/s]
+[1A 82%|████████▏ | 74/90 [00:29<00:05,  2.92it/s]
+[1A 83%|████████▎ | 75/90 [00:29<00:05,  2.93it/s]
+[1A                                               
+{'loss': 0.2071, 'grad_norm': 8.362038612365723, 'learning_rate': 3.764705882352941e-07, 'epoch': 2.5}
+[1A
+[1A 83%|████████▎ | 75/90 [00:29<00:05,  2.93it/s]
+[1A 84%|████████▍ | 76/90 [00:29<00:04,  2.93it/s]
+[1A 86%|████████▌ | 77/90 [00:30<00:04,  2.93it/s]
+[1A 87%|████████▋ | 78/90 [00:30<00:04,  2.94it/s]
+[1A 88%|████████▊ | 79/90 [00:30<00:03,  2.94it/s]
+[1A 89%|████████▉ | 80/90 [00:31<00:03,  2.95it/s]
+[1A                                               
+{'loss': 0.153, 'grad_norm': 6.733346939086914, 'learning_rate': 2.588235294117647e-07, 'epoch': 2.67}
+[1A
+[1A 89%|████████▉ | 80/90 [00:31<00:03,  2.95it/s]
+[1A 90%|█████████ | 81/90 [00:31<00:03,  2.94it/s]
+[1A 91%|█████████ | 82/90 [00:31<00:02,  2.95it/s]
+[1A 92%|█████████▏| 83/90 [00:32<00:02,  2.95it/s]
+[1A 93%|█████████▎| 84/90 [00:32<00:02,  2.95it/s]
+[1A 94%|█████████▍| 85/90 [00:32<00:01,  2.68it/s]
+[1A                                               
+{'loss': 0.238, 'grad_norm': 5.524824142456055, 'learning_rate': 1.411764705882353e-07, 'epoch': 2.83}
+[1A
+[1A 94%|█████████▍| 85/90 [00:32<00:01,  2.68it/s]
+[1A 96%|█████████▌| 86/90 [00:33<00:01,  2.75it/s]
+[1A 97%|█████████▋| 87/90 [00:33<00:01,  2.81it/s]
+[1A 98%|█████████▊| 88/90 [00:33<00:00,  2.85it/s]
+[1A 99%|█████████▉| 89/90 [00:34<00:00,  2.88it/s]
+[1A100%|██████████| 90/90 [00:34<00:00,  2.84it/s]
+[1A                                               
+{'loss': 0.2179, 'grad_norm': 5.308748245239258, 'learning_rate': 2.352941176470588e-08, 'epoch': 3.0}
+[1A
+[1A100%|██████████| 90/90 [00:34<00:00,  2.84it/s]
+[1A                                               
+{'train_runtime': 34.6581, 'train_samples_per_second': 10.387, 'train_steps_per_second': 2.597, 'train_loss': 0.32075167298316953, 'epoch': 3.0}
+[1A
+[1A100%|██████████| 90/90 [00:34<00:00,  2.84it/s]
+[1A100%|██████████| 90/90 [00:34<00:00,  2.60it/s]
+FOLD {"fold": "clip0", "train_items": 120, "eval_items": 31, "training_loss": 0.3208, "optimizer_steps": 90, "train_seconds": 38.8, "language_counts": {"en": 72, "es": 48}, "peak_gpu_memory_gib": 12.7, "loss_first_last": [[[5, 0.602]], [[90, 0.2179]]]}
+Detected kernel version 4.19.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+
+[1A  0%|          | 0/93 [00:00<?, ?it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A  1%|          | 1/93 [00:01<01:58,  1.29s/it]
+[1A  2%|▏         | 2/93 [00:01<01:02,  1.47it/s]
+[1A  3%|▎         | 3/93 [00:01<00:47,  1.91it/s]
+[1A  4%|▍         | 4/93 [00:02<00:40,  2.22it/s]
+[1A  5%|▌         | 5/93 [00:02<00:36,  2.44it/s]
+[1A                                              
+{'loss': 0.5131, 'grad_norm': 27.80352783203125, 'learning_rate': 1.6e-06, 'epoch': 0.16}
+[1A
+[1A  5%|▌         | 5/93 [00:02<00:36,  2.44it/s]
+[1A  6%|▋         | 6/93 [00:02<00:33,  2.58it/s]
+[1A  8%|▊         | 7/93 [00:03<00:31,  2.70it/s]
+[1A  9%|▊         | 8/93 [00:03<00:30,  2.77it/s]
+[1A 10%|▉         | 9/93 [00:03<00:29,  2.83it/s]
+[1A 11%|█         | 10/93 [00:04<00:29,  2.86it/s]
+[1A                                               
+{'loss': 0.4791, 'grad_norm': 15.705686569213867, 'learning_rate': 1.909090909090909e-06, 'epoch': 0.32}
+[1A
+[1A 11%|█         | 10/93 [00:04<00:29,  2.86it/s]
+[1A 12%|█▏        | 11/93 [00:04<00:28,  2.87it/s]
+[1A 13%|█▎        | 12/93 [00:04<00:27,  2.90it/s]
+[1A 14%|█▍        | 13/93 [00:05<00:27,  2.91it/s]
+[1A 15%|█▌        | 14/93 [00:05<00:27,  2.92it/s]
+[1A 16%|█▌        | 15/93 [00:05<00:26,  2.93it/s]
+[1A                                               
+{'loss': 0.4755, 'grad_norm': 13.580174446105957, 'learning_rate': 1.7954545454545454e-06, 'epoch': 0.48}
+[1A
+[1A 16%|█▌        | 15/93 [00:06<00:26,  2.93it/s]
+[1A 17%|█▋        | 16/93 [00:06<00:26,  2.93it/s]
+[1A 18%|█▊        | 17/93 [00:06<00:25,  2.93it/s]
+[1A 19%|█▉        | 18/93 [00:06<00:25,  2.93it/s]
+[1A 20%|██        | 19/93 [00:07<00:25,  2.94it/s]
+[1A 22%|██▏       | 20/93 [00:07<00:27,  2.61it/s]
+[1A                                               
+{'loss': 0.4368, 'grad_norm': 13.800890922546387, 'learning_rate': 1.6818181818181819e-06, 'epoch': 0.65}
+[1A
+[1A 22%|██▏       | 20/93 [00:07<00:27,  2.61it/s]
+[1A 23%|██▎       | 21/93 [00:08<00:26,  2.71it/s]
+[1A 24%|██▎       | 22/93 [00:08<00:25,  2.77it/s]
+[1A 25%|██▍       | 23/93 [00:08<00:24,  2.83it/s]
+[1A 26%|██▌       | 24/93 [00:09<00:24,  2.86it/s]
+[1A 27%|██▋       | 25/93 [00:09<00:23,  2.88it/s]
+[1A                                               
+{'loss': 0.2948, 'grad_norm': 13.557796478271484, 'learning_rate': 1.5681818181818181e-06, 'epoch': 0.81}
+[1A
+[1A 27%|██▋       | 25/93 [00:09<00:23,  2.88it/s]
+[1A 28%|██▊       | 26/93 [00:09<00:23,  2.90it/s]
+[1A 29%|██▉       | 27/93 [00:10<00:22,  2.90it/s]
+[1A 30%|███       | 28/93 [00:10<00:22,  2.92it/s]
+[1A 31%|███       | 29/93 [00:10<00:21,  2.92it/s]
+[1A 32%|███▏      | 30/93 [00:11<00:21,  2.92it/s]
+[1A                                               
+{'loss': 0.446, 'grad_norm': 10.184640884399414, 'learning_rate': 1.4545454545454544e-06, 'epoch': 0.97}
+[1A
+[1A 32%|███▏      | 30/93 [00:11<00:21,  2.92it/s]
+[1A 33%|███▎      | 31/93 [00:11<00:20,  3.05it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 34%|███▍      | 32/93 [00:12<00:27,  2.19it/s]
+[1A 35%|███▌      | 33/93 [00:12<00:25,  2.39it/s]
+[1A 37%|███▋      | 34/93 [00:12<00:23,  2.53it/s]
+[1A 38%|███▊      | 35/93 [00:13<00:21,  2.64it/s]
+[1A                                               
+{'loss': 0.3067, 'grad_norm': 11.797504425048828, 'learning_rate': 1.3409090909090907e-06, 'epoch': 1.13}
+[1A
+[1A 38%|███▊      | 35/93 [00:13<00:21,  2.64it/s]
+[1A 39%|███▊      | 36/93 [00:13<00:20,  2.72it/s]
+[1A 40%|███▉      | 37/93 [00:13<00:20,  2.78it/s]
+[1A 41%|████      | 38/93 [00:14<00:19,  2.83it/s]
+[1A 42%|████▏     | 39/93 [00:14<00:18,  2.86it/s]
+[1A 43%|████▎     | 40/93 [00:14<00:18,  2.88it/s]
+[1A                                               
+{'loss': 0.2091, 'grad_norm': 8.533668518066406, 'learning_rate': 1.2272727272727272e-06, 'epoch': 1.29}
+[1A
+[1A 43%|████▎     | 40/93 [00:15<00:18,  2.88it/s]
+[1A 44%|████▍     | 41/93 [00:15<00:19,  2.61it/s]
+[1A 45%|████▌     | 42/93 [00:15<00:18,  2.70it/s]
+[1A 46%|████▌     | 43/93 [00:16<00:18,  2.77it/s]
+[1A 47%|████▋     | 44/93 [00:16<00:17,  2.81it/s]
+[1A 48%|████▊     | 45/93 [00:16<00:16,  2.84it/s]
+[1A                                               
+{'loss': 0.2888, 'grad_norm': 12.41968822479248, 'learning_rate': 1.1136363636363635e-06, 'epoch': 1.45}
+[1A
+[1A 48%|████▊     | 45/93 [00:16<00:16,  2.84it/s]
+[1A 49%|████▉     | 46/93 [00:17<00:16,  2.87it/s]
+[1A 51%|█████     | 47/93 [00:17<00:15,  2.89it/s]
+[1A 52%|█████▏    | 48/93 [00:17<00:15,  2.89it/s]
+[1A 53%|█████▎    | 49/93 [00:18<00:15,  2.90it/s]
+[1A 54%|█████▍    | 50/93 [00:18<00:14,  2.92it/s]
+[1A                                               
+{'loss': 0.2232, 'grad_norm': 13.20677375793457, 'learning_rate': 1e-06, 'epoch': 1.61}
+[1A
+[1A 54%|█████▍    | 50/93 [00:18<00:14,  2.92it/s]
+[1A 55%|█████▍    | 51/93 [00:18<00:14,  2.92it/s]
+[1A 56%|█████▌    | 52/93 [00:19<00:14,  2.92it/s]
+[1A 57%|█████▋    | 53/93 [00:19<00:13,  2.91it/s]
+[1A 58%|█████▊    | 54/93 [00:19<00:13,  2.93it/s]
+[1A 59%|█████▉    | 55/93 [00:20<00:12,  2.93it/s]
+[1A                                               
+{'loss': 0.2564, 'grad_norm': 11.77989387512207, 'learning_rate': 8.863636363636363e-07, 'epoch': 1.77}
+[1A
+[1A 59%|█████▉    | 55/93 [00:20<00:12,  2.93it/s]
+[1A 60%|██████    | 56/93 [00:20<00:12,  2.92it/s]
+[1A 61%|██████▏   | 57/93 [00:20<00:12,  2.93it/s]
+[1A 62%|██████▏   | 58/93 [00:21<00:11,  2.92it/s]
+[1A 63%|██████▎   | 59/93 [00:21<00:11,  2.92it/s]
+[1A 65%|██████▍   | 60/93 [00:21<00:11,  2.92it/s]
+[1A                                               
+{'loss': 0.2812, 'grad_norm': 10.452706336975098, 'learning_rate': 7.727272727272727e-07, 'epoch': 1.94}
+[1A
+[1A 65%|██████▍   | 60/93 [00:22<00:11,  2.92it/s]
+[1A 66%|██████▌   | 61/93 [00:22<00:10,  2.92it/s]
+[1A 67%|██████▋   | 62/93 [00:22<00:09,  3.14it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 68%|██████▊   | 63/93 [00:23<00:14,  2.04it/s]
+[1A 69%|██████▉   | 64/93 [00:23<00:12,  2.26it/s]
+[1A 70%|██████▉   | 65/93 [00:24<00:11,  2.42it/s]
+[1A                                               
+{'loss': 0.1747, 'grad_norm': 7.12063455581665, 'learning_rate': 6.59090909090909e-07, 'epoch': 2.1}
+[1A
+[1A 70%|██████▉   | 65/93 [00:24<00:11,  2.42it/s]
+[1A 71%|███████   | 66/93 [00:24<00:10,  2.55it/s]
+[1A 72%|███████▏  | 67/93 [00:24<00:09,  2.66it/s]
+[1A 73%|███████▎  | 68/93 [00:25<00:09,  2.73it/s]
+[1A 74%|███████▍  | 69/93 [00:25<00:08,  2.78it/s]
+[1A 75%|███████▌  | 70/93 [00:25<00:08,  2.82it/s]
+[1A                                               
+{'loss': 0.2506, 'grad_norm': 6.275221347808838, 'learning_rate': 5.454545454545454e-07, 'epoch': 2.26}
+[1A
+[1A 75%|███████▌  | 70/93 [00:25<00:08,  2.82it/s]
+[1A 76%|███████▋  | 71/93 [00:26<00:07,  2.85it/s]
+[1A 77%|███████▋  | 72/93 [00:26<00:07,  2.87it/s]
+[1A 78%|███████▊  | 73/93 [00:26<00:06,  2.89it/s]
+[1A 80%|███████▉  | 74/93 [00:27<00:06,  2.90it/s]
+{'loss': 0.2141, 'grad_norm': 14.787130355834961, 'learning_rate': 4.318181818181818e-07, 'epoch': 2.42}
+[1A 81%|████████  | 75/93 [00:27<00:06,  2.90it/s]                                               
+[1A
+[1A 81%|████████  | 75/93 [00:27<00:06,  2.90it/s]
+[1A 82%|████████▏ | 76/93 [00:27<00:05,  2.91it/s]
+[1A 83%|████████▎ | 77/93 [00:28<00:05,  2.91it/s]
+[1A 84%|████████▍ | 78/93 [00:28<00:05,  2.92it/s]
+[1A 85%|████████▍ | 79/93 [00:28<00:04,  2.92it/s]
+[1A 86%|████████▌ | 80/93 [00:29<00:04,  2.91it/s]
+[1A                                               
+{'loss': 0.1992, 'grad_norm': 10.317917823791504, 'learning_rate': 3.1818181818181815e-07, 'epoch': 2.58}
+[1A
+[1A 86%|████████▌ | 80/93 [00:29<00:04,  2.91it/s]
+[1A 87%|████████▋ | 81/93 [00:29<00:04,  2.92it/s]
+[1A 88%|████████▊ | 82/93 [00:29<00:03,  2.91it/s]
+[1A 89%|████████▉ | 83/93 [00:30<00:03,  2.91it/s]
+[1A 90%|█████████ | 84/93 [00:30<00:03,  2.68it/s]
+[1A 91%|█████████▏| 85/93 [00:31<00:02,  2.75it/s]
+[1A                                               
+{'loss': 0.1946, 'grad_norm': 9.09715747833252, 'learning_rate': 2.0454545454545456e-07, 'epoch': 2.74}
+[1A
+[1A 91%|█████████▏| 85/93 [00:31<00:02,  2.75it/s]
+[1A 92%|█████████▏| 86/93 [00:31<00:02,  2.79it/s]
+[1A 94%|█████████▎| 87/93 [00:31<00:02,  2.83it/s]
+[1A 95%|█████████▍| 88/93 [00:32<00:01,  2.85it/s]
+[1A 96%|█████████▌| 89/93 [00:32<00:01,  2.88it/s]
+[1A 97%|█████████▋| 90/93 [00:32<00:01,  2.88it/s]
+[1A                                               
+{'loss': 0.1836, 'grad_norm': 13.577858924865723, 'learning_rate': 9.09090909090909e-08, 'epoch': 2.9}
+[1A
+[1A 97%|█████████▋| 90/93 [00:32<00:01,  2.88it/s]
+[1A 98%|█████████▊| 91/93 [00:33<00:00,  2.89it/s]
+[1A 99%|█████████▉| 92/93 [00:33<00:00,  2.91it/s]
+[1A100%|██████████| 93/93 [00:33<00:00,  3.10it/s]
+[1A                                               
+{'train_runtime': 33.7387, 'train_samples_per_second': 10.759, 'train_steps_per_second': 2.756, 'train_loss': 0.29694558760171297, 'epoch': 3.0}
+[1A
+[1A100%|██████████| 93/93 [00:33<00:00,  3.10it/s]
+[1A100%|██████████| 93/93 [00:33<00:00,  2.76it/s]
+FOLD {"fold": "clip1", "train_items": 121, "eval_items": 31, "training_loss": 0.2969, "optimizer_steps": 93, "train_seconds": 37.5, "language_counts": {"en": 73, "es": 48}, "peak_gpu_memory_gib": 12.71, "loss_first_last": [[[5, 0.5131]], [[90, 0.1836]]]}
+Detected kernel version 4.19.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+
+[1A  0%|          | 0/90 [00:00<?, ?it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A  1%|          | 1/90 [00:00<01:17,  1.15it/s]
+[1A  2%|▏         | 2/90 [00:01<00:44,  1.96it/s]
+[1A  3%|▎         | 3/90 [00:01<00:37,  2.31it/s]
+[1A  4%|▍         | 4/90 [00:01<00:33,  2.53it/s]
+[1A  6%|▌         | 5/90 [00:02<00:31,  2.66it/s]
+[1A                                              
+{'loss': 0.6143, 'grad_norm': 13.25841236114502, 'learning_rate': 1.6e-06, 'epoch': 0.17}
+[1A
+[1A  6%|▌         | 5/90 [00:02<00:31,  2.66it/s]
+[1A  7%|▋         | 6/90 [00:02<00:30,  2.75it/s]
+[1A  8%|▊         | 7/90 [00:02<00:29,  2.81it/s]
+[1A  9%|▉         | 8/90 [00:03<00:28,  2.84it/s]
+[1A 10%|█         | 9/90 [00:03<00:28,  2.88it/s]
+[1A 11%|█         | 10/90 [00:03<00:27,  2.90it/s]
+[1A                                               
+{'loss': 0.5073, 'grad_norm': 11.153796195983887, 'learning_rate': 1.9058823529411762e-06, 'epoch': 0.33}
+[1A
+[1A 11%|█         | 10/90 [00:03<00:27,  2.90it/s]
+[1A 12%|█▏        | 11/90 [00:04<00:27,  2.91it/s]
+[1A 13%|█▎        | 12/90 [00:04<00:26,  2.92it/s]
+[1A 14%|█▍        | 13/90 [00:04<00:26,  2.92it/s]
+[1A 16%|█▌        | 14/90 [00:05<00:25,  2.93it/s]
+[1A 17%|█▋        | 15/90 [00:05<00:25,  2.92it/s]
+[1A                                               
+{'loss': 0.3848, 'grad_norm': 14.459071159362793, 'learning_rate': 1.7882352941176472e-06, 'epoch': 0.5}
+[1A
+[1A 17%|█▋        | 15/90 [00:05<00:25,  2.92it/s]
+[1A 18%|█▊        | 16/90 [00:05<00:25,  2.93it/s]
+[1A 19%|█▉        | 17/90 [00:06<00:24,  2.93it/s]
+[1A 20%|██        | 18/90 [00:06<00:24,  2.94it/s]
+[1A 21%|██        | 19/90 [00:06<00:24,  2.94it/s]
+[1A 22%|██▏       | 20/90 [00:07<00:26,  2.64it/s]
+[1A                                               
+{'loss': 0.4215, 'grad_norm': 13.31483268737793, 'learning_rate': 1.6705882352941177e-06, 'epoch': 0.67}
+[1A
+[1A 22%|██▏       | 20/90 [00:07<00:26,  2.64it/s]
+[1A 23%|██▎       | 21/90 [00:07<00:25,  2.72it/s]
+[1A 24%|██▍       | 22/90 [00:08<00:24,  2.79it/s]
+[1A 26%|██▌       | 23/90 [00:08<00:23,  2.82it/s]
+[1A 27%|██▋       | 24/90 [00:08<00:23,  2.85it/s]
+[1A 28%|██▊       | 25/90 [00:09<00:22,  2.88it/s]
+[1A                                               
+{'loss': 0.3521, 'grad_norm': 11.22865104675293, 'learning_rate': 1.5529411764705883e-06, 'epoch': 0.83}
+[1A
+[1A 28%|██▊       | 25/90 [00:09<00:22,  2.88it/s]
+[1A 29%|██▉       | 26/90 [00:09<00:22,  2.90it/s]
+[1A 30%|███       | 27/90 [00:09<00:21,  2.91it/s]
+[1A 31%|███       | 28/90 [00:10<00:21,  2.91it/s]
+[1A 32%|███▏      | 29/90 [00:10<00:20,  2.92it/s]
+[1A 33%|███▎      | 30/90 [00:10<00:19,  3.01it/s]
+[1A                                               
+{'loss': 0.3796, 'grad_norm': 17.388822555541992, 'learning_rate': 1.4352941176470588e-06, 'epoch': 1.0}
+[1A
+[1A 33%|███▎      | 30/90 [00:10<00:19,  3.01it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 34%|███▍      | 31/90 [00:11<00:28,  2.08it/s]
+[1A 36%|███▌      | 32/90 [00:11<00:25,  2.29it/s]
+[1A 37%|███▋      | 33/90 [00:12<00:23,  2.45it/s]
+[1A 38%|███▊      | 34/90 [00:12<00:21,  2.58it/s]
+[1A 39%|███▉      | 35/90 [00:12<00:20,  2.67it/s]
+[1A                                               
+{'loss': 0.3201, 'grad_norm': 12.578239440917969, 'learning_rate': 1.3176470588235294e-06, 'epoch': 1.17}
+[1A
+[1A 39%|███▉      | 35/90 [00:13<00:20,  2.67it/s]
+[1A 40%|████      | 36/90 [00:13<00:19,  2.75it/s]
+[1A 41%|████      | 37/90 [00:13<00:18,  2.79it/s]
+[1A 42%|████▏     | 38/90 [00:13<00:18,  2.84it/s]
+[1A 43%|████▎     | 39/90 [00:14<00:17,  2.86it/s]
+[1A 44%|████▍     | 40/90 [00:14<00:17,  2.87it/s]
+[1A                                               
+{'loss': 0.3191, 'grad_norm': 12.71880054473877, 'learning_rate': 1.2e-06, 'epoch': 1.33}
+[1A
+[1A 44%|████▍     | 40/90 [00:14<00:17,  2.87it/s]
+[1A 46%|████▌     | 41/90 [00:14<00:16,  2.89it/s]
+[1A 47%|████▋     | 42/90 [00:15<00:18,  2.65it/s]
+[1A 48%|████▊     | 43/90 [00:15<00:17,  2.73it/s]
+[1A 49%|████▉     | 44/90 [00:16<00:16,  2.79it/s]
+[1A 50%|█████     | 45/90 [00:16<00:15,  2.82it/s]
+[1A                                               
+{'loss': 0.2464, 'grad_norm': 5.757359504699707, 'learning_rate': 1.0823529411764705e-06, 'epoch': 1.5}
+[1A
+[1A 50%|█████     | 45/90 [00:16<00:15,  2.82it/s]
+[1A 51%|█████     | 46/90 [00:16<00:15,  2.86it/s]
+[1A 52%|█████▏    | 47/90 [00:17<00:14,  2.87it/s]
+[1A 53%|█████▎    | 48/90 [00:17<00:14,  2.90it/s]
+[1A 54%|█████▍    | 49/90 [00:17<00:14,  2.91it/s]
+[1A 56%|█████▌    | 50/90 [00:18<00:13,  2.91it/s]
+[1A                                               
+{'loss': 0.1709, 'grad_norm': 13.587026596069336, 'learning_rate': 9.64705882352941e-07, 'epoch': 1.67}
+[1A
+[1A 56%|█████▌    | 50/90 [00:18<00:13,  2.91it/s]
+[1A 57%|█████▋    | 51/90 [00:18<00:13,  2.92it/s]
+[1A 58%|█████▊    | 52/90 [00:18<00:12,  2.93it/s]
+[1A 59%|█████▉    | 53/90 [00:19<00:12,  2.93it/s]
+[1A 60%|██████    | 54/90 [00:19<00:12,  2.93it/s]
+[1A 61%|██████    | 55/90 [00:19<00:11,  2.92it/s]
+[1A                                               
+{'loss': 0.254, 'grad_norm': 9.820627212524414, 'learning_rate': 8.470588235294117e-07, 'epoch': 1.83}
+[1A
+[1A 61%|██████    | 55/90 [00:19<00:11,  2.92it/s]
+[1A 62%|██████▏   | 56/90 [00:20<00:11,  2.93it/s]
+[1A 63%|██████▎   | 57/90 [00:20<00:11,  2.92it/s]
+[1A 64%|██████▍   | 58/90 [00:20<00:10,  2.92it/s]
+[1A 66%|██████▌   | 59/90 [00:21<00:10,  2.92it/s]
+[1A 67%|██████▋   | 60/90 [00:21<00:09,  3.03it/s]
+[1A                                               
+{'loss': 0.1774, 'grad_norm': 10.130250930786133, 'learning_rate': 7.294117647058823e-07, 'epoch': 2.0}
+[1A
+[1A 67%|██████▋   | 60/90 [00:21<00:09,  3.03it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 68%|██████▊   | 61/90 [00:22<00:14,  2.06it/s]
+[1A 69%|██████▉   | 62/90 [00:22<00:12,  2.28it/s]
+[1A 70%|███████   | 63/90 [00:23<00:11,  2.44it/s]
+[1A 71%|███████   | 64/90 [00:23<00:10,  2.56it/s]
+[1A 72%|███████▏  | 65/90 [00:23<00:10,  2.44it/s]
+[1A                                               
+{'loss': 0.1468, 'grad_norm': 13.999159812927246, 'learning_rate': 6.117647058823529e-07, 'epoch': 2.17}
+[1A
+[1A 72%|███████▏  | 65/90 [00:23<00:10,  2.44it/s]
+[1A 73%|███████▎  | 66/90 [00:24<00:09,  2.57it/s]
+[1A 74%|███████▍  | 67/90 [00:24<00:08,  2.67it/s]
+[1A 76%|███████▌  | 68/90 [00:24<00:08,  2.73it/s]
+[1A 77%|███████▋  | 69/90 [00:25<00:07,  2.79it/s]
+[1A 78%|███████▊  | 70/90 [00:25<00:07,  2.83it/s]
+[1A                                               
+{'loss': 0.191, 'grad_norm': 12.1387357711792, 'learning_rate': 4.941176470588235e-07, 'epoch': 2.33}
+[1A
+[1A 78%|███████▊  | 70/90 [00:25<00:07,  2.83it/s]
+[1A 79%|███████▉  | 71/90 [00:25<00:06,  2.86it/s]
+[1A 80%|████████  | 72/90 [00:26<00:06,  2.88it/s]
+[1A 81%|████████  | 73/90 [00:26<00:05,  2.89it/s]
+[1A 82%|████████▏ | 74/90 [00:26<00:05,  2.89it/s]
+[1A 83%|████████▎ | 75/90 [00:27<00:05,  2.90it/s]
+[1A                                               
+{'loss': 0.1926, 'grad_norm': 5.513465404510498, 'learning_rate': 3.764705882352941e-07, 'epoch': 2.5}
+[1A
+[1A 83%|████████▎ | 75/90 [00:27<00:05,  2.90it/s]
+[1A 84%|████████▍ | 76/90 [00:27<00:04,  2.90it/s]
+[1A 86%|████████▌ | 77/90 [00:27<00:04,  2.91it/s]
+[1A 87%|████████▋ | 78/90 [00:28<00:04,  2.91it/s]
+[1A 88%|████████▊ | 79/90 [00:28<00:03,  2.91it/s]
+[1A 89%|████████▉ | 80/90 [00:29<00:03,  2.91it/s]
+[1A                                               
+{'loss': 0.2121, 'grad_norm': 9.939045906066895, 'learning_rate': 2.588235294117647e-07, 'epoch': 2.67}
+[1A
+[1A 89%|████████▉ | 80/90 [00:29<00:03,  2.91it/s]
+[1A 90%|█████████ | 81/90 [00:29<00:03,  2.91it/s]
+[1A 91%|█████████ | 82/90 [00:29<00:02,  2.92it/s]
+[1A 92%|█████████▏| 83/90 [00:30<00:02,  2.92it/s]
+[1A 93%|█████████▎| 84/90 [00:30<00:02,  2.92it/s]
+[1A 94%|█████████▍| 85/90 [00:30<00:01,  2.92it/s]
+[1A                                               
+{'loss': 0.1845, 'grad_norm': 11.886631965637207, 'learning_rate': 1.411764705882353e-07, 'epoch': 2.83}
+[1A
+[1A 94%|█████████▍| 85/90 [00:30<00:01,  2.92it/s]
+[1A 96%|█████████▌| 86/90 [00:31<00:01,  2.91it/s]
+[1A 97%|█████████▋| 87/90 [00:31<00:01,  2.92it/s]
+[1A 98%|█████████▊| 88/90 [00:31<00:00,  2.71it/s]
+[1A 99%|█████████▉| 89/90 [00:32<00:00,  2.77it/s]
+[1A100%|██████████| 90/90 [00:32<00:00,  2.92it/s]
+[1A                                               
+{'loss': 0.2263, 'grad_norm': 8.133391380310059, 'learning_rate': 2.352941176470588e-08, 'epoch': 3.0}
+[1A
+[1A100%|██████████| 90/90 [00:32<00:00,  2.92it/s]
+[1A                                               
+{'train_runtime': 32.5512, 'train_samples_per_second': 10.967, 'train_steps_per_second': 2.765, 'train_loss': 0.29448477890756397, 'epoch': 3.0}
+[1A
+[1A100%|██████████| 90/90 [00:32<00:00,  2.92it/s]
+[1A100%|██████████| 90/90 [00:32<00:00,  2.76it/s]
+FOLD {"fold": "clip2", "train_items": 119, "eval_items": 31, "training_loss": 0.2945, "optimizer_steps": 90, "train_seconds": 36.2, "language_counts": {"en": 67, "es": 52}, "peak_gpu_memory_gib": 12.71, "loss_first_last": [[[5, 0.6143]], [[90, 0.2263]]]}
+Detected kernel version 4.19.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+
+[1A  0%|          | 0/90 [00:00<?, ?it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A  1%|          | 1/90 [00:01<01:29,  1.01s/it]
+[1A  2%|▏         | 2/90 [00:01<00:49,  1.76it/s]
+[1A  3%|▎         | 3/90 [00:01<00:40,  2.16it/s]
+[1A  4%|▍         | 4/90 [00:01<00:35,  2.42it/s]
+[1A  6%|▌         | 5/90 [00:02<00:32,  2.59it/s]
+[1A                                              
+{'loss': 0.4668, 'grad_norm': 16.783031463623047, 'learning_rate': 1.6e-06, 'epoch': 0.17}
+[1A
+[1A  6%|▌         | 5/90 [00:02<00:32,  2.59it/s]
+[1A  7%|▋         | 6/90 [00:02<00:31,  2.70it/s]
+[1A  8%|▊         | 7/90 [00:02<00:29,  2.77it/s]
+[1A  9%|▉         | 8/90 [00:03<00:28,  2.83it/s]
+[1A 10%|█         | 9/90 [00:03<00:28,  2.87it/s]
+[1A 11%|█         | 10/90 [00:03<00:27,  2.90it/s]
+[1A                                               
+{'loss': 0.4585, 'grad_norm': 14.251794815063477, 'learning_rate': 1.9058823529411762e-06, 'epoch': 0.33}
+[1A
+[1A 11%|█         | 10/90 [00:04<00:27,  2.90it/s]
+[1A 12%|█▏        | 11/90 [00:04<00:27,  2.91it/s]
+[1A 13%|█▎        | 12/90 [00:04<00:26,  2.93it/s]
+[1A 14%|█▍        | 13/90 [00:04<00:26,  2.93it/s]
+[1A 16%|█▌        | 14/90 [00:05<00:25,  2.95it/s]
+[1A 17%|█▋        | 15/90 [00:05<00:25,  2.95it/s]
+[1A                                               
+{'loss': 0.3686, 'grad_norm': 10.726104736328125, 'learning_rate': 1.7882352941176472e-06, 'epoch': 0.5}
+[1A
+[1A 17%|█▋        | 15/90 [00:05<00:25,  2.95it/s]
+[1A 18%|█▊        | 16/90 [00:06<00:25,  2.94it/s]
+[1A 19%|█▉        | 17/90 [00:06<00:24,  2.94it/s]
+[1A 20%|██        | 18/90 [00:06<00:24,  2.94it/s]
+[1A 21%|██        | 19/90 [00:07<00:24,  2.94it/s]
+[1A 22%|██▏       | 20/90 [00:07<00:26,  2.68it/s]
+[1A                                               
+{'loss': 0.5286, 'grad_norm': 14.441980361938477, 'learning_rate': 1.6705882352941177e-06, 'epoch': 0.67}
+[1A
+[1A 22%|██▏       | 20/90 [00:07<00:26,  2.68it/s]
+[1A 23%|██▎       | 21/90 [00:07<00:24,  2.76it/s]
+[1A 24%|██▍       | 22/90 [00:08<00:24,  2.82it/s]
+[1A 26%|██▌       | 23/90 [00:08<00:23,  2.84it/s]
+[1A 27%|██▋       | 24/90 [00:08<00:22,  2.87it/s]
+[1A 28%|██▊       | 25/90 [00:09<00:22,  2.89it/s]
+[1A                                               
+{'loss': 0.4131, 'grad_norm': 13.820737838745117, 'learning_rate': 1.5529411764705883e-06, 'epoch': 0.83}
+[1A
+[1A 28%|██▊       | 25/90 [00:09<00:22,  2.89it/s]
+[1A 29%|██▉       | 26/90 [00:09<00:21,  2.91it/s]
+[1A 30%|███       | 27/90 [00:09<00:21,  2.92it/s]
+[1A 31%|███       | 28/90 [00:10<00:21,  2.93it/s]
+[1A 32%|███▏      | 29/90 [00:10<00:20,  2.94it/s]
+[1A 33%|███▎      | 30/90 [00:10<00:20,  2.89it/s]
+[1A                                               
+{'loss': 0.3753, 'grad_norm': 13.817574501037598, 'learning_rate': 1.4352941176470588e-06, 'epoch': 1.0}
+[1A
+[1A 33%|███▎      | 30/90 [00:10<00:20,  2.89it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 34%|███▍      | 31/90 [00:11<00:29,  2.02it/s]
+[1A 36%|███▌      | 32/90 [00:12<00:25,  2.24it/s]
+[1A 37%|███▋      | 33/90 [00:12<00:23,  2.41it/s]
+[1A 38%|███▊      | 34/90 [00:12<00:21,  2.55it/s]
+[1A 39%|███▉      | 35/90 [00:13<00:20,  2.66it/s]
+[1A                                               
+{'loss': 0.2436, 'grad_norm': 15.014894485473633, 'learning_rate': 1.3176470588235294e-06, 'epoch': 1.17}
+[1A
+[1A 39%|███▉      | 35/90 [00:13<00:20,  2.66it/s]
+[1A 40%|████      | 36/90 [00:13<00:19,  2.73it/s]
+[1A 41%|████      | 37/90 [00:13<00:19,  2.79it/s]
+[1A 42%|████▏     | 38/90 [00:14<00:18,  2.84it/s]
+[1A 43%|████▎     | 39/90 [00:14<00:17,  2.86it/s]
+[1A 44%|████▍     | 40/90 [00:14<00:17,  2.89it/s]
+[1A                                               
+{'loss': 0.2418, 'grad_norm': 11.072830200195312, 'learning_rate': 1.2e-06, 'epoch': 1.33}
+[1A
+[1A 44%|████▍     | 40/90 [00:14<00:17,  2.89it/s]
+[1A 46%|████▌     | 41/90 [00:15<00:16,  2.90it/s]
+[1A 47%|████▋     | 42/90 [00:15<00:18,  2.66it/s]
+[1A 48%|████▊     | 43/90 [00:15<00:17,  2.74it/s]
+[1A 49%|████▉     | 44/90 [00:16<00:16,  2.80it/s]
+[1A 50%|█████     | 45/90 [00:16<00:15,  2.83it/s]
+[1A                                               
+{'loss': 0.2247, 'grad_norm': 6.290130615234375, 'learning_rate': 1.0823529411764705e-06, 'epoch': 1.5}
+[1A
+[1A 50%|█████     | 45/90 [00:16<00:15,  2.83it/s]
+[1A 51%|█████     | 46/90 [00:16<00:15,  2.86it/s]
+[1A 52%|█████▏    | 47/90 [00:17<00:14,  2.88it/s]
+[1A 53%|█████▎    | 48/90 [00:17<00:14,  2.89it/s]
+[1A 54%|█████▍    | 49/90 [00:17<00:14,  2.91it/s]
+[1A 56%|█████▌    | 50/90 [00:18<00:13,  2.92it/s]
+[1A                                               
+{'loss': 0.2448, 'grad_norm': 16.85210418701172, 'learning_rate': 9.64705882352941e-07, 'epoch': 1.67}
+[1A
+[1A 56%|█████▌    | 50/90 [00:18<00:13,  2.92it/s]
+[1A 57%|█████▋    | 51/90 [00:18<00:13,  2.93it/s]
+[1A 58%|█████▊    | 52/90 [00:18<00:12,  2.93it/s]
+[1A 59%|█████▉    | 53/90 [00:19<00:12,  2.94it/s]
+[1A 60%|██████    | 54/90 [00:19<00:12,  2.93it/s]
+[1A 61%|██████    | 55/90 [00:20<00:11,  2.94it/s]
+[1A                                               
+{'loss': 0.2843, 'grad_norm': 9.52774715423584, 'learning_rate': 8.470588235294117e-07, 'epoch': 1.83}
+[1A
+[1A 61%|██████    | 55/90 [00:20<00:11,  2.94it/s]
+[1A 62%|██████▏   | 56/90 [00:20<00:11,  2.94it/s]
+[1A 63%|██████▎   | 57/90 [00:20<00:11,  2.93it/s]
+[1A 64%|██████▍   | 58/90 [00:21<00:10,  2.94it/s]
+[1A 66%|██████▌   | 59/90 [00:21<00:10,  2.94it/s]
+[1A 67%|██████▋   | 60/90 [00:21<00:10,  2.90it/s]
+[1A                                               
+{'loss': 0.1952, 'grad_norm': 10.099101066589355, 'learning_rate': 7.294117647058823e-07, 'epoch': 2.0}
+[1A
+[1A 67%|██████▋   | 60/90 [00:21<00:10,  2.90it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 68%|██████▊   | 61/90 [00:22<00:14,  2.01it/s]
+[1A 69%|██████▉   | 62/90 [00:22<00:12,  2.23it/s]
+[1A 70%|███████   | 63/90 [00:23<00:11,  2.41it/s]
+[1A 71%|███████   | 64/90 [00:23<00:11,  2.35it/s]
+[1A 72%|███████▏  | 65/90 [00:24<00:09,  2.51it/s]
+[1A                                               
+{'loss': 0.1737, 'grad_norm': 6.515461444854736, 'learning_rate': 6.117647058823529e-07, 'epoch': 2.17}
+[1A
+[1A 72%|███████▏  | 65/90 [00:24<00:09,  2.51it/s]
+[1A 73%|███████▎  | 66/90 [00:24<00:09,  2.62it/s]
+[1A 74%|███████▍  | 67/90 [00:24<00:08,  2.71it/s]
+[1A 76%|███████▌  | 68/90 [00:25<00:07,  2.78it/s]
+[1A 77%|███████▋  | 69/90 [00:25<00:07,  2.82it/s]
+[1A 78%|███████▊  | 70/90 [00:25<00:07,  2.85it/s]
+[1A                                               
+{'loss': 0.1686, 'grad_norm': 8.395781517028809, 'learning_rate': 4.941176470588235e-07, 'epoch': 2.33}
+[1A
+[1A 78%|███████▊  | 70/90 [00:25<00:07,  2.85it/s]
+[1A 79%|███████▉  | 71/90 [00:26<00:06,  2.88it/s]
+[1A 80%|████████  | 72/90 [00:26<00:06,  2.90it/s]
+[1A 81%|████████  | 73/90 [00:26<00:05,  2.91it/s]
+[1A 82%|████████▏ | 74/90 [00:27<00:05,  2.92it/s]
+[1A 83%|████████▎ | 75/90 [00:27<00:05,  2.92it/s]
+[1A                                               
+{'loss': 0.1999, 'grad_norm': 10.353645324707031, 'learning_rate': 3.764705882352941e-07, 'epoch': 2.5}
+[1A
+[1A 83%|████████▎ | 75/90 [00:27<00:05,  2.92it/s]
+[1A 84%|████████▍ | 76/90 [00:27<00:04,  2.92it/s]
+[1A 86%|████████▌ | 77/90 [00:28<00:04,  2.92it/s]
+[1A 87%|████████▋ | 78/90 [00:28<00:04,  2.92it/s]
+[1A 88%|████████▊ | 79/90 [00:28<00:03,  2.92it/s]
+[1A 89%|████████▉ | 80/90 [00:29<00:03,  2.93it/s]
+[1A                                               
+{'loss': 0.2338, 'grad_norm': 8.314831733703613, 'learning_rate': 2.588235294117647e-07, 'epoch': 2.67}
+[1A
+[1A 89%|████████▉ | 80/90 [00:29<00:03,  2.93it/s]
+[1A 90%|█████████ | 81/90 [00:29<00:03,  2.93it/s]
+[1A 91%|█████████ | 82/90 [00:29<00:02,  2.94it/s]
+[1A 92%|█████████▏| 83/90 [00:30<00:02,  2.94it/s]
+[1A 93%|█████████▎| 84/90 [00:30<00:02,  2.94it/s]
+[1A 94%|█████████▍| 85/90 [00:30<00:01,  2.94it/s]
+[1A                                               
+{'loss': 0.159, 'grad_norm': 6.756623268127441, 'learning_rate': 1.411764705882353e-07, 'epoch': 2.83}
+[1A
+[1A 94%|█████████▍| 85/90 [00:30<00:01,  2.94it/s]
+[1A 96%|█████████▌| 86/90 [00:31<00:01,  2.94it/s]
+[1A 97%|█████████▋| 87/90 [00:31<00:01,  2.94it/s]
+[1A 98%|█████████▊| 88/90 [00:31<00:00,  2.68it/s]
+[1A 99%|█████████▉| 89/90 [00:32<00:00,  2.75it/s]
+[1A100%|██████████| 90/90 [00:32<00:00,  2.76it/s]
+[1A                                               
+{'loss': 0.132, 'grad_norm': 6.327662467956543, 'learning_rate': 2.352941176470588e-08, 'epoch': 3.0}
+[1A
+[1A100%|██████████| 90/90 [00:32<00:00,  2.76it/s]
+[1A                                               
+{'train_runtime': 32.7634, 'train_samples_per_second': 10.988, 'train_steps_per_second': 2.747, 'train_loss': 0.28400991095436945, 'epoch': 3.0}
+[1A
+[1A100%|██████████| 90/90 [00:32<00:00,  2.76it/s]
+[1A100%|██████████| 90/90 [00:32<00:00,  2.75it/s]
+FOLD {"fold": "clip3", "train_items": 120, "eval_items": 31, "training_loss": 0.284, "optimizer_steps": 90, "train_seconds": 36.4, "language_counts": {"en": 67, "es": 53}, "peak_gpu_memory_gib": 12.71, "loss_first_last": [[[5, 0.4668]], [[90, 0.132]]]}
+Detected kernel version 4.19.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+
+[1A  0%|          | 0/90 [00:00<?, ?it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A  1%|          | 1/90 [00:00<01:17,  1.15it/s]
+[1A  2%|▏         | 2/90 [00:01<00:44,  1.97it/s]
+[1A  3%|▎         | 3/90 [00:01<00:37,  2.33it/s]
+[1A  4%|▍         | 4/90 [00:01<00:33,  2.54it/s]
+[1A  6%|▌         | 5/90 [00:02<00:31,  2.68it/s]
+[1A                                              
+{'loss': 0.4724, 'grad_norm': 14.533294677734375, 'learning_rate': 1.6e-06, 'epoch': 0.17}
+[1A
+[1A  6%|▌         | 5/90 [00:02<00:31,  2.68it/s]
+[1A  7%|▋         | 6/90 [00:02<00:30,  2.77it/s]
+[1A  8%|▊         | 7/90 [00:02<00:29,  2.83it/s]
+[1A  9%|▉         | 8/90 [00:03<00:28,  2.87it/s]
+[1A 10%|█         | 9/90 [00:03<00:28,  2.89it/s]
+[1A 11%|█         | 10/90 [00:03<00:27,  2.91it/s]
+[1A                                               
+{'loss': 0.5592, 'grad_norm': 14.672968864440918, 'learning_rate': 1.9058823529411762e-06, 'epoch': 0.33}
+[1A
+[1A 11%|█         | 10/90 [00:03<00:27,  2.91it/s]
+[1A 12%|█▏        | 11/90 [00:04<00:27,  2.92it/s]
+[1A 13%|█▎        | 12/90 [00:04<00:26,  2.93it/s]
+[1A 14%|█▍        | 13/90 [00:04<00:26,  2.94it/s]
+[1A 16%|█▌        | 14/90 [00:05<00:25,  2.94it/s]
+[1A 17%|█▋        | 15/90 [00:05<00:25,  2.94it/s]
+[1A                                               
+{'loss': 0.4704, 'grad_norm': 13.159713745117188, 'learning_rate': 1.7882352941176472e-06, 'epoch': 0.5}
+[1A
+[1A 17%|█▋        | 15/90 [00:05<00:25,  2.94it/s]
+[1A 18%|█▊        | 16/90 [00:05<00:25,  2.95it/s]
+[1A 19%|█▉        | 17/90 [00:06<00:24,  2.95it/s]
+[1A 20%|██        | 18/90 [00:06<00:24,  2.95it/s]
+[1A 21%|██        | 19/90 [00:06<00:24,  2.95it/s]
+[1A 22%|██▏       | 20/90 [00:07<00:26,  2.67it/s]
+[1A                                               
+{'loss': 0.4724, 'grad_norm': 16.40260124206543, 'learning_rate': 1.6705882352941177e-06, 'epoch': 0.67}
+[1A
+[1A 22%|██▏       | 20/90 [00:07<00:26,  2.67it/s]
+[1A 23%|██▎       | 21/90 [00:07<00:25,  2.74it/s]
+[1A 24%|██▍       | 22/90 [00:08<00:24,  2.80it/s]
+[1A 26%|██▌       | 23/90 [00:08<00:23,  2.85it/s]
+[1A 27%|██▋       | 24/90 [00:08<00:22,  2.88it/s]
+[1A 28%|██▊       | 25/90 [00:09<00:22,  2.91it/s]
+[1A                                               
+{'loss': 0.3958, 'grad_norm': 12.863136291503906, 'learning_rate': 1.5529411764705883e-06, 'epoch': 0.83}
+[1A
+[1A 28%|██▊       | 25/90 [00:09<00:22,  2.91it/s]
+[1A 29%|██▉       | 26/90 [00:09<00:21,  2.92it/s]
+[1A 30%|███       | 27/90 [00:09<00:21,  2.93it/s]
+[1A 31%|███       | 28/90 [00:10<00:21,  2.93it/s]
+[1A 32%|███▏      | 29/90 [00:10<00:20,  2.94it/s]
+[1A 33%|███▎      | 30/90 [00:10<00:20,  2.90it/s]
+[1A                                               
+{'loss': 0.413, 'grad_norm': 19.949630737304688, 'learning_rate': 1.4352941176470588e-06, 'epoch': 1.0}
+[1A
+[1A 33%|███▎      | 30/90 [00:10<00:20,  2.90it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 34%|███▍      | 31/90 [00:11<00:29,  2.01it/s]
+[1A 36%|███▌      | 32/90 [00:11<00:25,  2.24it/s]
+[1A 37%|███▋      | 33/90 [00:12<00:23,  2.41it/s]
+[1A 38%|███▊      | 34/90 [00:12<00:21,  2.55it/s]
+[1A 39%|███▉      | 35/90 [00:12<00:20,  2.66it/s]
+[1A                                               
+{'loss': 0.3124, 'grad_norm': 13.597733497619629, 'learning_rate': 1.3176470588235294e-06, 'epoch': 1.17}
+[1A
+[1A 39%|███▉      | 35/90 [00:13<00:20,  2.66it/s]
+[1A 40%|████      | 36/90 [00:13<00:19,  2.74it/s]
+[1A 41%|████      | 37/90 [00:13<00:18,  2.80it/s]
+[1A 42%|████▏     | 38/90 [00:13<00:18,  2.84it/s]
+[1A 43%|████▎     | 39/90 [00:14<00:17,  2.87it/s]
+[1A 44%|████▍     | 40/90 [00:14<00:17,  2.90it/s]
+[1A                                               
+{'loss': 0.2544, 'grad_norm': 26.99075698852539, 'learning_rate': 1.2e-06, 'epoch': 1.33}
+[1A
+[1A 44%|████▍     | 40/90 [00:14<00:17,  2.90it/s]
+[1A 46%|████▌     | 41/90 [00:14<00:16,  2.91it/s]
+[1A 47%|████▋     | 42/90 [00:15<00:18,  2.64it/s]
+[1A 48%|████▊     | 43/90 [00:15<00:17,  2.72it/s]
+[1A 49%|████▉     | 44/90 [00:16<00:16,  2.79it/s]
+[1A 50%|█████     | 45/90 [00:16<00:15,  2.83it/s]
+[1A                                               
+{'loss': 0.3179, 'grad_norm': 16.8885498046875, 'learning_rate': 1.0823529411764705e-06, 'epoch': 1.5}
+[1A
+[1A 50%|█████     | 45/90 [00:16<00:15,  2.83it/s]
+[1A 51%|█████     | 46/90 [00:16<00:15,  2.87it/s]
+[1A 52%|█████▏    | 47/90 [00:17<00:14,  2.89it/s]
+[1A 53%|█████▎    | 48/90 [00:17<00:14,  2.90it/s]
+[1A 54%|█████▍    | 49/90 [00:17<00:14,  2.92it/s]
+[1A 56%|█████▌    | 50/90 [00:18<00:13,  2.93it/s]
+[1A                                               
+{'loss': 0.2659, 'grad_norm': 10.610513687133789, 'learning_rate': 9.64705882352941e-07, 'epoch': 1.67}
+[1A
+[1A 56%|█████▌    | 50/90 [00:18<00:13,  2.93it/s]
+[1A 57%|█████▋    | 51/90 [00:18<00:13,  2.93it/s]
+[1A 58%|█████▊    | 52/90 [00:18<00:12,  2.93it/s]
+[1A 59%|█████▉    | 53/90 [00:19<00:12,  2.94it/s]
+[1A 60%|██████    | 54/90 [00:19<00:12,  2.94it/s]
+[1A 61%|██████    | 55/90 [00:19<00:11,  2.94it/s]
+[1A                                               
+{'loss': 0.2154, 'grad_norm': 9.084577560424805, 'learning_rate': 8.470588235294117e-07, 'epoch': 1.83}
+[1A
+[1A 61%|██████    | 55/90 [00:19<00:11,  2.94it/s]
+[1A 62%|██████▏   | 56/90 [00:20<00:11,  2.95it/s]
+[1A 63%|██████▎   | 57/90 [00:20<00:11,  2.94it/s]
+[1A 64%|██████▍   | 58/90 [00:20<00:10,  2.95it/s]
+[1A 66%|██████▌   | 59/90 [00:21<00:10,  2.94it/s]
+[1A 67%|██████▋   | 60/90 [00:21<00:10,  2.90it/s]
+[1A                                               
+{'loss': 0.2219, 'grad_norm': 7.290130138397217, 'learning_rate': 7.294117647058823e-07, 'epoch': 2.0}
+[1A
+[1A 67%|██████▋   | 60/90 [00:21<00:10,  2.90it/s]You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+You're using a WhisperTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+[1A 68%|██████▊   | 61/90 [00:22<00:14,  2.05it/s]
+[1A 69%|██████▉   | 62/90 [00:22<00:12,  2.27it/s]
+[1A 70%|███████   | 63/90 [00:23<00:11,  2.43it/s]
+[1A 71%|███████   | 64/90 [00:23<00:10,  2.56it/s]
+[1A 72%|███████▏  | 65/90 [00:23<00:10,  2.44it/s]
+[1A                                               
+{'loss': 0.2205, 'grad_norm': 8.1642484664917, 'learning_rate': 6.117647058823529e-07, 'epoch': 2.17}
+[1A
+[1A 72%|███████▏  | 65/90 [00:23<00:10,  2.44it/s]
+[1A 73%|███████▎  | 66/90 [00:24<00:09,  2.57it/s]
+[1A 74%|███████▍  | 67/90 [00:24<00:08,  2.67it/s]
+[1A 76%|███████▌  | 68/90 [00:24<00:07,  2.75it/s]
+❕ Connection lost!
+The detached App will keep running. You can track its progress on the Dashboard:
+https://modal.com/apps/dasashreeya/main/ap-sEX0G4RtQjN5JpZlk8EU3M
+
+Stream App logs:
+modal app logs ap-sEX0G4RtQjN5JpZlk8EU3M
+
+Stop the App:
+modal app stop ap-sEX0G4RtQjN5JpZlk8EU3M

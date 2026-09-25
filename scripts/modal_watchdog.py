@@ -53,6 +53,12 @@ RATE_PER_SECOND = 0.000694 + 8 * 0.0000131 + 64 * 0.00000222
 LIST_TIMEOUT = 60.0
 STOP_TIMEOUT = 120.0
 CONFIRM_SECONDS = 300.0
+# A single `stopped`/0-tasks reading is not final. On 2026-09-24 two runs (ger-smoke2,
+# ger-probe1) logged "confirmed stopped with 0 tasks" and were then seen back at
+# "ephemeral (detached) tasks=1" minutes later; both had to be stopped by hand. Modal's listing
+# is eventually consistent, so require the reading to hold twice, RECHECK_SECONDS apart.
+CONFIRMATIONS_REQUIRED = 2
+RECHECK_SECONDS = 15.0
 IDLE_POLLS_BEFORE_STOP = 2
 UNCONFIRMED_POLLS_BEFORE_STOP = 6
 DEFAULT_SCRIPT = "scripts/modal_finetune.py"
@@ -99,8 +105,21 @@ def stop_and_confirm(app_id: str, confirm_seconds: float = CONFIRM_SECONDS,
         say(f"stop {app_id}: {outcome}")
         row = app_row(app_id, min(LIST_TIMEOUT, end - time.monotonic()))
         if confirmed_stopped(row):
-            say(f"{app_id} confirmed stopped with 0 tasks")
-            return True
+            holds = 1
+            while holds < CONFIRMATIONS_REQUIRED and time.monotonic() + RECHECK_SECONDS < end:
+                time.sleep(RECHECK_SECONDS)
+                again = app_row(app_id, min(LIST_TIMEOUT, end - time.monotonic()))
+                if not confirmed_stopped(again):
+                    state = again.get("State") if isinstance(again, dict) else again
+                    say(f"{app_id} came BACK after a stopped reading: state={state}")
+                    holds = 0
+                    break
+                holds += 1
+            if holds >= CONFIRMATIONS_REQUIRED:
+                say(f"{app_id} confirmed stopped with 0 tasks "
+                    f"({CONFIRMATIONS_REQUIRED} readings {RECHECK_SECONDS:.0f}s apart)")
+                return True
+            continue
         state = row.get("State") if isinstance(row, dict) else row
         say(f"{app_id} not yet confirmed: state={state}")
         if time.monotonic() + poll_seconds >= end:
@@ -174,7 +193,7 @@ def watch(stage: str, run_id: str, max_minutes: float, poll_seconds: float,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("stage", choices=["trial", "full", "kfold"])
+    parser.add_argument("stage", choices=["trial", "full", "kfold", "decode", "probe", "gertrain", "gerapply", "convert"])
     parser.add_argument("run_id")
     parser.add_argument("--max-minutes", type=float, required=True)
     parser.add_argument("--script", default=DEFAULT_SCRIPT,
@@ -185,6 +204,25 @@ def main() -> int:
                              "the value itself starts with '--', e.g. --stage-arg=--dataset=g7 "
                              "(repeatable)")
     args = parser.parse_args()
+    # `stage` is both the Modal function name and the log filename, so a stage the script does
+    # not define launches, fails inside Modal and still burns the run id. Only `modal_finetune.py`
+    # defines trial/full; `decode` lives in `modal_decode.py`, and a launch under the default
+    # script would be an unwatched failure the caller pays for.
+    # Each of these stages lives in its own module. `stage` is also the Modal function name, so
+    # a stage launched under the wrong script resolves to nothing, fails inside Modal, and still
+    # burns the run id. An earlier version only rejected the DEFAULT script, which let
+    # `gertrain --script scripts/modal_ger_apply.py` through -- bind the stage to its own file.
+    stage_scripts = {"decode": "scripts/modal_decode.py",
+                     "probe": "scripts/modal_probe.py",
+                     "gertrain": "scripts/modal_ger_train.py",
+                     "gerapply": "scripts/modal_ger_apply.py"}
+    if args.stage in stage_scripts and args.script != stage_scripts[args.stage]:
+        parser.error(f"stage '{args.stage}' needs --script {stage_scripts[args.stage]}, "
+                     f"got {args.script!r}; that script defines no {args.stage} function")
+    # And the reverse: a finetune stage must NOT be pointed at a single-stage module.
+    if args.stage not in stage_scripts and args.script in set(stage_scripts.values()):
+        parser.error(f"stage '{args.stage}' cannot run from {args.script!r}; "
+                     f"that module defines only {[k for k,v in stage_scripts.items() if v == args.script][0]!r}")
     return watch(args.stage, args.run_id, args.max_minutes, args.poll_seconds, args.stage_arg,
                  args.script)
 

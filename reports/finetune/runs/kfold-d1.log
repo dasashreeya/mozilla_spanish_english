@@ -1,0 +1,30 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-ep30fYhThNMiMko0ODjvZo
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_f
+│   inetune_dev.py
+├── 🔨 Created mount PythonPackage:lit_sp_en
+└── 🔨 Created function kfold.
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/container_io_manager.py", line 946, in handle_input_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 172, in run_input_sync
+    values = io_context.call_function_sync()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pkg/modal/_runtime/container_io_manager.py", line 225, in call_function_sync
+    expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_finetune_dev.py", line 82, in kfold
+    manifest_rows = sum(1 for line in (root / "manifest.jsonl").read_text(
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/vol/dev_folds/manifest.jsonl'
+╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ [Errno 2] No such file or directory: '/vol/dev_folds/manifest.jsonl'         │
+╰──────────────────────────────────────────────────────────────────────────────╯

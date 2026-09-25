@@ -1,9 +1,101 @@
 # Handover — Lost in Transcription, Spanish-English track
 
-Written 2026-09-16; **updated 2026-09-21** after G8 and G7. Current standing: **rank 12, public WER
-0.1198**, 3 scored submissions used (`reports/submissions/platform_results.json`).
+Written 2026-09-16; **updated 2026-09-25** after the GER / Round 10 / Round 11 session.
+Current standing: **rank 16, public WER 0.1156**, 4 scored submissions used, **2 remaining**
+(`reports/submissions/platform_results.json`). Deadline **2026-10-02**.
 
-**Deadline — UNVERIFIED, check the platform.** This file and `revision.md` give **2026-10-02,
+> **START HERE — the state in six lines.**
+> - Best public score **0.1156** (`submission-rover4-qeqn-breaks.zip`, dev 0.0885). Rank fell
+>   12 → 16 even though the score improved, so the field is moving.
+> - The target was public **below 0.10**. **Not achieved**, and on current evidence not close.
+> - **Only 52% of a dev gain reaches the public board** (§0). This is the number that governs
+>   every decision below.
+> - Six methods were measured on 2026-09-25 and **all six were negative** (§0b).
+> - Budget: **$8.58 spent of a $35 grant**, ~$26 unspent. Money is not the constraint.
+> - The one untried lever with real headroom is **splice-synthesised code-switch audio** (§0c).
+
+## 0. The 2026-09-25 result: how much of a dev gain is real?
+
+`rover4-qeqn` was submitted as a **calibration** run, not an improvement — its dev number was the
+winner of 13,929 configurations over the same 155 dev clips, so the honest question was how much
+of that survives on unseen data. It answered:
+
+| | dev | public |
+|---|---:|---:|
+| `rover3-g7-breaks` | 0.096516 | 0.1198 |
+| `rover4-qeqn` | 0.088500 | **0.1156** |
+| change | **−0.0080** | **−0.0042** |
+
+**52% of the dev gain transferred. 48% was overfitting to the 155 dev clips.**
+
+Four verified dev→public pairs now exist (`reports/finetune/evidence/calibration-loo.txt`):
+
+| build | dev | public | offset | ratio |
+|---|---:|---:|---:|---:|
+| `ft-s2-prompt` | 0.110733 | 0.1371 | +0.0264 | ×1.2381 |
+| `rover3-breaks` | 0.098919 | 0.1215 | +0.0226 | ×1.2283 |
+| `rover3-g7-breaks` | 0.096516 | 0.1198 | +0.0233 | ×1.2412 |
+| `rover4-qeqn` | 0.088500 | 0.1156 | **+0.0271** | **×1.3062** |
+
+The newest point has the **largest** offset and ratio of the four — consistent with it being the
+most heavily dev-selected build submitted. Both calibration models **under**-predicted it
+(additive 0.1126, error +0.0030; ratio 0.1094, error +0.0062), and the ratio model's earlier
+leave-one-out advantage **disappeared** on the fourth point. Do not treat either as settled.
+
+**Recalibrated target.** Public 0.10 now needs dev **0.0752** (additive) to **0.0798** (ratio).
+Best build on hand is 0.0885, so the gap is **0.0087–0.0133 of dev** — and because only ~half
+transfers, closing it actually requires roughly **0.017–0.026** of dev improvement. No single
+step on this track has ever delivered a third of that.
+
+## 0b. Six methods measured 2026-09-25 — all negative
+
+| method | result | where |
+|---|---|---|
+| **GER** LoRA corrector (SmolLM3-3B, 4,715 pairs) | **+0.0238 worse** [+0.0146, +0.0334], both speakers, `share_worse` 1.0 | METHODS Round 9 |
+| **Switch-dense upsampling** (4×, 53.5%→82.2% dense) | **+0.0074** alone, **+0.0030** as ROVER backbone | METHODS Round 10 |
+| **Expanded voter search** (13,929 configs, 20 voters) | best 0.0881: +0.0004, needs 8.91 GB, ~0.0002 publicly | `rover-voter-search-v2.txt` |
+| **Prompt: register-matched** | +0.0014, interval includes zero | METHODS Round 11 |
+| **Prompt: high switch density** | +0.0036 **worse** | METHODS Round 11 |
+| **Full `large-v3`** as a base | ruled out free: worse zero-shot (0.3084 vs 0.2233) | §0b |
+
+GER got a **fair** test — 91.6% accept rate, loss 0.78→0.55 over two epochs — so this is a real
+negative about the method here, not a botched run.
+
+**Two findings worth more than the negatives:**
+
+1. **The prompt is worth 2.6× the entire fine-tune** — 0.2233 → 0.1396 zero-shot (−0.0837) versus
+   −0.0319 for fine-tuning. But its value is *binary*: signalling "this is code-switched
+   Spanish-English" is what matters. Refining register does nothing; over-densifying switches
+   hurts. A 12-word clean example is sufficient.
+2. **54% of the Bangor G7 training segments contain no code-switch at all**, while dev is
+   code-switched throughout (`reports/bangor_switch_density.json`). The gap is real —
+   *repetition* was simply the wrong instrument for closing it.
+
+## 0c. What to try next, and what not to
+
+**Worth doing — splice-synthesised code-switches** (`revision.md` §4.0, never attempted). Round 10
+established the switch-density gap is real; upsampling failed because repeating 2,183 clips four
+times adds no new acoustic variation. Synthesis adds *new* variation from real voices. ~1 day,
+~$3. This is the only remaining item where a gain is expected rather than hoped for.
+
+**Worth doing — ask the organisers** about Bangor's "AI large language model" clause. Free, and
+it is the mitigation `revision.md` ranks *first*; open since 2026-09-14
+(`docs/DATA_AUDIT.md:275`).
+
+**Not worth doing — more recombination.** 13,929 configurations over the same 155 clips found
+nothing worth a submission, and at 52% transfer a dev win of +0.0004 is worth ~0.0002 publicly.
+
+**Not worth doing — more prompt search.** Two principled variants both failed and `METHODS.md:31`
+records that dev already chose the incumbent prompt. Continuing until one wins would manufacture
+exactly the artefact §0 measures.
+
+**Not worth doing — training on all 155 dev clips.** G8 failed on that shape (gain reversed on a
+held-out speaker) and it destroys the only measurement set.
+
+
+
+**Deadline — CONFIRMED 2026-09-24 by the user from the platform: 2026-10-02, midnight UTC.**
+The note below is kept for the record of how it was resolved. This file and `revision.md` give **2026-10-02,
 midnight UTC** for this track. The user worked to **2026-09-25** on 2026-09-20/21, but the only saved
 page carrying that date (`../reports/strategic_review_evidence/sources/competition_competition.txt:45`)
 is the **Spanish-Nahuatl** track's, and the same page says the three tracks are independent. If
@@ -149,7 +241,7 @@ is in the model.
 |---|---|---:|
 | S1 trial | 10 min of turbo training, throughput check | $1.13 |
 | S2 full | 2 epochs, 7,200 segments, the model now in production | $1.01 |
-| **Total** | | **$2.14 of the user's $15** |
+| **Total** | | **$2.14** — SUPERSEDED: predates the $35 cap and the g7a/G8 runs. Current position: `reports/finetune/evidence/spend_reconciliation.txt` |
 
 Actual Modal billing has never been checked from here; these are list-rate estimates from
 `reports/finetune/runs/*.watchdog.txt`. Image-build charges are excluded and UNKNOWN.
@@ -284,6 +376,8 @@ English/Spanish). The real gap — intra-sentential code-switching, where dev ha
 4. **GER (`revision.md` §5.4)?** Feasible only if the deadline is 2026-10-02. The user has widened
    the data policy to any dataset the competition does not restrict (`reports/finetune/approvals.md`
    2026-09-21), but Bangor's GPL-3.0 LLM clause still governs using Bangor text to train a corrector.
-5. **Check actual Modal billing** against the nominal $3.72 (watchdog list-rate bounds).
+5. **Check actual Modal billing** against $3.92 artifact-backed / at least $4.55 including full-g7a at its DERIVED lower bound (the $3.69 and $2.88 variants are superseded; $3.69 in particular adds an UNVERIFIED prose figure and must not be presented as derived)
+   with no watchdog artifact (`reports/finetune/evidence/spend_reconciliation.txt`). These are
+   watchdog list-rate upper bounds, not an invoice; image-build charges are excluded and UNKNOWN.
 6. ~~Dev fine-tune (G8)?~~ **Fails** its pre-registered rule: the gain is speaker-bound (Round 6).
 7. ~~Orthography (§6.1)?~~ **Withdrawn**: ceiling 0.0030 on the shipped package, not 0.0150.

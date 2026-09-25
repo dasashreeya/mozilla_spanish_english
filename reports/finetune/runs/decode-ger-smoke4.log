@@ -1,0 +1,12 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-xTIJ9PSAN0oQuRqdb42fZH
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_d
+│   ecode.py
+└── 🔨 Created function decode.
+SEGMENTS 200
+VOTER {"voter": "turbo", "segments": 200, "empty": 0, "seconds": 146.0}
+REPORT {"run": "ger-smoke4", "segments": 200, "voters": ["turbo"]}
+✓ App completed. View run at 
+https://modal.com/apps/dasashreeya/main/ap-xTIJ9PSAN0oQuRqdb42fZH

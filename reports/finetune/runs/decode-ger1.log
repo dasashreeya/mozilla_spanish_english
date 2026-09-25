@@ -1,0 +1,42 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-ZwKVSN3gRruPWlvfqugE3d
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_d
+│   ecode.py
+└── 🔨 Created function decode.
+SEGMENTS 4715
+PROGRESS ft-g7 500/4715
+PROGRESS ft-g7 1000/4715
+PROGRESS ft-g7 1500/4715
+PROGRESS ft-g7 2000/4715
+PROGRESS ft-g7 2500/4715
+PROGRESS ft-g7 3000/4715
+PROGRESS ft-g7 3500/4715
+PROGRESS ft-g7 4000/4715
+PROGRESS ft-g7 4500/4715
+VOTER {"voter": "ft-g7", "segments": 4715, "empty": 0, "seconds": 2486.6}
+PROGRESS ft-s2 500/4715
+PROGRESS ft-s2 1000/4715
+PROGRESS ft-s2 1500/4715
+PROGRESS ft-s2 2000/4715
+PROGRESS ft-s2 2500/4715
+PROGRESS ft-s2 3000/4715
+PROGRESS ft-s2 3500/4715
+PROGRESS ft-s2 4000/4715
+PROGRESS ft-s2 4500/4715
+VOTER {"voter": "ft-s2", "segments": 4715, "empty": 0, "seconds": 1466.4}
+PROGRESS turbo 500/4715
+PROGRESS turbo 1000/4715
+PROGRESS turbo 1500/4715
+PROGRESS turbo 2000/4715
+PROGRESS turbo 2500/4715
+PROGRESS turbo 3000/4715
+PROGRESS turbo 3500/4715
+PROGRESS turbo 4000/4715
+PROGRESS turbo 4500/4715
+VOTER {"voter": "turbo", "segments": 4715, "empty": 0, "seconds": 1639.2}
+REPORT {"run": "ger1", "segments": 4715, "voters": ["ft-g7", "ft-s2", "turbo"]}
+[modal-client] 2026-09-24T19:59:36-0400 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/dasashreeya/main/ap-ZwKVSN3gRruPWlvfqugE3d

@@ -1,0 +1,9 @@
+# Round 11: prompt variants -- 2026-09-25T04:57:09Z
+# All variants reported, as pre-registered. Model ft-g7, CPU int8, beam 5, language auto.
+
+  ft-g7-turbo-auto-int8-b5-prompt            WER 0.1077 [0.0964, 0.1191]
+  ft-g7-turbo-auto-int8-b5-promptR1          WER 0.1091 [0.0980, 0.1203]
+  ft-g7-turbo-auto-int8-b5-promptR2          WER 0.1113 [0.0995, 0.1232]
+
+ft-g7-turbo-auto-int8-b5-prompt clips=155  ft-g7-turbo-auto-int8-b5-prompt=0.1077  candidate=0.1091  diff=+0.0014 [-0.0019, +0.0045]  includes zero
+ft-g7-turbo-auto-int8-b5-prompt clips=155  ft-g7-turbo-auto-int8-b5-prompt=0.1077  candidate=0.1113  diff=+0.0036 [+0.0004, +0.0069]  includes zero

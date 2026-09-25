@@ -1,0 +1,160 @@
+{
+  "run": "rover5-noq06",
+  "backend": "rover-order",
+  "generated_at": "2026-09-23T16:11:19+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "design": "docs/ROVER.md",
+  "candidates_in_tie_break_order": [
+    "ft-g7-turbo-auto-int8-b5-prompt",
+    "ft-s2-turbo-auto-int8-b5-prompt",
+    "large-v3-turbo-auto-int8-b5-prompt-guard",
+    "Qwen3-ASR-1.7B-auto-cpu-float32-ctx",
+    "Qwen3-ASR-1.7B-es-cpu-float32"
+  ],
+  "preprocess": "sentence-breaks-keep-ellipsis",
+  "selection": {
+    "method": "ROVER on official-normalized tokens, backbone=order (docs/ROVER.md)",
+    "clips_changed_from_backbone": 90
+  },
+  "dataset": {
+    "split": "dev",
+    "rows": 155
+  },
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.0909,
+      "substitutions": 252,
+      "deletions": 144,
+      "insertions": 58,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.0805,
+        "high": 0.1013
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 151,
+          "reference_words": 4935,
+          "wer": 0.09,
+          "substitutions": 247,
+          "deletions": 139,
+          "insertions": 58
+        },
+        "spa": {
+          "clips": 4,
+          "reference_words": 59,
+          "wer": 0.1695,
+          "substitutions": 5,
+          "deletions": 5,
+          "insertions": 0
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 78,
+          "reference_words": 3014,
+          "wer": 0.1038,
+          "substitutions": 167,
+          "deletions": 111,
+          "insertions": 35
+        },
+        "speaker_2": {
+          "clips": 77,
+          "reference_words": 1980,
+          "wer": 0.0712,
+          "substitutions": 85,
+          "deletions": 33,
+          "insertions": 23
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 89,
+          "reference_words": 2718,
+          "wer": 0.0872,
+          "substitutions": 139,
+          "deletions": 64,
+          "insertions": 34
+        },
+        "20-30": {
+          "clips": 16,
+          "reference_words": 996,
+          "wer": 0.1104,
+          "substitutions": 57,
+          "deletions": 38,
+          "insertions": 15
+        },
+        "5-10": {
+          "clips": 37,
+          "reference_words": 679,
+          "wer": 0.0707,
+          "substitutions": 25,
+          "deletions": 17,
+          "insertions": 6
+        },
+        "<5": {
+          "clips": 8,
+          "reference_words": 71,
+          "wer": 0.169,
+          "substitutions": 10,
+          "deletions": 2,
+          "insertions": 0
+        },
+        ">=30": {
+          "clips": 5,
+          "reference_words": 530,
+          "wer": 0.0887,
+          "substitutions": 21,
+          "deletions": 23,
+          "insertions": 3
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.0831,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9828,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.090909,
+    "matches_in_process_wer": true
+  },
+  "versus_incumbent": {
+    "incumbent": "ft-g7-turbo-auto-int8-b5-prompt",
+    "paired_selector_minus_incumbent": {
+      "difference_b_minus_a": -0.0168,
+      "low": -0.0248,
+      "high": -0.0089,
+      "share_of_resamples_b_worse": 0.0,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "comparisons": {
+    "rover5-noq06 minus r3c-g7-rover": {
+      "difference_b_minus_a": -0.0056,
+      "low": -0.01,
+      "high": -0.0019,
+      "share_of_resamples_b_worse": 0.0005,
+      "level": 0.95,
+      "reps": 2000
+    }
+  },
+  "versus_preprocessed_incumbent": {
+    "difference_b_minus_a": -0.0114,
+    "low": -0.0185,
+    "high": -0.0047,
+    "share_of_resamples_b_worse": 0.0005,
+    "level": 0.95,
+    "reps": 2000
+  }
+}

@@ -1,0 +1,34 @@
+# GER decode output format check -- 2026-09-24T04:48:38Z
+# Synthetic fixture only. No competition data: the three 'segments' are invented strings.
+# Purpose: prove modal_decode.py's {"id","text"} JSONL is consumable by build_ger_pairs.py
+# and that a blank voter drops the segment rather than silently training on an empty hypothesis.
+
+fixture: 3 segments; voters ft-g7, ft-s2, turbo; turbo blank on segment 3
+
+$ uv run --no-sync python scripts/build_ger_pairs.py --voters-dir <v> --dataset <d> --out <o>
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "voters": [
+    "ft-g7",
+    "ft-s2",
+    "turbo"
+  ],
+  "pairs": 2,
+  "dropped": {
+    "no_reference": 0,
+    "missing_voter": 0,
+    "empty_hypothesis": 1
+  },
+  "reference_words": {
+    "total": 9,
+    "median": 4.5
+  },
+  "hypothesis_words_median": {
+    "ft-g7": 4.5,
+    "ft-s2": 4.5,
+    "turbo": 4.5
+  }
+}
+
+resulting pairs.jsonl: 2 rows, keys ['hypotheses','id','reference']
+segment with the blank voter was dropped: True
+exit: 0

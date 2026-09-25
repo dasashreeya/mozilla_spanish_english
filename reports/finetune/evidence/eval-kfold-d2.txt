@@ -1,0 +1,162 @@
+
+=== 2026-09-21T01:08:20Z folds=7
+$ git rev-parse HEAD
+ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+head exit=0
+--- fold clip0: eval_items=31 train_items=120
+$ uv run --extra train modal volume get lit-sp-en-train /runs/kfold-d2/clip0/ct2 /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0
+✓ Finished downloading files to local!
+download-clip0 exit=0
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/clip0/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/clip0.txt --run-name kfold-d2-clip0-heldout
+Traceback (most recent call last):
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/whisper_baseline.py", line 357, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/whisper_baseline.py", line 289, in main
+    backend = load_backend(args)
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/whisper_baseline.py", line 199, in load_backend
+    return FasterWhisperBackend(args.model, args.compute_type, args.threads, args.beam_size,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/whisper_baseline.py", line 99, in __init__
+    loaded = WhisperModel(model, device="cpu", compute_type=compute_type,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Invalid string length in model.bin
+decode-clip0 exit=1
+
+=== 2026-09-21T01:40:02Z folds=7
+$ git rev-parse HEAD
+ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+head exit=0
+--- fold clip0: eval_items=31 train_items=120
+$ uv run --extra train modal volume get lit-sp-en-train /runs/kfold-d2/clip0/ct2 /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0
+download-clip0-attempt1 TIMEOUT after 1500s
+$ uv run --extra train modal volume get lit-sp-en-train /runs/kfold-d2/clip0/ct2 /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0
+
+=== 2026-09-21T02:06:47Z folds=7
+$ git rev-parse HEAD
+ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+head exit=0
+--- fold clip0: eval_items=31 train_items=120
+$ uv run --extra train modal volume get lit-sp-en-train /runs/kfold-d2/clip0/ct2 /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0/ct2
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [json.exception.parse_error.101] parse error at line 1, column 1: syntax error while parsing value - unexpected end of input; expected '[', '{', or a literal
+download-clip0-attempt1-quiet-check exit=1
+download-clip0-attempt1: quiet at 1560326138 bytes but does not load yet
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0/ct2
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [json.exception.parse_error.101] parse error at line 1, column 1: syntax error while parsing value - unexpected end of input; expected '[', '{', or a literal
+download-clip0-attempt1-quiet-check exit=1
+download-clip0-attempt1: quiet at 1560326138 bytes but does not load yet
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0/ct2
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 689, in __init__
+    self.model = ctranslate2.models.Whisper(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [json.exception.parse_error.101] parse error at line 1, column 1: syntax error while parsing value - unexpected end of input; expected '[', '{', or a literal
+download-clip0-attempt1-quiet-check exit=1
+download-clip0-attempt1: quiet at 1560326138 bytes but does not load yet
+download-clip0-attempt1 TIMEOUT after 1500s
+$ uv run --extra train modal volume get lit-sp-en-train /runs/kfold-d2/clip0/ct2 /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0
+
+=== 2026-09-21T02:56:02Z folds=7
+$ git rev-parse HEAD
+ee28c9d8ee8bc517f0d111ecc39aa6be59a25a57
+head exit=0
+--- fold clip0: eval_items=31 train_items=120
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip0/ct2
+verify-staged-clip0 exit=0
+clip0: using staged model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/clip0/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/clip0.txt --run-name kfold-d2-clip0-heldout
+kfold-d2-clip0-heldout: clips=31 WER=0.0853 [0.0647, 0.1055] cli=0.085279 parity=True RTF=0.4298
+decode-clip0 exit=0
+deleted artifacts/finetune/kfold-d2/clip0/ct2 (kept on the Modal volume)
+--- fold clip1: eval_items=31 train_items=121
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip1/ct2
+verify-staged-clip1 exit=0
+clip1: using staged model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/clip1/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/clip1.txt --run-name kfold-d2-clip1-heldout
+kfold-d2-clip1-heldout: clips=31 WER=0.105 [0.0841, 0.1233] cli=0.104972 parity=True RTF=0.6798
+decode-clip1 exit=0
+deleted artifacts/finetune/kfold-d2/clip1/ct2 (kept on the Modal volume)
+--- fold clip2: eval_items=31 train_items=119
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip2/ct2
+verify-staged-clip2 exit=0
+clip2: using staged model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/clip2/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/clip2.txt --run-name kfold-d2-clip2-heldout
+kfold-d2-clip2-heldout: clips=31 WER=0.1031 [0.0799, 0.1298] cli=0.103082 parity=True RTF=0.6782
+decode-clip2 exit=0
+deleted artifacts/finetune/kfold-d2/clip2/ct2 (kept on the Modal volume)
+--- fold clip3: eval_items=31 train_items=120
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip3/ct2
+verify-staged-clip3 exit=0
+clip3: using staged model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/clip3/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/clip3.txt --run-name kfold-d2-clip3-heldout
+kfold-d2-clip3-heldout: clips=31 WER=0.1077 [0.0769, 0.1448] cli=0.10766 parity=True RTF=0.6605
+decode-clip3 exit=0
+deleted artifacts/finetune/kfold-d2/clip3/ct2 (kept on the Modal volume)
+--- fold clip4: eval_items=31 train_items=120
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/clip4/ct2
+verify-staged-clip4 exit=0
+clip4: using staged model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/clip4/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/clip4.txt --run-name kfold-d2-clip4-heldout
+kfold-d2-clip4-heldout: clips=31 WER=0.0925 [0.0689, 0.1168] cli=0.09252 parity=True RTF=0.6636
+decode-clip4 exit=0
+deleted artifacts/finetune/kfold-d2/clip4/ct2 (kept on the Modal volume)
+--- fold holdout-speaker_1: eval_items=78 train_items=77
+
+=== 2026-09-21T05:07:25Z concat
+merged kfold-d2-clip0-heldout: 31 clips
+merged kfold-d2-clip1-heldout: 31 clips
+merged kfold-d2-clip2-heldout: 31 clips
+merged kfold-d2-clip3-heldout: 31 clips
+merged kfold-d2-clip4-heldout: 31 clips
+wrote kfold-d2-heldout: 155 clips, every clip held out from its own model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/holdout-speaker_1/ct2
+verify-staged-holdout-speaker_1 exit=0
+holdout-speaker_1: using staged model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/holdout-speaker_1/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/holdout-speaker_1.txt --run-name kfold-d2-holdout-speaker_1-heldout
+kfold-d2-holdout-speaker_1-heldout: clips=78 WER=0.1165 [0.1027, 0.131] cli=0.116457 parity=True RTF=0.6571
+decode-holdout-speaker_1 exit=0
+deleted artifacts/finetune/kfold-d2/holdout-speaker_1/ct2 (kept on the Modal volume)
+--- fold holdout-speaker_2: eval_items=77 train_items=73
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python -c import sys
+from faster_whisper import WhisperModel
+WhisperModel(sys.argv[1], device='cpu', compute_type='int8') /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/holdout-speaker_2/ct2
+verify-staged-holdout-speaker_2 exit=0
+holdout-speaker_2: using staged model
+$ /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/.venv-qwen/bin/python scripts/whisper_baseline.py --model artifacts/finetune/kfold-d2/holdout-speaker_2/ct2 --initial-prompt Hola, ¿cómo estás? I'm good, gracias. Vamos a la tienda later, okay? --ids @/Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/artifacts/finetune/kfold-d2/ids/holdout-speaker_2.txt --run-name kfold-d2-holdout-speaker_2-heldout
+kfold-d2-holdout-speaker_2-heldout: clips=77 WER=0.101 [0.0841, 0.1182] cli=0.10101 parity=True RTF=0.4312
+decode-holdout-speaker_2 exit=0
+deleted artifacts/finetune/kfold-d2/holdout-speaker_2/ct2 (kept on the Modal volume)

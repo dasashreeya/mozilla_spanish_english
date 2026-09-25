@@ -185,7 +185,66 @@ class QwenBackend:
                                                   "huggingface-hub", "accelerate")}
 
 
+class CTCBackend:
+    """A connectionist-temporal-classification acoustic model (wav2vec2 / XLSR / MMS).
+
+    Every other backend here is an autoregressive transformer, and they fail in correlated
+    ways: when the audio is unclear they emit fluent, plausible words. A CTC model cannot do
+    that - it labels frames, so its errors look like garbled phonetics rather than invented
+    sentences. That decorrelation is what ROVER pays for (docs/METHODS.md Round 8). Output is
+    lowercase and unpunctuated, so it should be one voter among several, never a backbone.
+    """
+
+    name = "ctc"
+
+    def __init__(self, model: str, device: str, dtype: str, *, loaded=None):
+        self.model_name, self.device, self.dtype = model, device, dtype
+        if loaded is None:
+            import torch
+            from transformers import AutoModelForCTC, Wav2Vec2Processor
+
+            # Wav2Vec2Processor, not AutoProcessor: several XLSR repos ship a KenLM decoder, and
+            # AutoProcessor would pick Wav2Vec2ProcessorWithLM and require pyctcdecode. Greedy
+            # argmax keeps this a pure acoustic voter with no extra dependency. The competition
+            # runtime does ship pyctcdecode and kenlm (revision.md 5.1), so an LM-rescored
+            # variant is available later if the greedy voter earns its place.
+            processor = Wav2Vec2Processor.from_pretrained(model)
+            net = AutoModelForCTC.from_pretrained(model, dtype=getattr(torch, dtype)).to(device)
+            net.eval()
+            loaded = (processor, net)
+        self.processor, self.model = loaded
+
+    def transcribe(self, clip: Path, language: str) -> tuple[str, str, float | None]:
+        import torch
+
+        wav = audio.decode(clip, 16000, 1)[:, 0]
+        inputs = self.processor(wav, sampling_rate=16000, return_tensors="pt")
+        with torch.no_grad():
+            logits = self.model(**{k: v.to(self.device) for k, v in inputs.items()}).logits
+        text = self.processor.batch_decode(logits.argmax(-1))[0]
+        return text.strip(), "<ctc>", None
+
+    def run_name(self, language: str) -> str:
+        return "-".join([self.model_name.split("/")[-1], language, self.device, self.dtype])
+
+    def provenance(self) -> dict:
+        return {"name": self.model_name} | snapshot_provenance(self.model_name)
+
+    def decoding(self, language: str) -> dict:
+        return {"language": language, "device": self.device, "dtype": self.dtype,
+                "decoder": "greedy argmax over CTC logits, no language model",
+                "input": "ffmpeg-decoded 16 kHz mono float32",
+                "other_transcribe_arguments": "none"}
+
+    def software(self) -> dict:
+        from importlib.metadata import version
+
+        return {name: version(name) for name in ("transformers", "torch", "huggingface-hub")}
+
+
 def load_backend(args: argparse.Namespace):
+    if args.backend == "ctc":
+        return CTCBackend(args.model, args.device, args.dtype)
     if args.backend == "qwen":
         return QwenBackend(args.model, args.device, args.dtype, args.max_new_tokens,
                            context=args.context)
@@ -255,7 +314,8 @@ def select_dev_ids(rows: list[dict], spec: str) -> list[dict]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--backend", choices=("faster-whisper", "qwen"), default="faster-whisper")
+    parser.add_argument("--backend", choices=("faster-whisper", "qwen", "ctc"),
+                        default="faster-whisper")
     parser.add_argument("--model", default="large-v3-turbo")
     parser.add_argument("--language", choices=("auto", "en", "es"), default="auto")
     parser.add_argument("--compute-type", default="int8", help="faster-whisper only")

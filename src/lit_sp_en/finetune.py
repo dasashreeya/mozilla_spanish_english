@@ -29,6 +29,12 @@ class FinetuneConfig:
     limit_segments: int = 0
     # Non-empty: keep only these manifest ids, in manifest order (docs/METHODS.md G8 folds).
     include_ids: tuple[str, ...] = ()
+    # Upsampling (docs/METHODS.md Round 10). 54% of the G7 segments carry no code-switch while
+    # dev is code-switched throughout, so the switch-bearing rows are repeated. A JSON list of
+    # ids rather than a second manifest: the audio paths are relative to data_dir, so a separate
+    # dataset directory would not find the FLACs, and repeating manifest rows changes no bytes.
+    upsample_ids_file: str = ""
+    upsample_factor: int = 1
     per_device_batch: int = 16
     grad_accum: int = 2
     learning_rate: float = 1e-5
@@ -65,6 +71,15 @@ def load_items(cfg: FinetuneConfig) -> list[dict]:
         if missing:
             raise ValueError(f"{len(missing)} of {len(wanted)} requested ids are not usable rows")
         items = [item for item in items if item["id"] in wanted]
+    if cfg.upsample_ids_file and cfg.upsample_factor > 1:
+        dense = set(json.loads(Path(cfg.upsample_ids_file).read_text(encoding="utf-8")))
+        known = {item["id"] for item in items}
+        if not dense & known:
+            raise ValueError("upsample id list matches no usable row")
+        # Repeat in place so the extra copies stay adjacent to the original; the trainer
+        # shuffles, so position carries no meaning, and this keeps the mapping obvious.
+        items = [copy for item in items
+                 for copy in ([item] * cfg.upsample_factor if item["id"] in dense else [item])]
     return items[: cfg.limit_segments] if cfg.limit_segments else items
 
 

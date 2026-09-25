@@ -1,0 +1,27 @@
+# Expanded voter search (E3 disclosure) -- 2026-09-25T04:04:16Z
+# Re-run after ft-g7sd-turbo-auto-int8-b5-prompt was decoded, on the SAME 155 dev clips.
+# Pool 19 -> 20 voters. The earlier claim that recombination was 'exhausted at 12,878
+# configurations' was true only of the pool that existed then; this tests the larger one.
+
+5 voters: best 0.0895   8.91GB  ft-g7-turbo-auto-int8- | large-v3-turbo-auto-in | large-v3-turbo-en-int8 | ft-s2-turbo-auto-int8- | Qwen3-ASR-1.7B-es-cpu-
+6 voters: best 0.0881   8.91GB  ft-g7-turbo-auto-int8- | ft-s2-turbo-auto-int8- | large-v3-turbo-auto-in | Qwen3-ASR-1.7B-en-cpu- | Qwen3-ASR-1.7B-es-cpu- | Qwen3-ASR-1.7B-auto-cp
+7 voters: best 0.0889  10.42GB  ft-g7sd-turbo-auto-int | ft-s2-turbo-auto-int8- | large-v3-turbo-auto-in | ft-g7-turbo-auto-int8- | Qwen3-ASR-1.7B-es-cpu- | Qwen3-ASR-1.7B-en-cpu- | Qwen3-ASR-1.7B-auto-cp
+
+configurations evaluated: 13929
+OVERALL BEST 0.0881  8.91 GB
+    ft-g7-turbo-auto-int8-b5-prompt
+    ft-s2-turbo-auto-int8-b5-prompt-vad
+    large-v3-turbo-auto-int8-b5-prompt-guard
+    Qwen3-ASR-1.7B-en-cpu-float32
+    Qwen3-ASR-1.7B-es-cpu-float32
+    Qwen3-ASR-1.7B-auto-cpu-float32
+
+[exited with code 0]
+
+CONCLUSION: the new voter does not help. The 4-voter optimum is unchanged at 0.0885 (the
+shipped build). The overall best, 0.0881, is 0.0004 better, needs SIX voters and 8.91 GB
+(above the only size the platform has accepted, 7.40 GB), and at the 52% dev->public
+transfer measured on 2026-09-25 is worth about 0.0002 publicly. ft-g7sd appears only in a
+7-voter set scoring 0.0889, which is WORSE than the shipped 0.0885.
+Recombination on these 155 clips is exhausted in the sense that matters: no configuration
+found is worth a submission.

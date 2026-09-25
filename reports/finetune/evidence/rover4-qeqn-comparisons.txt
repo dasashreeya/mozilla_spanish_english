@@ -1,0 +1,22 @@
+# rover4-qeqn: paired comparisons and speaker split, saved as evidence
+HEAD: a5c35a1f726bde767ba296856048de98fa40347d
+date: 2026-09-24T03:58:50Z
+note: scripts/compare_matched.py and speaker_split.py print but save nothing; this file
+      records their output so the numbers in the claim are checkable.
+
+$ uv run --no-sync python scripts/compare_matched.py rover4-qeqn r3c-g7-rover r3c-M11b
+== rover4-qeqn [sentence-breaks], paired bootstrap 2000 resamples seed 20260908, on the candidate's clips ==
+r3c-g7-rover           clips=155  r3c-g7-rover=0.0965  candidate=0.0885  diff=-0.0080 [-0.0140, -0.0021]  BELOW ZERO
+r3c-M11b               clips=155  r3c-M11b=0.0989  candidate=0.0885  diff=-0.0104 [-0.0174, -0.0036]  BELOW ZERO
+exit: 0
+
+$ uv run --no-sync python scripts/speaker_split.py --candidate rover4-qeqn --incumbent r3c-g7-rover
+all (155 clips): rover4-qeqn 0.0885 | r3c-g7-rover 0.0965
+speaker_1 (78 clips): rover4-qeqn 0.1032 | r3c-g7-rover 0.1102
+speaker_2 (77 clips): rover4-qeqn 0.0662 | r3c-g7-rover 0.0758
+
+rover4-qeqn minus r3c-g7-rover, all: -0.0080 [-0.0140, -0.0024]
+rover4-qeqn minus r3c-g7-rover, speaker_1: -0.0070 [-0.0149, +0.0008]
+rover4-qeqn minus r3c-g7-rover, speaker_2: -0.0096 [-0.0192, -0.0010]
+
+exit: 0

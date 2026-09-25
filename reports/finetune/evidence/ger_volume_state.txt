@@ -1,0 +1,38 @@
+# Modal volume state for the GER decode gate
+# Captured 2026-09-24T04:48:07Z. Replaces the mis-citation of volume_state_g7.txt,
+# which is the state BEFORE the G7 upload and says bangor_g7 is absent.
+
+$ uv run --extra train modal volume ls lit-sp-en-train 
+bangor
+dev_folds
+bangor_g7
+runs
+chunks
+
+$ uv run --extra train modal volume ls lit-sp-en-train bangor_g7
+bangor_g7/audio
+bangor_g7/manifest.jsonl
+bangor_g7/segment_languages.json
+
+$ uv run --extra train modal volume ls lit-sp-en-train runs/full-g7a
+runs/full-g7a/final
+runs/full-g7a/ct2
+runs/full-g7a/report.json
+runs/full-g7a/ATTEMPT
+
+$ uv run --extra train modal volume ls lit-sp-en-train runs/full-s2
+runs/full-s2/final
+runs/full-s2/ct2
+runs/full-s2/report.json
+runs/full-s2/ATTEMPT
+
+$ uv run --extra train modal volume ls lit-sp-en-train /runs
+runs/trial-s1
+runs/full-s2
+runs/kfold-d1
+runs/kfold-d2
+runs/kfold-final1
+runs/full-g7a
+
+$ uv run --extra train modal app list --json  # billing check
+apps: 0 not stopped: 0

@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-09-25T01:33:22+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "voters": [
+    "ft-g7",
+    "ft-s2",
+    "turbo"
+  ],
+  "pairs": 4715,
+  "dropped": {
+    "no_reference": 0,
+    "missing_voter": 0,
+    "empty_hypothesis": 0
+  },
+  "reference_words": {
+    "total": 195757,
+    "median": 38
+  },
+  "hypothesis_words_median": {
+    "ft-g7": 38,
+    "ft-s2": 38,
+    "turbo": 32
+  }
+}

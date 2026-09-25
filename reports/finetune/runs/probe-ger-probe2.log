@@ -1,0 +1,28 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-1nbLAacLbklvX1PIRse7HW
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_p
+│   robe.py
+└── 🔨 Created function probe.
+PROBE start run=ger-probe2 source=mobiuslabsgmbh/faster-whisper-large-v3-turbo revision=0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf
+PROBE ctranslate2=4.8.2 cuda_device_count=1
+PROBE model loaded
+PROBE transcribe FAILED:
+Traceback (most recent call last):
+  File "/root/modal_probe.py", line 89, in probe
+    segments, info = model.transcribe(silence, language=None, task="transcribe", beam_size=5)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 942, in transcribe
+    ) = self.detect_language(
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 1819, in detect_language
+    encoder_output = self.encode(
+                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 1400, in encode
+    return self.model.encode(features, to_cpu=to_cpu)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Library libcublas.so.12 is not found or cannot be loaded
+[modal-client] 2026-09-24T18:11:13-0400 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/dasashreeya/main/ap-1nbLAacLbklvX1PIRse7HW

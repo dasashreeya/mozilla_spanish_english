@@ -1,0 +1,154 @@
+{
+  "run": "ctc-xlsr-es",
+  "backend": "ctc",
+  "generated_at": "2026-09-24T02:21:41+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "dataset": {
+    "split": "dev",
+    "rows": 155,
+    "limit": null
+  },
+  "model": {
+    "name": "jonatasgrosman/wav2vec2-large-xlsr-53-spanish",
+    "repo_id": "jonatasgrosman/wav2vec2-large-xlsr-53-spanish",
+    "revision": "96d7e9b4e4a78af515a3c6d3cee7c0826045d276",
+    "weights_sha256": {
+      "pytorch_model.bin": "41c110e55d2eac8c79486ad87dbe8f9527ed034fe087a6adf03c891eeba914c1"
+    }
+  },
+  "decoding": {
+    "language": "es",
+    "device": "cpu",
+    "dtype": "float32",
+    "decoder": "greedy argmax over CTC logits, no language model",
+    "input": "ffmpeg-decoded 16 kHz mono float32",
+    "other_transcribe_arguments": "none"
+  },
+  "software": {
+    "transformers": "4.57.6",
+    "torch": "2.11.0",
+    "huggingface-hub": "0.36.2",
+    "python": "3.12.13",
+    "machine": "arm64"
+  },
+  "timing": {
+    "audio_seconds": 2153.84,
+    "model_load_seconds": 5.1,
+    "decode_seconds": 162.2,
+    "real_time_factor": 0.0753
+  },
+  "detected_language": {
+    "<ctc>": {
+      "clips": 155,
+      "mean_probability": null
+    }
+  },
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.5919,
+      "substitutions": 1897,
+      "deletions": 1011,
+      "insertions": 48,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.5687,
+        "high": 0.6123
+      }
+    },
+    "groups": {
+      "language_label": {
+        "enspa": {
+          "clips": 151,
+          "reference_words": 4935,
+          "wer": 0.5941,
+          "substitutions": 1883,
+          "deletions": 1001,
+          "insertions": 48
+        },
+        "spa": {
+          "clips": 4,
+          "reference_words": 59,
+          "wer": 0.4068,
+          "substitutions": 14,
+          "deletions": 10,
+          "insertions": 0
+        }
+      },
+      "speaker": {
+        "speaker_1": {
+          "clips": 78,
+          "reference_words": 3014,
+          "wer": 0.6244,
+          "substitutions": 1108,
+          "deletions": 748,
+          "insertions": 26
+        },
+        "speaker_2": {
+          "clips": 77,
+          "reference_words": 1980,
+          "wer": 0.5424,
+          "substitutions": 789,
+          "deletions": 263,
+          "insertions": 22
+        }
+      },
+      "duration_bucket_seconds": {
+        "10-20": {
+          "clips": 89,
+          "reference_words": 2718,
+          "wer": 0.585,
+          "substitutions": 1071,
+          "deletions": 492,
+          "insertions": 27
+        },
+        "20-30": {
+          "clips": 16,
+          "reference_words": 996,
+          "wer": 0.6024,
+          "substitutions": 345,
+          "deletions": 247,
+          "insertions": 8
+        },
+        "5-10": {
+          "clips": 37,
+          "reference_words": 679,
+          "wer": 0.5479,
+          "substitutions": 265,
+          "deletions": 99,
+          "insertions": 8
+        },
+        "<5": {
+          "clips": 8,
+          "reference_words": 71,
+          "wer": 0.5352,
+          "substitutions": 25,
+          "deletions": 11,
+          "insertions": 2
+        },
+        ">=30": {
+          "clips": 5,
+          "reference_words": 530,
+          "wer": 0.6717,
+          "substitutions": 191,
+          "deletions": 162,
+          "insertions": 3
+        }
+      }
+    },
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.5835,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.8072,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.59191,
+    "matches_in_process_wer": true
+  }
+}

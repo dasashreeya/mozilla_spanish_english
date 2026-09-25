@@ -1,0 +1,77 @@
+# Resolved configuration for the GER decode run (scripts/modal_decode.py::decode)
+# 2026-09-24T14:58:16Z  regenerated after the v3 review
+# REGENERATED because the previous version attributed the container spec to ::decode while
+# the @app.function decorator was actually on _silence_libraries. Values below are read
+# from the decorated object and from decode's own decorator, never transcribed.
+
+-- the object being launched ------------------------------------------------
+  type(modal_decode.decode)      = Function
+  isinstance(..., modal.Function) = True
+  app.registered_functions        = ['decode']
+  modal resolves '::decode'       = True (Function)
+
+-- container, from decode.spec ----------------------------------------------
+  spec.gpus    = 'A100-80GB'
+  spec.cpu     = (8.0, 8.0)
+  spec.memory  = (65536, 65536)
+  spec.cloud   = None
+  spec.volumes = ['/vol']
+
+-- container settings not exposed on spec, read from decode's decorator ------
+  decorators on `def decode`: app.function(image=image, gpu=GPU, cpu=CPU, memory=MEMORY, timeout=240 * 60, s
+                              tartup_timeout=STARTUP_TIMEOUT, volumes={VOLUME: volume}, retries=0)
+    timeout=240 * 60                   present on decode: True
+    startup_timeout=STARTUP_TIMEOUT    present on decode: True
+    retries=0                          present on decode: True
+  STARTUP_TIMEOUT = 600 s; timeout = 14400 s
+  rate = $0.00094088/s = $3.39/h  (modal_watchdog.py:52)
+  per-attempt ceiling = (240+10)*60 * rate = $14.11  <- provider-enforced,
+    and now genuinely attached to the function that decodes
+  25-min smoke deadline bound = 1500 * rate = $1.41
+
+-- launch -------------------------------------------------------------------
+uv run --extra train python scripts/modal_watchdog.py decode <run-id> \
+    --script scripts/modal_decode.py --max-minutes <N> [--stage-arg=--limit=20]
+  stage 'decode' accepted: modal_watchdog.py:177
+  wrong-script guard exits 2: modal_watchdog.py main()
+
+-- datasets ------------------------------------------------------------------
+  ALLOWED_DATASETS = ['bangor', 'bangor_g7']   ('dev_folds' excluded)
+
+-- voters -------------------------------------------------------------------
+  ft-g7   source=runs/full-g7a/ct2
+          on_volume=True  prompted=True  revision=None
+  ft-s2   source=runs/full-s2/ct2
+          on_volume=True  prompted=True  revision=None
+  turbo   source=mobiuslabsgmbh/faster-whisper-large-v3-turbo
+          on_volume=False  prompted=True  revision=0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf
+  turbo revision == pack_submission.MODELS['turbo']['revision']: True
+
+-- voter overlap with rover4-qeqn (best system on hand; NO public score) -----
+  _MODELS['large-v3-turbo'] = mobiuslabsgmbh/faster-whisper-large-v3-turbo
+  == VOTERS['turbo']['source']: True
+  SHARED: ft-g7, turbo. NOT shared: ft-s2, and both Qwen passes. => TWO of three.
+
+-- decode settings ----------------------------------------------------------
+  device='cuda', compute_type='float16'  (package CUDA branch: pack_submission.py:31)
+  beam_size=5, language=None (auto-detect: faster_whisper/transcribe.py:797 (WhisperModel.transcribe, the method called;
+    304-306 is BatchedInferencePipeline's docstring and was the wrong citation))
+  initial_prompt == pack_submission.CODE_SWITCH_PROMPT: True
+
+-- precision: measured vs unmeasured ----------------------------------------
+  MEASURED (precision_check_limit20.txt line 1): CPU int8 vs CPU **float32**, 20 clips ->
+    fine-tuned 14/20 identical, turbo 8/20 identical.
+  UNMEASURED: CPU int8 vs GPU **float16** -- the gap this run actually introduces.
+
+-- GPU RTF ------------------------------------------------------------------
+  STILL UNKNOWN, but no longer for want of trying. Two smoke attempts on 2026-09-24:
+    ger-smoke1  failed at model load (no cuBLAS/cuDNN in the image)   cost<=$0.06
+    ger-smoke2  failed after SEGMENTS 20, inside the scrubbed loop    cost<=$0.49
+  Neither produced a VOTER line, so neither produced an RTF. A data-free probe is the next step.
+  CPU RTFs for scale only: ft-g7 0.6787 (eval-full-g7a.txt:16), ft-s2 0.7391
+  (S4_eval_s2.txt:10), turbo UNKNOWN. Training throughput is NOT an RTF.
+
+-- model identity on the volume: NOT established -----------------------------
+  ger_volume_state.txt shows the DIRECTORIES exist. A listing is not an identity of
+  bytes. The smoke loads neither volume model (turbo only), so this does not bear on
+  this launch; it must be closed before the full pass.

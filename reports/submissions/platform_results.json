@@ -79,5 +79,24 @@
     "source": "user-pasted leaderboard row: '#12 MiaSanMia 31min ago 3 submissions 0.1198'",
     "identity": "confirmed (user reported it as their own result)",
     "notes": "M11b ROVER with the G7 duration-matched fine-tune as backbone. Validated locally with 155/155 transcripts identical to r3c-g7-rover, so the dev number is exactly this build's. Dev-to-public gap +0.0233. Public improved 0.1215 -> 0.1198 (-0.0017) against a dev improvement of -0.0024 [-0.0056,+0.0008]. Rank fell 5 -> 12 because other teams improved; the leaderboard displays this better score, which is consistent with best-of or latest and does not distinguish them. Submitted as a calibration shot over a pre-submit BLOCK (reports/finetune/approvals.md 2026-09-21)."
+  },
+  {
+    "date": "2026-09-23",
+    "kind": "submission allowance",
+    "remaining": 3,
+    "source": "user in chat 2026-09-23: 'we have 3 submissions left'",
+    "notes": "Supersedes the 2026-09-15 record of 3 remaining that week. Three scored submissions have been made (2026-09-15, -16, -21); the limit is 3 per rolling 7 days, so this is the user's reading of the platform, not a derivation."
+  },
+  {
+    "date": "2026-09-25",
+    "kind": "scored submission",
+    "public_score": 0.1156,
+    "rank": 16,
+    "zip": "submission-rover4-qeqn-breaks.zip",
+    "zip_sha256": "8569de69d77ada2eb5d40a55126b18d7cf356f00f2a28f7bcbd100776ff76bd9",
+    "dev_wer_same_build": 0.0885,
+    "commit": "a5c35a1 plus uncommitted GER/Round-10 work",
+    "source": "user-pasted in chat: '0.1156  Current rank #16'",
+    "notes": "Filed as a CALIBRATION submission (pre-submit rule b), not an improvement, because the dev number was the winner of 184 greedy + 12,878 beam configurations over the same 155 clips. It answered its question. Dev gain vs rover3-g7-breaks was -0.0080; public gain was -0.0042, so 52% of the dev gain transferred and 48% was selection. Projection stated before submitting was 0.109-0.121 with a best guess of 0.109 (ratio model): the actual 0.1156 is inside the range but +0.0062 above the best guess, and the ADDITIVE model was closer (+0.0030). The leave-one-out preference for the ratio model, built on three points, did not hold on the fourth. Rank fell 12 -> 16 despite the score improving, so other entrants moved."
   }
 ]

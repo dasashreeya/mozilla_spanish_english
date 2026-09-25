@@ -1,0 +1,79 @@
+# SUPERSEDED for the remaining-budget question by spend_fresh_budget.txt (2026-09-24).
+# This file is the PRE-RESET record of what was spent before the user granted "$35
+# fresh". Its "Remaining:" line no longer applies and must not be quoted.
+# Spend reconciliation for the Spanish-English track
+# 2026-09-24T04:49:28Z
+# Written because a pre-gpu review found the standing figure ($3.72) exists only in prose
+# (STATE.md, docs/HANDOVER.md) and that the artifact-backed figures disagree with it.
+# rate = 0.000694 + 8*0.0000131 + 64*0.00000222 = $0.00094088/s  (modal_watchdog.py:52)
+
+run                 label       cost<=   source
+trial-s1            MEASURED      1.13   reports/finetune/runs/trial-s1.watchdog.txt, final WATCHDOG line t+1202s
+full-s2             MEASURED      1.01   reports/finetune/runs/full-s2.watchdog.txt, final WATCHDOG line t+1076s
+kfold-d1 (failed)   MEASURED      0.12   reports/finetune/evidence/spend_g8_runs.txt
+kfold-d2            MEASURED      0.53   reports/finetune/evidence/spend_g8_runs.txt
+kfold-final1        MEASURED      0.09   reports/finetune/evidence/spend_g8_runs.txt
+ger-smoke1          MEASURED      0.06   watchdog 15:45:53Z t+61s, state=stopped tasks=0
+ger-smoke2          MEASURED      0.49   watchdog 15:57:02Z t+520s, state=stopped tasks=0
+ger-probe1          MEASURED      0.49   watchdog 17:08:17Z t+521s; stopped manually, confirmed
+ger-probe2          MEASURED      0.12   watchdog t+123s, state=stopped tasks=0, exited 0.
+                                         DIAGNOSTIC SUCCESS -- see note below
+ger-probe3          MEASURED      0.03   image build failed (namespace-package __file__ is None)
+ger-probe4          MEASURED      0.12   CUBLAS FIX CONFIRMED: "PROBE transcribe OK"
+ger-smoke3          MEASURED      0.14   FIRST SUCCESSFUL GPU DECODE: 20 segments, 0 empty, 57.4s
+ger-smoke4          MEASURED      0.37   200 segments, 0 empty, 146.0s -> marginal RTF 0.0367
+                                  4.70   subtotal, every figure backed by a watchdog line
+
+ger-probe2 is the first GER run that bought anything. It printed, in full:
+  RuntimeError: Library libcublas.so.12 is not found or cannot be loaded
+    at faster_whisper/transcribe.py:1400 -> self.model.encode(features, to_cpu=to_cpu)
+That is the cause of ger-smoke2, which had been UNKNOWN. The nvidia-cublas-cu12 wheel was
+installed but pip places its .so under site-packages/nvidia/*/lib, which is not on the dynamic
+loader's path; CTranslate2 loads cuBLAS lazily at the first encode(), so the model loads and
+inference then fails. Fix: an ldconfig step at image build registers the wheel's lib dirs, with
+a `ldconfig -p | grep -c libcublas.so.12` line that fails the build if it is still missing.
+
+NOTE on ger-smoke2: the watchdog reported state=stopped tasks=0 and exited, and a later
+  `modal app list` showed the same app ap-ZeNGEjjSpA2kc9p9C5mB4c back at
+  "ephemeral (detached) tasks=1". It was stopped manually and confirmed stopped/0 tasks.
+  The window between the watchdog's last poll and that manual stop is NOT measured; at
+  $3.39/h a few minutes is roughly $0.10-0.20. So the true total is ABOVE the figures here.
+  "Confirmed stopped" is evidently not always final -- recorded because it bears on any
+  longer run.
+
+full-g7a has NO watchdog artifact -- the only run without one.
+  DERIVED lower bound from its own REPORT: wall_seconds 670.4 x $0.00094088 = $0.63
+    (reports/finetune/runs/full-g7a.log:565, key `wall_seconds`)
+  This is a LOWER bound: container startup and image pull are billed and are not in
+  wall_seconds. docs/HANDOVER.md gives $0.81 for this run in prose; UNVERIFIED.
+
+TOTAL, artifact-backed only            $4.70   (excludes full-g7a entirely)
+TOTAL, + g7a DERIVED lower bound       $5.33
+TOTAL, + g7a prose figure (UNVERIFIED) $5.51
+
+The defensible statement is: $4.70 artifact-backed, AT LEAST $5.33 once full-g7a is counted at
+its DERIVED lower bound, and above that by the unmeasured ger-smoke2 and ger-probe1 windows.
+
+Of that, $1.04 is three GER attempts on 2026-09-24 that produced NO usable measurement:
+  ger-smoke1  $0.06  no cuBLAS/cuDNN in the image
+  ger-smoke2  $0.49  failed after SEGMENTS 20, inside the scrubbed loop -- cause still UNKNOWN
+  ger-probe1  $0.49  ModuleNotFoundError in the container: the probe imported from
+                     modal_decode, and Modal ships only the entrypoint file
+Three different environmental faults, none of them the one before. The GPU RTF the full pass
+needs is still UNKNOWN. The $3.69 variant adds an UNVERIFIED prose figure and must not be
+presented as derived from anything here. Of a $35 cap
+(cap superseded). BUDGET RESET 2026-09-24: the user granted "$35 fresh", so the $5.33 above is
+NOT deducted from it. Spend against the fresh budget starts at $0.00 with ger1 (in flight,
+$9.83 bound). The figures above remain the record of what was spent before the reset.
+  (An earlier version of this line read '$32.12 (35 - 3.51)'. 35 - 3.51 = 31.49; 32.12 is
+   35 - 2.88, i.e. the artifact-backed subtotal after $3.51 had superseded it as the
+   defensible figure. Same withdrawn-input-carried-forward error this file exists to fix.)
+
+NOT VERIFIED, and stated here because HANDOVER.md:154-155 requires it:
+  - Actual Modal billing has never been read from this machine. Every figure above is a
+    watchdog UPPER bound on container-seconds x rate, not an invoice.
+  - Image-build charges are excluded and UNKNOWN.
+  - The superseded '$2.14 of the user's $15' in docs/HANDOVER.md:151 predates the $35 cap
+    and the g7a/G8 runs; it should not be read as a current position.
+  - The '$3.72' formerly in STATE.md and docs/HANDOVER.md:288 matched no sum above and is
+    withdrawn. Both files were corrected on 2026-09-24 and no longer carry it.

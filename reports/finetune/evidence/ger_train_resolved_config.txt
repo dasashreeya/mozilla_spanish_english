@@ -1,0 +1,80 @@
+# Resolved configuration for the GER LoRA stages
+# 2026-09-25T01:49:29Z
+# Written because a pre-gpu review found no resolved config existed for either stage --
+# the one checkpoint item most likely to have caught the collator defect it did catch.
+# Values are read from the source's AST, not retyped.
+
+-- scripts/modal_ger_train.py::gertrain --------------------------
+  decorator carries gpu=GPU              True
+  decorator carries cpu=CPU              True
+  decorator carries memory=MEMORY        True
+  decorator carries timeout=             True
+  decorator carries startup_timeout=     True
+  decorator carries retries=             True
+  defaults:
+    pairs              = 'ger/ger1/pairs.jsonl'
+    base               = 'smollm3'
+    epochs             = 2.0
+    lr                 = 0.0001
+    rank               = 16
+    max_len            = 512
+    limit              = 0
+    GPU                = 'A100-80GB'
+    CPU                = (8.0, 8.0)
+    MEMORY             = (65536, 65536)
+    VOLUME             = '/vol'
+    STARTUP_TIMEOUT    = 10 * 60
+
+-- scripts/modal_ger_apply.py::gerapply --------------------------
+  decorator carries gpu=GPU              True
+  decorator carries cpu=CPU              True
+  decorator carries memory=MEMORY        True
+  decorator carries timeout=             True
+  decorator carries startup_timeout=     True
+  decorator carries retries=             True
+  defaults:
+    adapter            = ''
+    base               = 'smollm3'
+    hyps               = 'ger_dev/hyps.jsonl'
+    max_new_tokens     = 200
+    max_edit           = 0.5
+    min_ratio          = 0.5
+    max_ratio          = 1.8
+    limit              = 0
+    GPU                = 'A100-80GB'
+    CPU                = (8.0, 8.0)
+    MEMORY             = (65536, 65536)
+    VOLUME             = '/vol'
+    STARTUP_TIMEOUT    = 10 * 60
+
+-- collator, the defect a resolved config should have caught ------
+  imported from transformers: ['AutoModelForCausalLM', 'AutoTokenizer', 'Trainer', 'TrainingArguments']
+  DataCollatorForLanguageModeling imported: False
+  PromptMaskedCollator defined locally:    True
+  WHY: DataCollatorForLanguageModeling(tok, mlm=False) (a) cannot pad `labels` --
+    PreTrainedTokenizerBase._pad pads only model_input_names[0], attention_mask,
+    token_type_ids and special_tokens_mask -- so ragged prompt-masked labels raise
+    "Unable to create tensor ... (labels in this case)"; and (b) its torch_call
+    OVERWRITES labels with a clone of input_ids, discarding the prompt mask, and then
+    sets labels[labels == pad_token_id] = -100 which (pad_token = eos_token here) masks
+    the training EOS so the model never learns to stop.
+  Both reproduced against the installed transformers 4.57.6; see tests/test_ger_train.py.
+
+-- guard-rail thresholds, registered before any apply run ---------
+  max_edit=0.5, min_ratio=0.5, max_ratio=1.8, max_new_tokens=200
+  Registered in docs/METHODS.md ('Threshold VALUES, registered 2026-09-25T01:40Z')
+  BEFORE gerapply had run once. Changing any of them after seeing a dev result is
+  threshold tuning on dev and must be reported as a new pre-registration.
+
+-- licence constraint on the base ---------------------------------
+  smollm3    -> HuggingFaceTB/SmolLM3-3B
+  olmo2      -> allenai/OLMo-2-1124-7B
+  revision.md:437 calls allenai/OLMo-2-* 'fully open corpus' and SmolLM3-3B
+  'open recipe'. The Bangor GPL clause needs ALL training data public, so only the
+  former clearly satisfies it. SmolLM3 is the DEFAULT and the base of gertrain ger1:
+  that run MEASURES whether GER helps; anything shipped must be retrained on OLMo-2.
+
+-- cost ------------------------------------------------------------
+  rate $0.00094088/s (modal_watchdog.py:52)
+  gertrain 150-min deadline -> $8.47; provider ceiling (180+10) -> $10.73
+  gerapply  30-min deadline -> $1.69; provider ceiling  (90+10) -> $5.65

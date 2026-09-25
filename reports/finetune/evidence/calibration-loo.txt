@@ -1,0 +1,29 @@
+# dev -> public calibration, FOUR verified same-build pairs
+# 2026-09-25T04:02:13Z  REGENERATED with rover4-qeqn
+# source: reports/submissions/platform_results.json
+
+build                      dev   public    offset    ratio
+ft-s2-prompt          0.110733   0.1371 +0.026367   1.2381
+rover3-breaks         0.098919   0.1215 +0.022581   1.2283
+rover3-g7-breaks      0.096516   0.1198 +0.023284   1.2412
+rover4-qeqn           0.088500   0.1156 +0.027100   1.3062
+
+mean additive 0.024833   mean ratio 1.253463
+
+held out              additive err   ratio err   factor
+ft-s2-prompt              0.002045    0.002266    0.90x
+rover3-breaks             0.003003    0.003322    0.90x
+rover3-g7-breaks          0.002065    0.001572    1.31x
+rover4-qeqn               0.003023    0.006225    0.49x
+MEAN                      0.002534    0.003346    0.76x
+
+*** THE RATIO MODEL'S ADVANTAGE IS GONE. *** On the first three points its leave-one-out
+error was 9.3x / 2.0x / 1.5x smaller and the claim preferred it, stating that three points
+cannot establish a functional form. On the fourth point the ADDITIVE model was closer
+(+0.0030 vs +0.0062). Both UNDER-predicted, i.e. the real public score was worse than
+either model said -- consistent with rover4-qeqn being the most heavily dev-selected build
+submitted so far (12,878 configurations on the same 155 clips) and with only 52% of its
+dev gain transferring.
+
+dev needed for public 0.1000:  additive 0.0752   ratio 0.0798
+gap from the best build on hand (0.0885): +0.0133 to +0.0087

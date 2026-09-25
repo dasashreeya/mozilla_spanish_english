@@ -1,0 +1,30 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-mnmIywzmk9c6HQ9lsavZfr
+Building image im-WJRcmUCbc5FBj1DsFj1we3
+
+=> Step 0: FROM base
+
+=> Step 1: RUN find /usr/local/lib/python3.12/site-packages/nvidia -name '*.so*' -printf '%h\n' | sort -u > /etc/ld.so.conf.d/nvidia.conf
+
+=> Step 2: RUN ldconfig
+
+=> Step 3: RUN ldconfig -p | grep -c libcublas.so.12
+1
+Saving image...
+Image saved, took 539.52ms
+
+Built image im-WJRcmUCbc5FBj1DsFj1we3 in 3.54s
+
+
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_p
+│   robe.py
+└── 🔨 Created function probe.
+PROBE start run=ger-probe4 source=mobiuslabsgmbh/faster-whisper-large-v3-turbo revision=0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf
+PROBE ctranslate2=4.8.2 cuda_device_count=1
+PROBE model loaded
+PROBE transcribe OK segments=1 detected_language=en
+[modal-client] 2026-09-24T18:15:10-0400 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/dasashreeya/main/ap-mnmIywzmk9c6HQ9lsavZfr

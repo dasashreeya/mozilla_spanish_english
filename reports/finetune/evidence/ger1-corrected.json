@@ -1,0 +1,57 @@
+{
+  "run": "ger1-corrected",
+  "backend": "ger-correction",
+  "generated_at": "2026-09-25T01:59:58+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "design": "docs/METHODS.md Round 9",
+  "candidates_in_tie_break_order": [
+    "rover4-qeqn"
+  ],
+  "preprocess": "sentence-breaks-keep-ellipsis",
+  "preprocess_note": "inherited from the corrector's inputs and its guard-rail fallback, not re-applied to its output",
+  "dataset": {
+    "split": "dev",
+    "rows": 155
+  },
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.1123,
+      "substitutions": 330,
+      "deletions": 160,
+      "insertions": 71,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.1006,
+        "high": 0.1236
+      }
+    },
+    "groups": {},
+    "diagnostics": {
+      "note": "not the official metric; isolates formatting from recognition errors",
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.0993,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.9822,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "official_cli": {
+    "wer": 0.112335,
+    "matches_in_process_wer": true
+  },
+  "clips_changed_from_incumbent": 142,
+  "versus_incumbent": {
+    "incumbent": "rover4-qeqn",
+    "paired_selector_minus_incumbent": {
+      "difference_b_minus_a": 0.0238,
+      "low": 0.0146,
+      "high": 0.0334,
+      "share_of_resamples_b_worse": 1.0,
+      "level": 0.95,
+      "reps": 2000
+    }
+  }
+}

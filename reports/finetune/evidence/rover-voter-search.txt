@@ -1,0 +1,49 @@
+# ROVER voter-set search over already-decoded systems (E3 disclosure)
+HEAD: a5c35a1f726bde767ba296856048de98fa40347d
+date: 2026-09-24T03:59:24Z
+Two searches were run against the same 155 dev clips. Their scripts are in the session
+scratchpad, not the repo; this file records their output verbatim so the selection
+intensity disclosed in the claim is checkable. WERs here are computed in-process with
+submission_src/selection.rover + lit_sp_en.evaluation.per_clip_counts, the same code
+combine_runs.py uses; the winner was then rebuilt through combine_runs.py and validated.
+
+--- pass 1: greedy forward selection, backbone fixed to ft-g7 ---
+
+--- pass 2: beam search, any backbone, width 40, up to 7 voters ---
+best triples (any backbone):
+   0.0931  7.40GB  ft-g7-turbo-auto-int8- | large-v3-turbo-auto-in | Qwen3-ASR-1.7B-es-cpu-
+   0.0931  7.40GB  ft-g7-turbo-auto-int8- | large-v3-turbo-auto-in | Qwen3-ASR-1.7B-es-cpu-
+   0.0947  7.40GB  ft-s2-turbo-auto-int8- | large-v3-turbo-auto-in | Qwen3-ASR-1.7B-es-cpu-
+4 voters: best 0.0885   7.40GB  ft-g7-turbo-auto-int8- | large-v3-turbo-auto-in | Qwen3-ASR-1.7B-es-cpu- | Qwen3-ASR-1.7B-en-cpu-
+5 voters: best 0.0895   8.91GB  ft-g7-turbo-auto-int8- | large-v3-turbo-auto-in | large-v3-turbo-en-int8 | ft-s2-turbo-auto-int8- | Qwen3-ASR-1.7B-es-cpu-
+6 voters: best 0.0877   8.91GB  ft-g7-turbo-auto-int8- | ft-s2-turbo-auto-int8- | large-v3-turbo-en-int8 | large-v3-turbo-auto-in | Qwen3-ASR-1.7B-en-cpu- | Qwen3-ASR-1.7B-es-cpu-
+7 voters: best 0.0891   8.91GB  ft-s2-turbo-auto-int8- | large-v3-turbo-auto-in | large-v3-turbo-es-int8 | ft-g7-turbo-auto-int8- | Qwen3-ASR-1.7B-es-cpu- | Qwen3-ASR-1.7B-en-cpu- | Qwen3-ASR-1.7B-auto-cp
+
+configurations evaluated: 12878
+OVERALL BEST 0.0877  8.91 GB
+    ft-g7-turbo-auto-int8-b5-prompt
+    ft-s2-turbo-auto-int8-b5-prompt-vad
+    large-v3-turbo-en-int8-b5
+    large-v3-turbo-auto-int8-b5-prompt-guard
+    Qwen3-ASR-1.7B-en-cpu-float32
+    Qwen3-ASR-1.7B-es-cpu-float32
+
+[exited with code 0]
+=== greedy voter search — re-run 2026-09-24T04:38:30Z to capture the configuration count as a saved artifact ===
+(the original run's output was never written to a file; this is the same script, same inputs)
+
+best starting triples (backbone = ft-g7):
+   0.0931   7.40 GB  large-v3-turbo-auto-int8-b5-prompt + Qwen3-ASR-1.7B-es-cpu-float32
+   0.0931   7.40 GB  large-v3-turbo-auto-int8-b5-prompt-g + Qwen3-ASR-1.7B-es-cpu-float32
+   0.0951   7.40 GB  large-v3-turbo-en-int8-b5 + Qwen3-ASR-1.7B-es-cpu-float32
+   0.0965   7.40 GB  large-v3-turbo-auto-int8-b5-prompt + Qwen3-ASR-1.7B-auto-cpu-float32-ctx
+   0.0965   7.40 GB  large-v3-turbo-auto-int8-b5-prompt-g + Qwen3-ASR-1.7B-auto-cpu-float32-ctx
+
+add    0.0885   7.40 GB  +Qwen3-ASR-1.7B-en-cpu-float32
+
+configurations evaluated: 184
+final 0.0885  7.40 GB
+    ft-g7-turbo-auto-int8-b5-prompt
+    large-v3-turbo-auto-int8-b5-prompt
+    Qwen3-ASR-1.7B-es-cpu-float32
+    Qwen3-ASR-1.7B-en-cpu-float32

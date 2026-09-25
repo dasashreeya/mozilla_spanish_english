@@ -1,0 +1,27 @@
+# Scorer parity + dummy submission format check for the GER smoke gate
+# 2026-09-24T14:57:29Z  HEAD a5c35a1
+# Aggregates only. No transcript text, clip name or per-clip row is printed.
+# REGENERATED: the previous version captured $? after a pipe, so the exit code for the
+# references-as-predictions run came out BLANK while the claim asserted 'exit 0'. Every
+# exit code below is the scorer process's own returncode.
+
+--- scorer parity: in-process official_wer vs vendor/runtime_score.py, same file
+rover4-qeqn: rows=155 in_process_official_wer=0.088506
+$ vendor/runtime_score.py <refs> --predicted-path <hyps>
+WER: 0.088506
+exit: 0
+in_process full precision: 0.08850620744893872
+PARITY at the precision runtime_score.py reports (6 dp): True
+  (An exact float comparison reads False: the scorer prints 6 dp, the in-process value is
+   0.08850620744893872. Recorded rather than silently rounded away.)
+
+--- dummy submission format check
+dummy rows: 155 header: audio_filename,transcript duplicate ids: 0 empty transcripts: 0
+$ vendor/runtime_score.py <refs> --predicted-path dummy_ref_as_pred.csv
+WER: 0.000000
+exit: 0
+$ vendor/runtime_score.py <refs> --predicted-path dummy_missing_row.csv
+  (stdout/stderr withheld: the error names a clip. Exit code and message SHAPE only.)
+exit: 2
+message says 'missing N rows': True
+N = 1

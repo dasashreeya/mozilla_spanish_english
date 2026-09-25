@@ -1,0 +1,13 @@
+✓ Initialized. View run at 
+https://modal.com/apps/dasashreeya/main/ap-6GIGMxvqLc7ECNfNuVH0lF
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/shreeyadasa/Documents/mozilla/mozilla_english_spanish/scripts/modal_d
+│   ecode.py
+└── 🔨 Created function decode.
+SEGMENTS 20
+VOTER {"voter": "turbo", "segments": 20, "empty": 0, "seconds": 57.4}
+REPORT {"run": "ger-smoke3", "segments": 20, "voters": ["turbo"]}
+[modal-client] 2026-09-24T18:17:44-0400 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/dasashreeya/main/ap-6GIGMxvqLc7ECNfNuVH0lF

@@ -1,0 +1,18 @@
+# GER scoring-path identity control -- 2026-09-25T01:43:20Z
+# Feeds scripts/score_ger.py the incumbent's OWN transcripts, keyed dev000..dev154 exactly as
+# scripts/modal_ger_apply.py will key them. A correct pipeline must then reproduce
+# rover4-qeqn's WER exactly, report 0 clips changed, a zero paired difference, and FAIL the
+# Round 9 pass rule -- because an identity transform is not an improvement.
+#
+# It caught a real bug before the paid run: score_ger.py read paired['difference'], but
+# paired_bootstrap returns 'difference_b_minus_a'. Fixed.
+
+ger-identity-control: WER 0.0885  (cli 0.088506)  parity=True
+rover4-qeqn: WER 0.0885
+clips changed by the corrector: 0/155
+paired (GER - incumbent): +0.0000 [+0.0000, +0.0000]  reps=2000 share_worse=0.0
+
+ROUND 9 PASS RULE, part 1 (pooled interval entirely below zero): FAIL
+ROUND 9 PASS RULE, part 2 (same direction on both dev speakers): run `uv run --no-sync python scripts/speaker_split.py --candidate ger-identity-control --incumbent rover4-qeqn`
+
+exit: 0

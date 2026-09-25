@@ -1,0 +1,50 @@
+{
+  "variant": "rover4-qeqn-breaks",
+  "validated_at": "2026-09-24T03:13:44+00:00",
+  "privacy": "aggregates only: no transcript text, file names, speaker codes or audio",
+  "zip": "submission-rover4-qeqn-breaks.zip",
+  "limit": null,
+  "device": "cpu",
+  "checks": {
+    "exit_code": 0,
+    "wall_seconds": 3274.2,
+    "log_lines": 30,
+    "log_lines_within_limit": true,
+    "longest_log_line": 78,
+    "log_line_length_within_limit": true,
+    "header_ok": true,
+    "rows": 155,
+    "rows_match_manifest": true,
+    "duplicate_rows": 0,
+    "empty_transcripts": 0
+  },
+  "official_cli_wer": 0.088506,
+  "scores": {
+    "official": {
+      "clips": 155,
+      "reference_words": 4994,
+      "wer": 0.0885,
+      "substitutions": 240,
+      "deletions": 151,
+      "insertions": 51,
+      "bootstrap": {
+        "level": 0.95,
+        "reps": 2000,
+        "low": 0.0788,
+        "high": 0.0989
+      }
+    },
+    "diagnostics": {
+      "wer_lowercased_no_apostrophe_no_ellipsis": 0.0807,
+      "empty_hypotheses": 0,
+      "hypotheses_with_repeated_trigram_x4": 0,
+      "hypothesis_to_reference_word_ratio": 0.98,
+      "clips_with_hypothesis_over_2x_reference_words": 0
+    }
+  },
+  "parity": {
+    "run": "rover4-qeqn",
+    "clips": 155,
+    "identical_transcripts": 155
+  }
+}

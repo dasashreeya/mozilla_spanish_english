@@ -183,3 +183,81 @@ def test_cli_forwards_stage_args_through_main(monkeypatch, tmp_path) -> None:
     with pytest.raises(SystemExit) as exit_info:
         modal_watchdog.main()
     assert exit_info.value.code == 2
+
+
+def test_stop_is_not_confirmed_by_a_single_stopped_reading(monkeypatch) -> None:
+    """On 2026-09-24 two runs logged "confirmed stopped with 0 tasks" and were then seen back at
+    "ephemeral (detached) tasks=1"; both had to be stopped by hand. One reading is not proof."""
+    clock = FakeClock()
+    monkeypatch.setattr(modal_watchdog.time, "monotonic", clock.monotonic)
+    monkeypatch.setattr(modal_watchdog.time, "sleep", clock.sleep)
+    monkeypatch.setattr(modal_watchdog, "modal_cli",
+                        lambda args, timeout=60: type("R", (), {"returncode": 0})())
+
+    # stopped, then BACK to running, then stopped for good.
+    readings = [{"State": "stopped", "Tasks": "0"},
+                {"State": "ephemeral (detached)", "Tasks": "1"},
+                {"State": "stopped", "Tasks": "0"},
+                {"State": "stopped", "Tasks": "0"}]
+    seen = []
+
+    def app_row(app_id, timeout=60):
+        row = readings[min(len(seen), len(readings) - 1)]
+        seen.append(row)
+        return row
+
+    monkeypatch.setattr(modal_watchdog, "app_row", app_row)
+    assert modal_watchdog.stop_and_confirm("ap-test") is True
+    # It must have looked more than once, and must not have returned on the first stopped row.
+    assert len(seen) >= 3, seen
+
+
+def test_a_flapping_app_is_not_confirmed_within_the_window(monkeypatch) -> None:
+    clock = FakeClock()
+    monkeypatch.setattr(modal_watchdog.time, "monotonic", clock.monotonic)
+    monkeypatch.setattr(modal_watchdog.time, "sleep", clock.sleep)
+    monkeypatch.setattr(modal_watchdog, "modal_cli",
+                        lambda args, timeout=60: type("R", (), {"returncode": 0})())
+    flip = {"n": 0}
+
+    def app_row(app_id, timeout=60):
+        flip["n"] += 1
+        return ({"State": "stopped", "Tasks": "0"} if flip["n"] % 2
+                else {"State": "ephemeral (detached)", "Tasks": "1"})
+
+    monkeypatch.setattr(modal_watchdog, "app_row", app_row)
+    assert modal_watchdog.stop_and_confirm("ap-test") is False
+
+
+def _argv(monkeypatch, *args):
+    monkeypatch.setattr(sys, "argv", ["modal_watchdog.py", *args])
+
+
+@pytest.mark.parametrize("stage,right,wrong", [
+    ("decode", "scripts/modal_decode.py", "scripts/modal_ger_apply.py"),
+    ("probe", "scripts/modal_probe.py", "scripts/modal_decode.py"),
+    ("gertrain", "scripts/modal_ger_train.py", "scripts/modal_ger_apply.py"),
+    ("gerapply", "scripts/modal_ger_apply.py", "scripts/modal_ger_train.py"),
+])
+def test_each_stage_is_bound_to_its_own_script(monkeypatch, capsys, stage, right, wrong) -> None:
+    """`stage` is the Modal function name, so the wrong script resolves to nothing, fails inside
+    Modal, and still burns the run id. An earlier guard only rejected the DEFAULT script, which
+    let gertrain --script modal_ger_apply.py through."""
+    _argv(monkeypatch, stage, "rid", "--max-minutes", "5", "--script", wrong)
+    with pytest.raises(SystemExit) as caught:
+        modal_watchdog.main()
+    assert caught.value.code == 2
+    assert right in capsys.readouterr().err
+
+    # And the default script is still rejected for these stages.
+    _argv(monkeypatch, stage, "rid", "--max-minutes", "5")
+    with pytest.raises(SystemExit):
+        modal_watchdog.main()
+
+
+def test_a_finetune_stage_cannot_run_from_a_single_stage_module(monkeypatch, capsys) -> None:
+    _argv(monkeypatch, "full", "rid", "--max-minutes", "5", "--script", "scripts/modal_decode.py")
+    with pytest.raises(SystemExit) as caught:
+        modal_watchdog.main()
+    assert caught.value.code == 2
+    assert "defines only" in capsys.readouterr().err
